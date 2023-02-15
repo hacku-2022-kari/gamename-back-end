@@ -16,6 +16,12 @@ import (
 	"google.golang.org/api/iterator"
 )
 
+type User struct {
+	first string
+	last  string
+	born  int
+}
+
 func main() {
 	// --------------------
 
@@ -26,6 +32,7 @@ func main() {
 	e.Use(middleware.CORS())
 
 	e.GET("/", home)
+	e.GET("/user-list", userList)
 	e.POST("/add-user", addUser)
 
 	// Start HTTP server.
@@ -70,6 +77,30 @@ func defineFirebase() (context.Context, *firestore.Client) {
 // e.GET("/", home)
 func home(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello Golang + echo!")
+}
+
+// e.GET("/user-list", userList)
+func userList(c echo.Context) error {
+	ctx, client := defineFirebase()
+
+	iter := client.Collection("users").Documents(ctx)
+	var output []User
+
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		for k, v := range doc.Data() {
+			fmt.Println(k, v)
+		}
+	}
+
+	return c.JSON(http.StatusOK, output)
 }
 
 // e.POST("/add-user", user)
