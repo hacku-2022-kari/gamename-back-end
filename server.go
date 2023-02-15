@@ -36,6 +36,7 @@ func main() {
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
 	//e.POST("/createRoom", createRoom)
+	e.POST("/createRoom", createRoom)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -84,11 +85,15 @@ func getRandomTheme(c echo.Context) error {
 	return c.JSON(http.StatusOK, theme)
 }
 
-// func createRoom(c echo.Context) error {
-// 	password := c.FormValue("password")
-// 	particNum := c.FormValue("particNum")
-// 	int_particNum, _ := strconv.Atoi(particNum)
+func createRoom(c echo.Context) error {
+	reqBody := new(Room)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	password := reqBody.Password
+	particNum := reqBody.PaticNum
 
-// 	useDB.CreateRoom(password, int_particNum, 0, "step")
-// 	return c.String(http.StatusOK, "OK")
-// }
+	useDB.CreateRoom(password, particNum, 0, "step")
+
+	return c.String(http.StatusOK, "OK")
+}
