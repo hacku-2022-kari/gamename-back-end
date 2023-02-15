@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,9 +18,9 @@ import (
 )
 
 type User struct {
-	first string
-	last  string
-	born  int
+	First string `json:"first"`
+	Last  string `json:"last"`
+	Born  int    `json:"born"`
 }
 
 func main() {
@@ -95,9 +96,18 @@ func userList(c echo.Context) error {
 			return err
 		}
 
-		for k, v := range doc.Data() {
-			fmt.Println(k, v)
+		bytes, err := json.Marshal(doc.Data())
+		if err != nil {
+			fmt.Println("JSON marshal error: ", err)
+			return err
 		}
+
+		var user User
+		err = json.Unmarshal(bytes, &user)
+		if err != nil {
+			return err
+		}
+		output = append(output, user)
 	}
 
 	return c.JSON(http.StatusOK, output)
