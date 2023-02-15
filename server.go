@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -21,18 +22,66 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// ルートを設定
-	e.GET("/myPage", hello) // ローカル環境の場合、http://localhost:1323/ にGETアクセスされるとhelloハンドラーを実行する
-
+	// ローカル環境の場合、http://localhost:1323/
+	e.GET("/is-room-exit/:id/:password", isRoomExit)
+	e.GET("/partic-list /:roomId", func(c echo.Context) error {
+		playerList := getParticList(c)
+		return c.JSON(http.StatusOK, playerList)
+	})
+	e.GET("/theme:description", getTheme)
+	e.GET("/hint-list/:roomId", func(c echo.Context) error {
+		hintList := getHintList(c)
+		return c.JSON(http.StatusOK, hintList)
+	})
+	e.GET("/step/:roomId", getStep)
+	e.GET("/random-theme", getRandomTheme)
 	//e.POST("/createRoom", createRoom)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
 // ハンドラーを定義
-func hello(c echo.Context) error {
 
-	var fukami string = "Kensuke"
-	return c.String(http.StatusOK, fukami)
+func isRoomExit(c echo.Context) error {
+	var exit bool = true
+	id := c.Param("id")
+	password := c.Param("password")
+
+	fmt.Println(id, password) //test
+	return c.JSON(http.StatusOK, exit)
+}
+
+func getParticList(c echo.Context) [][]interface{} {
+	var playerList = [][]interface{}{
+		{"tanaka", 1},
+		{"suzuki", 2},
+		{"mashio", 3},
+	}
+	id := c.Param("roomId")
+	fmt.Println(id) //test
+	return playerList
+}
+
+func getTheme(c echo.Context) error {
+	var theme string = "テスト"
+	return c.JSON(http.StatusOK, theme)
+}
+
+func getHintList(c echo.Context) [][]interface{} {
+	var hintList = [][]interface{}{
+		{"key", "hint1", true},
+		{"key2", "hint2", true},
+		{"key3", "hint3", true},
+	}
+	return hintList
+}
+func getStep(c echo.Context) error {
+	var step int = 1
+	return c.JSON(http.StatusOK, step)
+}
+func getRandomTheme(c echo.Context) error {
+	var theme string = "テスト"
+	return c.JSON(http.StatusOK, theme)
 }
 
 // func createRoom(c echo.Context) error {
