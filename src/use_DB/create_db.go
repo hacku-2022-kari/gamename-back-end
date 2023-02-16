@@ -3,6 +3,7 @@ package useDB
 import (
 	"context"
 	"log"
+	"os"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -19,7 +20,7 @@ type Room struct {
 func connnectDB() (context.Context, *firestore.Client) {
 	ctx := context.Background()
 	sa := option.WithCredentialsFile("path/to/serviceAccount.json")
-	config := &firebase.Config{ProjectID: "gotest-bc4c6"}
+	config := &firebase.Config{ProjectID: os.Getenv("PROJECT_ID")}
 	app, err := firebase.NewApp(ctx, config, sa)
 
 	if err != nil {
