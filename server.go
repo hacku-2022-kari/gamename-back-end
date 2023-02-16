@@ -85,7 +85,7 @@ func getRandomTheme(c echo.Context) error {
 }
 
 func createRoom(c echo.Context) error {
-	reqBody := new(Room)s
+	reqBody := new(Room)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
