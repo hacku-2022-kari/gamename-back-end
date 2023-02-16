@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-type Room struct {
+type Room struct { //TODO
 	Password string `json:"password"`
 	PaticNum int    `json:"particNum"`
 }
@@ -17,6 +17,7 @@ type Room struct {
 func main() {
 	// インスタンスを作成
 	e := echo.New()
+	e.Use(middleware.CORS())
 
 	// ミドルウェアを設定
 	e.Use(middleware.Logger())
@@ -36,13 +37,10 @@ func main() {
 	})
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
-	//e.POST("/createRoom", createRoom)
 	e.POST("/createRoom", createRoom)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
-
-// ハンドラーを定義
 
 func isRoomExit(c echo.Context) error {
 	var exit bool = true
@@ -87,14 +85,14 @@ func getRandomTheme(c echo.Context) error {
 }
 
 func createRoom(c echo.Context) error {
-	reqBody := new(Room)
+	reqBody := new(Room)s
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
 	password := reqBody.Password
 	particNum := reqBody.PaticNum
 
-	useDB.CreateRoom(password, particNum, 0, "step")
+	useDB.CreateRoom(password, particNum, "theme", 0, 0)
 
 	return c.String(http.StatusOK, "OK")
 }

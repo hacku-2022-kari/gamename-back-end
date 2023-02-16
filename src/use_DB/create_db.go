@@ -11,10 +11,11 @@ import (
 )
 
 type Room struct {
-	Password string `json:"pa"`
+	Password string
 	PaticNum int
+	Theme    string
 	Phase    int
-	Step     string
+	Step     int
 }
 
 func connnectDB() (context.Context, *firestore.Client) {
@@ -32,10 +33,11 @@ func connnectDB() (context.Context, *firestore.Client) {
 	return ctx, client
 }
 
-func CreateRoom(pass string, particNum int, phase int, step string) {
+func CreateRoom(password string, particNum int, theme string, phase int, step int) {
 	room := Room{
-		Password: pass,
+		Password: password,
 		PaticNum: particNum,
+		Theme:    theme,
 		Phase:    phase,
 		Step:     step,
 	}
