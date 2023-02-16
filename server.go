@@ -98,3 +98,10 @@ func createRoom(c echo.Context) error {
 
 	return c.String(http.StatusOK, "OK")
 }
+
+//$body = @{
+//     password = "mypassword"
+//     particNum = 5
+// } | ConvertTo-Json
+
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/createRoom -Body $body -ContentType "application/json"
