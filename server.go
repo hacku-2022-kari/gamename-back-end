@@ -25,7 +25,7 @@ func main() {
 
 	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
-	e.GET("/is-room-exit/:id/:password", isRoomExit)
+	e.GET("/is-room-exit/", isRoomExit)
 	e.GET("/partic-list/:roomId", func(c echo.Context) error {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
@@ -44,10 +44,10 @@ func main() {
 
 func isRoomExit(c echo.Context) error {
 	var exit bool = true
-	id := c.Param("id")
-	password := c.Param("password")
+	rid := c.QueryParam("rid")
+	password := c.QueryParam("password")
 
-	fmt.Println(id, password) //test
+	fmt.Println(rid, password) //test
 	return c.JSON(http.StatusOK, exit)
 }
 
