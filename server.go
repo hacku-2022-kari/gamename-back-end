@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-type Room struct { //TODO
+type Room struct { //TODO　create_dbと被るからそこを考えよう
 	Password string `json:"password"`
 	PaticNum int    `json:"particNum"`
 }
