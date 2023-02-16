@@ -26,7 +26,7 @@ func main() {
 	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-room-exit/:id/:password", isRoomExit)
-	e.GET("/partic-list /:roomId", func(c echo.Context) error {
+	e.GET("/partic-list/:roomId", func(c echo.Context) error {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
