@@ -1,30 +1,53 @@
 package useDB
 
 import (
-	"fmt"
 	"log"
 )
 
-func AddPlayer(id string, password string) bool {
+type Player struct {
+	PlayerName string
+	Role       int
+	Theme      string
+	Hint       string
+	IsDelete   bool
+	Answer     string
+}
+
+type RoomPlayer struct {
+	Roomid   string
+	Playerid string
+}
+
+func AddPlayer(roomId string, playerName string, playerIcon int) string {
+
+	player := Player{
+		PlayerName: playerName,
+		Role:       0,
+		Theme:      "notheme",
+		Hint:       "nohint",
+		IsDelete:   false,
+		Answer:     "noanswer",
+	}
+
 	ctx, client := connnectDB()
-	docRef := client.Collection("Room").Doc(id)
 
-	docSnapshot, err := docRef.Get(ctx)
+	docRef, _, err := client.Collection("Player").Add(ctx, player)
+
 	if err != nil {
-		log.Fatalf("Failed to get document: %v", err)
+		// Handle any errors in an appropriate way, such as returning them.
+		log.Printf("An error has occurred: %s", err)
 	}
 
-	if docSnapshot.Exists() {
-		data := docSnapshot.Data()
-		// 指定したフィールドの値を取得する
-		value, ok := data["password"]
-		if ok && value == password {
-			fmt.Println("ドキュメントが存在し、指定したフィールドの値が一致します")
-			return true
-		}
+	roomPlayer := RoomPlayer{
+		Roomid:   roomId,
+		Playerid: docRef.ID,
 	}
-
-	fmt.Println("ドキュメントが存在しない、または指定したフィールドの値が一致しません")
-	return false
-
+	ref := client.Collection("RoomPlayer").NewDoc()
+	_, _err := ref.Set(ctx, roomPlayer)
+	if _err != nil {
+		// Handle any errors in an appropriate way, such as returning them.
+		log.Printf("An error has occurred: %s", _err)
+	}
+	defer client.Close()
+	return docRef.ID
 }
