@@ -47,7 +47,7 @@ func isRoomExit(c echo.Context) error {
 	rid := c.QueryParam("rid")
 	password := c.QueryParam("password")
 
-	fmt.Println(rid, password) //test
+	useDB.IsRoomExit(rid, password)
 	return c.JSON(http.StatusOK, exit)
 }
 
