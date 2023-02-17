@@ -6,6 +6,7 @@ import (
 
 type Player struct {
 	PlayerName string
+	Icon       int
 	Role       int
 	Theme      string
 	Hint       string
@@ -22,6 +23,7 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 
 	player := Player{
 		PlayerName: playerName,
+		Icon:       playerIcon,
 		Role:       0,
 		Theme:      "notheme",
 		Hint:       "nohint",
@@ -51,3 +53,11 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	defer client.Close()
 	return docRef.ID
 }
+
+// $body = @{
+//     roomId = "cbBipgOwuA8wxu5XAXFW"
+//     playerName = "testman"
+// 		playerIcon = 3
+// } | ConvertTo-Json
+
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/addPlayer -Body $body -ContentType "application/json"
