@@ -14,6 +14,12 @@ type Room struct { //TODO　create_dbと被るからそこを考えよう
 	PaticNum int    `json:"particNum"`
 }
 
+type Player struct { //TODO　create_dbと被るからそこを考えよう
+	RoomId     string `json:"roomId"`
+	PlayerName string `json:"playerName"`
+	PlayerIcon int    `json:"playerIcon"`
+}
+
 func main() {
 	// インスタンスを作成
 	e := echo.New()
@@ -38,6 +44,7 @@ func main() {
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/createRoom", createRoom)
+	e.POST("/addPlayer", postAddPlayer)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -95,6 +102,20 @@ func createRoom(c echo.Context) error {
 	useDB.CreateRoom(password, particNum, "theme", 0, 0)
 
 	return c.String(http.StatusOK, "OK")
+}
+
+func postAddPlayer(c echo.Context) error {
+	reqBody := new(Player)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+	playerName := reqBody.PlayerName
+	playerIcon := reqBody.PlayerIcon
+
+	useDB.AddPlayer(roomId, playerName, playerIcon)
+
+	return c.String(http.StatusOK, playerid)
 }
 
 //$body = @{
