@@ -14,7 +14,7 @@ type Room struct { //TODO　create_dbと被るからそこを考えよう
 	PaticNum int    `json:"particNum"`
 }
 
-type Player struct { //TODO　create_dbと被るからそこを考えよう
+type Player struct {
 	RoomId     string `json:"roomId"`
 	PlayerName string `json:"playerName"`
 	PlayerIcon int    `json:"playerIcon"`
@@ -113,9 +113,10 @@ func postAddPlayer(c echo.Context) error {
 	playerName := reqBody.PlayerName
 	playerIcon := reqBody.PlayerIcon
 
-	useDB.AddPlayer(roomId, playerName, playerIcon)
+	fmt.Println(roomId, playerName, playerIcon)
+	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
 
-	return c.String(http.StatusOK, playerid)
+	return c.String(http.StatusOK, "OK")
 }
 
 //$body = @{
