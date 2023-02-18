@@ -115,13 +115,13 @@ func postAddPlayer(c echo.Context) error {
 
 	fmt.Println(roomId, playerName, playerIcon)
 	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
-
+	fmt.Println(playerId)
 	return c.String(http.StatusOK, "OK")
 }
 
-//$body = @{
-//     password = "mypassword"
-//     particNum = 5
+// $body = @{
+//     password = "yourpass"
+//     particNum = 3
 // } | ConvertTo-Json
-
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/createRoom -Body $body -ContentType "application/json"
+//curl -d "roomId = cbBipgOwuA8wxu5XAXFW" -d "playerName = testman" -d "playerIcon = 3" http://localhost:1323/addPlayer
