@@ -32,7 +32,7 @@ func main() {
 	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-room-exit/", isRoomExit)
-	e.GET("/partic-list/:roomId", func(c echo.Context) error {
+	e.GET("/partic-list/", func(c echo.Context) error {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
@@ -59,13 +59,10 @@ func isRoomExit(c echo.Context) error {
 }
 
 func getParticList(c echo.Context) [][]interface{} {
-	var playerList = [][]interface{}{
-		{"tanaka", 1},
-		{"suzuki", 2},
-		{"mashio", 3},
-	}
-	id := c.Param("roomId")
-	fmt.Println(id) //test
+	roomid := c.QueryParam("rid")
+	fmt.Println(roomid)
+	playerList := useDB.PlayerList(roomid) //test]
+	fmt.Println(playerList)
 	return playerList
 }
 
@@ -116,7 +113,7 @@ func postAddPlayer(c echo.Context) error {
 	fmt.Println(roomId, playerName, playerIcon)
 	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
 	fmt.Println(playerId)
-	return c.String(http.StatusOK, "OK")
+	return c.JSON(http.StatusOK, playerId)
 }
 
 // $body = @{

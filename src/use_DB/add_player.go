@@ -59,11 +59,7 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
-	fmt.Println("OK")
-	fmt.Println(client, ctx)
 	docRef, _, err := client.Collection("Player").Add(ctx, player)
-	fmt.Println(docRef)
-	fmt.Println("OK")
 	if err != nil {
 		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
@@ -85,10 +81,10 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	return docRef.ID
 }
 
-// $body = @{
-//     roomId = "cbBipgOwuA8wxu5XAXFW"
-//     playerName = "testman"
-// 		playerIcon = 3
-// } | ConvertTo-Json
+$body = @{
+    roomId = "cbBipgOwuA8wxu5XAXFW"
+    playerName = "testman"
+		playerIcon = 3
+} | ConvertTo-Json
 
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/addPlayer -Body $body -ContentType "application/json"
+Invoke-RestMethod -Method POST -Uri http://localhost:1323/addPlayer -Body $body -ContentType "application/json"
