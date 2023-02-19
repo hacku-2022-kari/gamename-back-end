@@ -25,6 +25,11 @@ type GetTheme struct {
 	Theme    string `json:"theme"`
 }
 
+type GetHint struct {
+	PlayerId string `json:"playerId"`
+	Hint     string `json:"hint"`
+}
+
 func main() {
 	// インスタンスを作成
 	e := echo.New()
@@ -51,6 +56,7 @@ func main() {
 	e.POST("/createRoom", createRoom)
 	e.POST("/addPlayer", postAddPlayer)
 	e.POST("/createTheme", postCreateTheme)
+	e.POST("/createHint", postCreateHint)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -132,6 +138,16 @@ func postCreateTheme(c echo.Context) error {
 	theme := reqBody.Theme
 
 	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
+}
+func postCreateHint(c echo.Context) error {
+	reqBody := new(GetHint)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	hint := reqBody.Hint
+	fmt.Println(hint)
+	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
 }
 
 // $body = @{
