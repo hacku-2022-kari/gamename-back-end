@@ -30,6 +30,10 @@ type GetHint struct {
 	Hint     string `json:"hint"`
 }
 
+type DeleteHint struct {
+	Hint []string `json:"hint"`
+}
+
 func main() {
 	// インスタンスを作成
 	e := echo.New()
@@ -57,6 +61,7 @@ func main() {
 	e.POST("/addPlayer", postAddPlayer)
 	e.POST("/createTheme", postCreateTheme)
 	e.POST("/createHint", postCreateHint)
+	e.POST("/deleteHint", postDeleteHint)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -148,6 +153,14 @@ func postCreateHint(c echo.Context) error {
 	hint := reqBody.Hint
 	fmt.Println(hint)
 	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
+}
+func postDeleteHint(c echo.Context) error {
+	reqBody := new(DeleteHint)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	hintList := reqBody.Hint
+	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList))
 }
 
 // $body = @{
