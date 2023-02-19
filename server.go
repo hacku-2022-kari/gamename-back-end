@@ -44,10 +44,10 @@ func main() {
 
 func isRoomExit(c echo.Context) error {
 	var exit bool = true
-	rid := c.QueryParam("rid")
+	roomId := c.QueryParam("roomId")
 	password := c.QueryParam("password")
 
-	useDB.IsRoomExit(rid, password)
+	useDB.IsRoomExit(roomId, password)
 	return c.JSON(http.StatusOK, exit)
 }
 
