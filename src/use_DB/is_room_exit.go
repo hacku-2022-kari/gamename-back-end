@@ -1,7 +1,6 @@
 package useDB
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -18,12 +17,9 @@ func IsRoomExit(id string, password string) bool {
 		data := docSnapshot.Data()
 		value, ok := data["password"]
 		if ok && value == password {
-			fmt.Println("ドキュメントが存在し、指定したフィールドの値が一致します")
 			return true
 		}
 	}
-
-	fmt.Println("ドキュメントが存在しない、または指定したフィールドの値が一致しません")
 	return false
 
 }
