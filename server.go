@@ -44,7 +44,7 @@ func main() {
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/createRoom", createRoom)
-	e.POST("/addPlayer", postAddPlayer)
+	e.POST("/add-layer", postAddPlayer)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
