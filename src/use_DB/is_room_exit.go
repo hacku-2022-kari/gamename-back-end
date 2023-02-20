@@ -13,7 +13,7 @@ func IsRoomExit(id string, password string) bool {
 		log.Fatalf("Failed to get document: %v", err)
 	}
 
-	if docSnapshot.Exists() {
+	if docSnapshot.Exists() {//TODO ここが必要かの検証
 		data := docSnapshot.Data()
 		value, ok := data["password"]
 		if ok && value == password {
