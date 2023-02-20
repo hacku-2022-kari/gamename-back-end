@@ -25,7 +25,7 @@ type RoomPlayer struct {
 	Playerid string
 }
 
-func connectDB() (context.Context, *firestore.Client, error) {
+func connectDB() (context.Context, *firestore.Client, error) {//TODO この関数とcreateDBにある関数で出力が違うため要検討
 	ctx := context.Background()
 	sa := option.WithCredentialsFile("path/to/serviceAccount.json")
 	config := &firebase.Config{ProjectID: "gotest-bc4c6"}
