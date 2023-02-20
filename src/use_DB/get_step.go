@@ -2,6 +2,7 @@ package useDB
 
 import (
 	"log"
+	"strconv"
 )
 
 func GetStep(roomId string) int {
@@ -17,8 +18,9 @@ func GetStep(roomId string) int {
 	}
 
 	data := iter.Data()
-	step := data["Step"].(int)
+	step ,_:= strconv.Atoi(data["Step"].(string))
 
 	return step
 
 }
+//http://localhost:1323/step?roomid=cbBipgOwuA8wxu5XAXFW
