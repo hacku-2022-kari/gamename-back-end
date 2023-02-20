@@ -30,7 +30,6 @@ func connnectDB() (context.Context, *firestore.Client) {
 	}
 
 	client, err := app.Firestore(ctx)
-	fmt.Println("OKmaru")
 	return ctx, client
 }
 
