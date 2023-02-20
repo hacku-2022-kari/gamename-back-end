@@ -25,7 +25,7 @@ func main() {
 
 	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
-	e.GET("/is-room-exit/:id/:password", isRoomExit)
+	e.GET("/is-room-exit", isRoomExit)
 	e.GET("/partic-list/:roomId", func(c echo.Context) error {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
@@ -44,10 +44,10 @@ func main() {
 
 func isRoomExit(c echo.Context) error {
 	var exit bool = true
-	id := c.Param("id")
-	password := c.Param("password")
+	roomId := c.QueryParam("roomId")
+	password := c.QueryParam("password")
 
-	fmt.Println(id, password) //test
+	useDB.IsRoomExit(roomId, password)
 	return c.JSON(http.StatusOK, exit)
 }
 
@@ -85,7 +85,7 @@ func getRandomTheme(c echo.Context) error {
 }
 
 func createRoom(c echo.Context) error {
-	reqBody := new(Room)s
+	reqBody := new(Room)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
