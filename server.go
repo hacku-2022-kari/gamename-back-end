@@ -89,8 +89,7 @@ func getStep(c echo.Context) error {
 	return c.JSON(http.StatusOK, step)
 }
 func getRandomTheme(c echo.Context) error {
-	var theme string = "テスト"
-	return c.JSON(http.StatusOK, theme)
+	return c.JSON(http.StatusOK, useDB.GetRandomTheme())
 }
 
 func createRoom(c echo.Context) error {
