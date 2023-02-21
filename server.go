@@ -25,7 +25,7 @@ type GetTheme struct {
 	Theme    string `json:"theme"`
 }
 
-type GetHint struct {
+type Hint struct {
 	PlayerId string `json:"playerId"`
 	Hint     string `json:"hint"`
 }
@@ -55,8 +55,8 @@ func main() {
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/createRoom", createRoom)
 	e.POST("/addPlayer", postAddPlayer)
-	e.POST("/createTheme", postCreateTheme)
-	e.POST("/createHint", postCreateHint)
+	e.POST("/create-theme", postCreateTheme)
+	e.POST("/create-hint", postCreateHint)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -140,7 +140,7 @@ func postCreateTheme(c echo.Context) error {
 	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
 }
 func postCreateHint(c echo.Context) error {
-	reqBody := new(GetHint)
+	reqBody := new(Hint)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
