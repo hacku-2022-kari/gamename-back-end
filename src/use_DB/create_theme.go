@@ -19,7 +19,6 @@ func CreateTheme(inputTheme string, id string) bool {
 	_, _err := docRef.Set(ctx, map[string]interface{}{
 		"Theme": inputTheme,
 	}, firestore.MergeAll)
-	fmt.Println(inputTheme)
 	if _err != nil {
 		log.Fatalf("failed to connect to database: %v", _err)
 	}
@@ -27,8 +26,15 @@ func CreateTheme(inputTheme string, id string) bool {
 	return true
 }
 
+
+
+
 // $body = @{
+
 //     playerId = "RB6srVwHGZ8Jih3QwKZ5"
+
 //     Theme= "pokemon"
+
 // } | ConvertTo-Json
+
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/createTheme -Body $body -ContentType "application/json"

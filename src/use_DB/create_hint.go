@@ -1,7 +1,6 @@
 package useDB
 
 import (
-	"fmt"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -10,16 +9,13 @@ import (
 func CreateHint(inputHint string, id string) bool {
 
 	ctx, client, err := connectDB()
-	fmt.Println(inputHint)
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 	docRef := client.Collection("Player").Doc(id)
-	fmt.Println(id)
 	_, _err := docRef.Set(ctx, map[string]interface{}{
 		"Hint": inputHint,
 	}, firestore.MergeAll)
-	fmt.Println(inputHint)
 	if _err != nil {
 		log.Fatalf("failed to connect to database: %v", _err)
 	}

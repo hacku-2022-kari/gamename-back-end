@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	useDB "gamename-back-end/src/use_DB"
 	"net/http"
 
@@ -20,12 +19,12 @@ type Player struct {
 	PlayerIcon int    `json:"playerIcon"`
 }
 
-type GetTheme struct {
+type Theme struct {
 	PlayerId string `json:"playerId"`
-	Theme    string `json:"theme"`
+	Text   string `json:"theme"`
 }
 
-type GetHint struct {
+type Hint struct {
 	PlayerId string `json:"playerId"`
 	Hint     string `json:"hint"`
 }
@@ -35,57 +34,50 @@ type DeleteHint struct {//TODO structの名前と型の修正
 }
 
 func main() {
-	// インスタンスを作成
 	e := echo.New()
 	e.Use(middleware.CORS())
 
-	// ミドルウェアを設定
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
-	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
-	e.GET("/is-room-exit/", isRoomExit)
-	e.GET("/partic-list/", func(c echo.Context) error {
+	e.GET("/is-room-exit", isRoomExit)
+	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
-	e.GET("/theme", getTheme)
+	e.GET("/theme:description", getTheme)
 	e.GET("/hint-list/:roomId", func(c echo.Context) error {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
 	})
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
-	e.POST("/createRoom", createRoom)
-	e.POST("/addPlayer", postAddPlayer)
-	e.POST("/createTheme", postCreateTheme)
-	e.POST("/createHint", postCreateHint)
+	e.POST("/create-room", createRoom)
+	e.POST("/add-player", postAddPlayer)
+	e.POST("/create-theme", postCreateTheme)
+	e.POST("/create-hint", postCreateHint)
 	e.POST("/delete-hint", postDeleteHint)
-	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
 func isRoomExit(c echo.Context) error {
 	var exit bool = true
-	rid := c.QueryParam("rid")
+	roomId := c.QueryParam("roomId")
 	password := c.QueryParam("password")
 
-	useDB.IsRoomExit(rid, password)
+	useDB.IsRoomExit(roomId, password)
 	return c.JSON(http.StatusOK, exit)
 }
 
 func getParticList(c echo.Context) [][]interface{} {
-	roomid := c.QueryParam("rid")
-	fmt.Println(roomid)
-	playerList := useDB.PlayerList(roomid) //test]
-	fmt.Println(playerList)
+	roomId := c.QueryParam("roomId")
+	playerList := useDB.PlayerList(roomId)
 	return playerList
 }
 
 func getTheme(c echo.Context) error {
-	roomid := c.QueryParam("roomid")
-	theme := useDB.GetTheme(roomid)
+	roomId := c.QueryParam("roomId")
+	theme := useDB.GetTheme(roomId)
 	return c.JSON(http.StatusOK, theme)
 }
 
@@ -127,31 +119,27 @@ func postAddPlayer(c echo.Context) error {
 	roomId := reqBody.RoomId
 	playerName := reqBody.PlayerName
 	playerIcon := reqBody.PlayerIcon
-
-	fmt.Println(roomId, playerName, playerIcon)
 	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
-	fmt.Println(playerId)
 	return c.JSON(http.StatusOK, playerId)
 }
 
 func postCreateTheme(c echo.Context) error {
-	reqBody := new(GetTheme)
+	reqBody := new(Theme)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
 	playerId := reqBody.PlayerId
-	theme := reqBody.Theme
+	theme := reqBody.Text
 
 	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
 }
 func postCreateHint(c echo.Context) error {
-	reqBody := new(GetHint)
+	reqBody := new(Hint)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
 	playerId := reqBody.PlayerId
 	hint := reqBody.Hint
-	fmt.Println(hint)
 	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
 }
 func postDeleteHint(c echo.Context) error {

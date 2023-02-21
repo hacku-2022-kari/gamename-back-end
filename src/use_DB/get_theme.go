@@ -19,5 +19,3 @@ func GetTheme(roomId string) string {
 	return theme
 
 }
-
-//cbBipgOwuA8wxu5XAXFW
