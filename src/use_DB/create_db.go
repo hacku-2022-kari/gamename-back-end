@@ -47,7 +47,6 @@ func CreateRoom(password string, particNum int, theme string, phase int, step in
 	ref := client.Collection("Room").NewDoc()
 	_, err := ref.Set(ctx, room)
 	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
 	}
 	defer client.Close()

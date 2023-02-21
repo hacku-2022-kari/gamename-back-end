@@ -30,15 +30,11 @@ type Hint struct {
 }
 
 func main() {
-	// インスタンスを作成
 	e := echo.New()
 	e.Use(middleware.CORS())
 
-	// ミドルウェアを設定
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
-	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-room-exit/", isRoomExit)
 	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
@@ -56,7 +52,6 @@ func main() {
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
-	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
