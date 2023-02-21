@@ -2,7 +2,6 @@ package useDB
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 

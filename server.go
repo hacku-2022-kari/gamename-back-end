@@ -50,8 +50,7 @@ func main() {
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
-	e.POST("/create-theme", postCreateTheme)
-	e.POST("/create-hint", postCreateHint)
+
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -71,8 +70,7 @@ func getParticList(c echo.Context) [][]interface{} {
 }
 
 func getTheme(c echo.Context) error {
-	roomId := c.QueryParam("roomId")
-	theme := useDB.GetTheme(roomId)
+	var theme string = "テスト"
 	return c.JSON(http.StatusOK, theme)
 }
 
@@ -118,25 +116,7 @@ func postAddPlayer(c echo.Context) error {
 	return c.JSON(http.StatusOK, playerId)
 }
 
-func postCreateTheme(c echo.Context) error {
-	reqBody := new(Theme)
-	if err := c.Bind(reqBody); err != nil {
-		return err
-	}
-	playerId := reqBody.PlayerId
-	theme := reqBody.Text
 
-	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
-}
-func postCreateHint(c echo.Context) error {
-	reqBody := new(Hint)
-	if err := c.Bind(reqBody); err != nil {
-		return err
-	}
-	playerId := reqBody.PlayerId
-	hint := reqBody.Hint
-	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
-}
 
 // $body = @{
 //     password = "yourpass"
