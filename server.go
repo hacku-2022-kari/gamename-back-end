@@ -41,7 +41,7 @@ func main() {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
-	e.GET("/theme", getTheme)
+	e.GET("/theme:description", getTheme)
 	e.GET("/hint-list/:roomId", func(c echo.Context) error {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
