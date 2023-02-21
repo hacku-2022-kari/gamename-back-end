@@ -1,7 +1,6 @@
 package useDB
 
 import (
-	"fmt"
 	"log"
 
 	"cloud.google.com/go/firestore"

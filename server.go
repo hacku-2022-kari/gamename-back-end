@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	useDB "gamename-back-end/src/use_DB"
 	"net/http"
 
@@ -53,7 +52,7 @@ func main() {
 	})
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
-	e.POST("/createRoom", createRoom)
+	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
@@ -120,10 +119,7 @@ func postAddPlayer(c echo.Context) error {
 	roomId := reqBody.RoomId
 	playerName := reqBody.PlayerName
 	playerIcon := reqBody.PlayerIcon
-
-	fmt.Println(roomId, playerName, playerIcon)
 	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
-	fmt.Println(playerId)
 	return c.JSON(http.StatusOK, playerId)
 }
 
