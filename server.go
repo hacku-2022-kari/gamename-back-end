@@ -67,8 +67,8 @@ func getParticList(c echo.Context) [][]interface{} {
 }
 
 func getTheme(c echo.Context) error {
-	roomid := c.QueryParam("roomid")
-	theme := useDB.GetTheme(roomid)
+	roomId := c.QueryParam("roomId")
+	theme := useDB.GetTheme(roomId)
 	return c.JSON(http.StatusOK, theme)
 }
 
