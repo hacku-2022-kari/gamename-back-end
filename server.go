@@ -20,6 +20,12 @@ type Player struct {
 	PlayerIcon int    `json:"playerIcon"`
 }
 
+type Player struct {
+	RoomId     string `json:"roomId"`
+	PlayerName string `json:"playerName"`
+	PlayerIcon int    `json:"playerIcon"`
+}
+
 func main() {
 	// インスタンスを作成
 	e := echo.New()
@@ -45,16 +51,17 @@ func main() {
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/createRoom", createRoom)
 	e.POST("/addPlayer", postAddPlayer)
+	e.POST("/add-layer", postAddPlayer)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
 func isRoomExit(c echo.Context) error {
 	var exit bool = true
-	rid := c.QueryParam("rid")
+	roomId := c.QueryParam("roomId")
 	password := c.QueryParam("password")
 
-	useDB.IsRoomExit(rid, password)
+	useDB.IsRoomExit(roomId, password)
 	return c.JSON(http.StatusOK, exit)
 }
 

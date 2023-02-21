@@ -21,11 +21,11 @@ type Player struct {
 }
 
 type RoomPlayer struct {
-	Roomid   string
-	Playerid string
+	RoomId   string
+	PlayerId string
 }
 
-func connectDB() (context.Context, *firestore.Client, error) {
+func connectDB() (context.Context, *firestore.Client, error) {//TODO この関数とcreateDBにある関数で出力が違うため要検討
 	ctx := context.Background()
 	sa := option.WithCredentialsFile("path/to/serviceAccount.json")
 	config := &firebase.Config{ProjectID: "gotest-bc4c6"}
@@ -43,15 +43,14 @@ func connectDB() (context.Context, *firestore.Client, error) {
 }
 
 func AddPlayer(roomId string, playerName string, playerIcon int) string {
-	fmt.Println("OK")
 	player := Player{
 		PlayerName: playerName,
 		Icon:       playerIcon,
 		Role:       0,
-		Theme:      "notheme",
-		Hint:       "nohint",
+		Theme:      "no-theme",
+		Hint:       "no-hint",
 		IsDelete:   false,
-		Answer:     "noanswer",
+		Answer:     "no-answer",
 	}
 
 	ctx, client, err := connectDB()
@@ -64,19 +63,16 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
 	}
-	fmt.Println("OK")
 	roomPlayer := RoomPlayer{
-		Roomid:   roomId,
-		Playerid: docRef.ID,
+		RoomId:   roomId,
+		PlayerId: docRef.ID,
 	}
-	fmt.Println("OK")
 	ref := client.Collection("RoomPlayer").NewDoc()
 	_, _err := ref.Set(ctx, roomPlayer)
 	if _err != nil {
 		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", _err)
 	}
-	fmt.Println("OK")
 	defer client.Close()
 	return docRef.ID
 }
