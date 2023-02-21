@@ -48,7 +48,7 @@ func main() {
 	})
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
-	e.POST("/createRoom", createRoom)
+	e.POST("/create-room", createRoom)
 	e.POST("/addPlayer", postAddPlayer)
 	e.POST("/createTheme", postCreateTheme)
 	// サーバーをポート番号1323で起動
