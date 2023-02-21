@@ -10,25 +10,25 @@ func HintList(roomId string) [][]interface{} {
 		log.Fatalf("failed to connect to database: %v", _err)
 	}
 	defer client.Close()
-	var playerList [][]interface{}
-	rpQuery := client.Collection("RoomPlayer").Where("Roomid", "==", roomId)
+	var hintList [][]interface{}
+	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
 		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
 	}
 
 	for _, rpDoc := range rpDocs {
-		playerID := rpDoc.Data()["Playerid"].(string)
+		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
 			log.Fatalf("error getting Player document: %v\n", err)
 		}
-		playerName := playerDoc.Data()["PlayerName"].(string)
-		playerIcon := int(playerDoc.Data()["Icon"].(int64))
-		playerList = append(playerList, []interface{}{playerName, playerIcon})
+		playerHint:= playerDoc.Data()["Hint"]
+		playerIsDelete := playerDoc.Data()["isDelete"]
+		hintList = append(hintList, []interface{}{playerID, playerHint,playerIsDelete})
 	}
 
-	return playerList
+	return hintList
 
 }
 

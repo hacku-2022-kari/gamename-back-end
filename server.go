@@ -42,7 +42,7 @@ func main() {
 		return c.JSON(http.StatusOK, playerList)
 	})
 	e.GET("/theme:description", getTheme)
-	e.GET("/hint-list/:roomId", func(c echo.Context) error {
+	e.GET("/hint-list", func(c echo.Context) error {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
 	})
@@ -77,12 +77,8 @@ func getTheme(c echo.Context) error {
 }
 
 func getHintList(c echo.Context) [][]interface{} {
-	var hintList = [][]interface{}{
-		{"key", "hint1", true},
-		{"key2", "hint2", true},
-		{"key3", "hint3", true},
-	}
-	return hintList
+	roomId := c.QueryParam("roomId")
+	return useDB.HintList(roomId)
 }
 func getStep(c echo.Context) error {
 	var step int = 1
