@@ -37,7 +37,7 @@ func main() {
 	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-room-exit/", isRoomExit)
-	e.GET("/partic-list/", func(c echo.Context) error {
+	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
@@ -57,18 +57,16 @@ func main() {
 
 func isRoomExit(c echo.Context) error {
 	var exit bool = true
-	rid := c.QueryParam("rid")
+	roomId := c.QueryParam("roomId")
 	password := c.QueryParam("password")
 
-	useDB.IsRoomExit(rid, password)
+	useDB.IsRoomExit(roomId, password)
 	return c.JSON(http.StatusOK, exit)
 }
 
 func getParticList(c echo.Context) [][]interface{} {
-	roomid := c.QueryParam("rid")
-	fmt.Println(roomid)
-	playerList := useDB.PlayerList(roomid) //test]
-	fmt.Println(playerList)
+	roomId := c.QueryParam("roomId")
+	playerList := useDB.PlayerList(roomId)
 	return playerList
 }
 
