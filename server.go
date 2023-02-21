@@ -20,10 +20,21 @@ type Player struct {
 	PlayerIcon int    `json:"playerIcon"`
 }
 
+<<<<<<< HEAD
+type GetTheme struct {
+	PlayerId string `json:"playerId"`
+	Theme    string `json:"theme"`
+}
+
+type Hint struct {
+	PlayerId string `json:"playerId"`
+	Hint     string `json:"hint"`
+=======
 type Player struct {
 	RoomId     string `json:"roomId"`
 	PlayerName string `json:"playerName"`
 	PlayerIcon int    `json:"playerIcon"`
+>>>>>>> develop
 }
 
 func main() {
@@ -42,7 +53,7 @@ func main() {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
-	e.GET("/theme:description", getTheme)
+	e.GET("/theme", getTheme)
 	e.GET("/hint-list/:roomId", func(c echo.Context) error {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
@@ -50,7 +61,13 @@ func main() {
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/createRoom", createRoom)
+<<<<<<< HEAD
+	e.POST("/addPlayer", postAddPlayer)
+	e.POST("/create-theme", postCreateTheme)
+	e.POST("/create-hint", postCreateHint)
+=======
 	e.POST("/add-player", postAddPlayer)
+>>>>>>> develop
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -71,7 +88,8 @@ func getParticList(c echo.Context) [][]interface{} {
 }
 
 func getTheme(c echo.Context) error {
-	var theme string = "テスト"
+	roomid := c.QueryParam("roomid")
+	theme := useDB.GetTheme(roomid)
 	return c.JSON(http.StatusOK, theme)
 }
 
@@ -118,6 +136,26 @@ func postAddPlayer(c echo.Context) error {
 	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
 	fmt.Println(playerId)
 	return c.JSON(http.StatusOK, playerId)
+}
+
+func postCreateTheme(c echo.Context) error {
+	reqBody := new(GetTheme)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	theme := reqBody.Theme
+
+	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
+}
+func postCreateHint(c echo.Context) error {
+	reqBody := new(Hint)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	hint := reqBody.Hint
+	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
 }
 
 // $body = @{
