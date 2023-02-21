@@ -36,7 +36,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	// ローカル環境の場合、http://localhost:1323/
-	e.GET("/is-room-exit/", isRoomExit)
+	e.GET("/is-room-exit", isRoomExit)
 	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
