@@ -20,6 +20,12 @@ type Player struct {
 	PlayerIcon int    `json:"playerIcon"`
 }
 
+type Player struct {
+	RoomId     string `json:"roomId"`
+	PlayerName string `json:"playerName"`
+	PlayerIcon int    `json:"playerIcon"`
+}
+
 func main() {
 	// インスタンスを作成
 	e := echo.New()
@@ -31,8 +37,8 @@ func main() {
 
 	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
-	e.GET("/is-room-exit", isRoomExit)
-	e.GET("/partic-list/:roomId", func(c echo.Context) error {
+	e.GET("/is-room-exit/", isRoomExit)
+	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
@@ -44,7 +50,7 @@ func main() {
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/createRoom", createRoom)
-	e.POST("/add-layer", postAddPlayer)
+	e.POST("/add-player", postAddPlayer)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -59,13 +65,8 @@ func isRoomExit(c echo.Context) error {
 }
 
 func getParticList(c echo.Context) [][]interface{} {
-	var playerList = [][]interface{}{
-		{"tanaka", 1},
-		{"suzuki", 2},
-		{"mashio", 3},
-	}
-	id := c.Param("roomId")
-	fmt.Println(id) //test
+	roomId := c.QueryParam("roomId")
+	playerList := useDB.PlayerList(roomId)
 	return playerList
 }
 
@@ -116,7 +117,7 @@ func postAddPlayer(c echo.Context) error {
 	fmt.Println(roomId, playerName, playerIcon)
 	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
 	fmt.Println(playerId)
-	return c.String(http.StatusOK, "OK")
+	return c.JSON(http.StatusOK, playerId)
 }
 
 // $body = @{
