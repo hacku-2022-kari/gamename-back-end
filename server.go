@@ -70,7 +70,8 @@ func getParticList(c echo.Context) [][]interface{} {
 }
 
 func getTheme(c echo.Context) error {
-	var theme string = "テスト"
+	roomId := c.QueryParam("roomId")
+	theme := useDB.GetTheme(roomId)
 	return c.JSON(http.StatusOK, theme)
 }
 
