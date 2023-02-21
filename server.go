@@ -146,7 +146,6 @@ func postCreateHint(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	hint := reqBody.Hint
-	fmt.Println(hint)
 	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
 }
 
