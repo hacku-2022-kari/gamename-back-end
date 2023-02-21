@@ -61,7 +61,7 @@ func main() {
 	e.POST("/addPlayer", postAddPlayer)
 	e.POST("/createTheme", postCreateTheme)
 	e.POST("/createHint", postCreateHint)
-	e.POST("/deleteHint", postDeleteHint)
+	e.POST("/delete-hint", postDeleteHint)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
