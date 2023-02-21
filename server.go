@@ -42,7 +42,7 @@ func main() {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
-	e.GET("/theme:description", getTheme)
+	e.GET("/theme", getTheme)
 	e.GET("/hint-list/:roomId", func(c echo.Context) error {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
@@ -71,7 +71,8 @@ func getParticList(c echo.Context) [][]interface{} {
 }
 
 func getTheme(c echo.Context) error {
-	var theme string = "テスト"
+	roomId := c.QueryParam("roomId")
+	theme := useDB.GetTheme(roomId)
 	return c.JSON(http.StatusOK, theme)
 }
 
