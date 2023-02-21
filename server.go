@@ -20,6 +20,7 @@ type Player struct {
 	PlayerIcon int    `json:"playerIcon"`
 }
 
+<<<<<<< HEAD
 type GetTheme struct {
 	PlayerId string `json:"playerId"`
 	Theme    string `json:"theme"`
@@ -28,6 +29,12 @@ type GetTheme struct {
 type Hint struct {
 	PlayerId string `json:"playerId"`
 	Hint     string `json:"hint"`
+=======
+type Player struct {
+	RoomId     string `json:"roomId"`
+	PlayerName string `json:"playerName"`
+	PlayerIcon int    `json:"playerIcon"`
+>>>>>>> develop
 }
 
 func main() {
@@ -42,7 +49,7 @@ func main() {
 	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-room-exit/", isRoomExit)
-	e.GET("/partic-list/", func(c echo.Context) error {
+	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
@@ -54,27 +61,29 @@ func main() {
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/createRoom", createRoom)
+<<<<<<< HEAD
 	e.POST("/addPlayer", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
+=======
+	e.POST("/add-player", postAddPlayer)
+>>>>>>> develop
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
 func isRoomExit(c echo.Context) error {
 	var exit bool = true
-	rid := c.QueryParam("rid")
+	roomId := c.QueryParam("roomId")
 	password := c.QueryParam("password")
 
-	useDB.IsRoomExit(rid, password)
+	useDB.IsRoomExit(roomId, password)
 	return c.JSON(http.StatusOK, exit)
 }
 
 func getParticList(c echo.Context) [][]interface{} {
-	roomid := c.QueryParam("rid")
-	fmt.Println(roomid)
-	playerList := useDB.PlayerList(roomid) //test]
-	fmt.Println(playerList)
+	roomId := c.QueryParam("roomId")
+	playerList := useDB.PlayerList(roomId)
 	return playerList
 }
 
