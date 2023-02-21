@@ -19,7 +19,6 @@ func CreateTheme(inputTheme string, id string) bool {
 	_, _err := docRef.Set(ctx, map[string]interface{}{
 		"Theme": inputTheme,
 	}, firestore.MergeAll)
-	fmt.Println(inputTheme)
 	if _err != nil {
 		log.Fatalf("failed to connect to database: %v", _err)
 	}
