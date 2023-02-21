@@ -20,9 +20,9 @@ type Player struct {
 	PlayerIcon int    `json:"playerIcon"`
 }
 
-type GetTheme struct {
+type Theme struct {
 	PlayerId string `json:"playerId"`
-	Theme    string `json:"theme"`
+	Text    string `json:"text"`
 }
 
 func main() {
@@ -124,12 +124,12 @@ func postAddPlayer(c echo.Context) error {
 }
 
 func postCreateTheme(c echo.Context) error {
-	reqBody := new(GetTheme)
+	reqBody := new(Theme)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
 	playerId := reqBody.PlayerId
-	theme := reqBody.Theme
+	theme := reqBody.Text
 
 	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
 }
