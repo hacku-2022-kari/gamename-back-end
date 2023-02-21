@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	useDB "gamename-back-end/src/use_DB"
 	"net/http"
 
@@ -20,24 +19,24 @@ type Player struct {
 	PlayerIcon int    `json:"playerIcon"`
 }
 
-type Player struct {
-	RoomId     string `json:"roomId"`
-	PlayerName string `json:"playerName"`
-	PlayerIcon int    `json:"playerIcon"`
+type Theme struct {
+	PlayerId string `json:"playerId"`
+	Text   string `json:"theme"`
+}
+
+type Hint struct {
+	PlayerId string `json:"playerId"`
+	Hint     string `json:"hint"`
 }
 
 func main() {
-	// インスタンスを作成
 	e := echo.New()
 	e.Use(middleware.CORS())
 
-	// ミドルウェアを設定
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
-	// ルートを設定
 	// ローカル環境の場合、http://localhost:1323/
-	e.GET("/is-room-exit/", isRoomExit)
+	e.GET("/is-room-exit", isRoomExit)
 	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
@@ -49,9 +48,10 @@ func main() {
 	})
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
-	e.POST("/createRoom", createRoom)
+	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
-	// サーバーをポート番号1323で起動
+	e.POST("/create-theme", postCreateTheme)
+	e.POST("/create-hint", postCreateHint)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -71,7 +71,8 @@ func getParticList(c echo.Context) [][]interface{} {
 }
 
 func getTheme(c echo.Context) error {
-	var theme string = "テスト"
+	roomId := c.QueryParam("roomId")
+	theme := useDB.GetTheme(roomId)
 	return c.JSON(http.StatusOK, theme)
 }
 
@@ -113,13 +114,29 @@ func postAddPlayer(c echo.Context) error {
 	roomId := reqBody.RoomId
 	playerName := reqBody.PlayerName
 	playerIcon := reqBody.PlayerIcon
-
-	fmt.Println(roomId, playerName, playerIcon)
 	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
-	fmt.Println(playerId)
 	return c.JSON(http.StatusOK, playerId)
 }
 
+func postCreateTheme(c echo.Context) error {
+	reqBody := new(Theme)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	theme := reqBody.Text
+
+	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
+}
+func postCreateHint(c echo.Context) error {
+	reqBody := new(Hint)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	hint := reqBody.Hint
+	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
+}
 // $body = @{
 //     password = "yourpass"
 //     particNum = 3

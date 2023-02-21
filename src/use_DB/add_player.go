@@ -2,7 +2,6 @@ package useDB
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -60,7 +59,6 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	}
 	docRef, _, err := client.Collection("Player").Add(ctx, player)
 	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", err)
 	}
 	roomPlayer := RoomPlayer{
@@ -70,7 +68,6 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	ref := client.Collection("RoomPlayer").NewDoc()
 	_, _err := ref.Set(ctx, roomPlayer)
 	if _err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
 		log.Printf("An error has occurred: %s", _err)
 	}
 	defer client.Close()
@@ -83,4 +80,4 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 // 		playerIcon = 3
 // } | ConvertTo-Json
 
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/addPlayer -Body $body -ContentType "application/json"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/add-player -Body $body -ContentType "application/json"
