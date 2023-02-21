@@ -2,6 +2,7 @@ package useDB
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -29,7 +30,6 @@ func connnectDB() (context.Context, *firestore.Client) {
 	}
 
 	client, err := app.Firestore(ctx)
-
 	return ctx, client
 }
 
