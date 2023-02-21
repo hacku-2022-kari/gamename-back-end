@@ -30,7 +30,7 @@ type GetHint struct {
 	Hint     string `json:"hint"`
 }
 
-type DeleteHint struct {
+type DeleteHint struct {//TODO structの名前と型の修正
 	Hint []string `json:"hint"`
 }
 
