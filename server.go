@@ -51,6 +51,7 @@ func main() {
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
+	e.POST("/create-hint", postCreateHint)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -127,7 +128,15 @@ func postCreateTheme(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
 }
-
+func postCreateHint(c echo.Context) error {
+	reqBody := new(Hint)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	hint := reqBody.Hint
+	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
+}
 // $body = @{
 //     password = "yourpass"
 //     particNum = 3
