@@ -20,6 +20,11 @@ type Player struct {
 	PlayerIcon int    `json:"playerIcon"`
 }
 
+type Theme struct {
+	PlayerId string `json:"playerId"`
+	Text    string `json:"text"`
+}
+
 func main() {
 	// インスタンスを作成
 	e := echo.New()
@@ -43,8 +48,9 @@ func main() {
 	})
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
-	e.POST("/createRoom", createRoom)
-	e.POST("/addPlayer", postAddPlayer)
+	e.POST("/create-room", createRoom)
+	e.POST("/add-player", postAddPlayer)
+	e.POST("/create-theme", postCreateTheme)
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -115,6 +121,17 @@ func postAddPlayer(c echo.Context) error {
 	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
 	fmt.Println(playerId)
 	return c.JSON(http.StatusOK, playerId)
+}
+
+func postCreateTheme(c echo.Context) error {
+	reqBody := new(Theme)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	theme := reqBody.Text
+
+	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
 }
 
 // $body = @{
