@@ -32,7 +32,7 @@ func connnectDB() (context.Context, *firestore.Client) {
 	return ctx, client
 }
 
-func CreateRoom(password string, particNum int, theme string, phase int, step int) {
+func CreateRoom(password string, particNum int, theme string, phase int, step int) string{
 	room := Room{
 		Password: password,
 		PaticNum: particNum,
@@ -49,5 +49,5 @@ func CreateRoom(password string, particNum int, theme string, phase int, step in
 		log.Printf("An error has occurred: %s", err)
 	}
 	defer client.Close()
-
+	return ref.ID
 }

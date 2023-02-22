@@ -10,7 +10,6 @@ import (
 
 type Room struct { //TODO　create_dbと被るからそこを考えよう
 	Password string `json:"password"`
-	PaticNum int    `json:"particNum"`
 }
 
 type Player struct {
@@ -102,11 +101,7 @@ func createRoom(c echo.Context) error {
 		return err
 	}
 	password := reqBody.Password
-	particNum := reqBody.PaticNum
-
-	useDB.CreateRoom(password, particNum, "theme", 0, 0)
-
-	return c.String(http.StatusOK, "OK")
+	return c.String(http.StatusOK, useDB.CreateRoom(password, 1, "theme", 0, 0))
 }
 
 func postAddPlayer(c echo.Context) error {
@@ -153,5 +148,5 @@ func postDeleteHint(c echo.Context) error {
 //     password = "yourpass"
 //     particNum = 3
 // } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/createRoom -Body $body -ContentType "application/json"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-room -Body $body -ContentType "application/json"
 //curl -d "roomId = cbBipgOwuA8wxu5XAXFW" -d "playerName = testman" -d "playerIcon = 3" http://localhost:1323/addPlayer
