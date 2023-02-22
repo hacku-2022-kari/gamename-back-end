@@ -31,6 +31,10 @@ type Hint struct {
 type DeleteHint struct { //TODO structの名前と型の修正
 	Hint []string `json:"hint"`
 }
+type DecideTheme struct {
+	RoomId           string `json:"roomId"`
+	HowToDecideTheme int    `json:"howToDecideTheme"`
+}
 
 func main() {
 	e := echo.New()
@@ -56,6 +60,7 @@ func main() {
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
 	e.POST("/delete-hint", postDeleteHint)
+	e.POST("/how-to-decide-theme", postDecideTheme)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -142,6 +147,15 @@ func postDeleteHint(c echo.Context) error {
 	}
 	hintList := reqBody.Hint
 	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList))
+}
+func postDecideTheme(c echo.Context) error {
+	reqBody := new(DecideTheme)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+	howToDecideTheme := reqBody.HowToDecideTheme
+	return c.JSON(http.StatusOK, useDB.DecideTheme(roomId, howToDecideTheme))
 }
 
 // $body = @{
