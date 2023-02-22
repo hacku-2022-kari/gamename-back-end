@@ -76,7 +76,7 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 
 // $body = @{
 //     roomId = "cbBipgOwuA8wxu5XAXFW"
-//     playerName = "testman"
+//     playerName = "aparatia"
 // 		playerIcon = 3
 // } | ConvertTo-Json
 
