@@ -43,6 +43,10 @@ type Answer struct {
 	RoomId string `json:"roomId"`
 	Answer string `json:"answer"`
 }
+type IsCorrect struct {
+	RoomId    string `json:"roomId"`
+	IsCorrect bool   `json:"isCorrect"`
+}
 
 func main() {
 	e := echo.New()
@@ -72,6 +76,7 @@ func main() {
 	e.POST("/delete-hint", postDeleteHint)
 	e.POST("/start-game", postStartGame)
 	e.POST("/update-answer", postUpdateAnswer)
+	e.POST("/is-correct", postIsCorrect)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -191,6 +196,16 @@ func postUpdateAnswer(c echo.Context) error {
 	answer := reqBody.Answer
 
 	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId))
+}
+func postIsCorrect(c echo.Context) error {
+	reqBody := new(IsCorrect)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+	isCorrect := reqBody.IsCorrect
+
+	return c.JSON(http.StatusOK, useDB.IsCorrect(roomId, isCorrect))
 }
 
 // $body = @{
