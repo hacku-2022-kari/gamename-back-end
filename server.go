@@ -52,7 +52,7 @@ func main() {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
 	})
-	e.GET("/step/:roomId", getStep)
+	e.GET("/step", getStep)
 	e.GET("/random-theme", getRandomTheme)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
@@ -91,8 +91,9 @@ func getHintList(c echo.Context) [][]interface{} {
 	return hintList
 }
 func getStep(c echo.Context) error {
-	var step int = 1
-	return c.JSON(http.StatusOK, step)
+	roomId := c.QueryParam("roomId")
+	fmt.Println(roomId)
+	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
 }
 func getRandomTheme(c echo.Context) error {
 	var theme string = "テスト"
