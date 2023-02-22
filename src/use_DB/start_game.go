@@ -1,7 +1,6 @@
 package useDB
 
 import (
-	"log"
 	"math/rand"
 	"time"
 
@@ -13,17 +12,20 @@ func StartGame(roomId string) bool {
 	ctx, client, err := connectDB()
 
 	if err != nil {
-		log.Printf("failed to connect to database: %v", err)
+		return false
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
 	_, err = roomRef.Update(ctx, []firestore.Update{
 		{Path: "Phase", Value: firestore.Increment(1)},
 	})
+
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
+
 	if err != nil {
-		log.Printf("error getting RoomPlayer documents: %v\n", err)
+		return false
 	}
+
 	var playerList []string
 
 	for _, rpDoc := range rpDocs {
@@ -41,14 +43,14 @@ func StartGame(roomId string) bool {
 	for i := range playerList {
 		playerDoc := client.Collection("Player").Doc(playerList[i])
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			return false
 		}
 		_, _err := playerDoc.Set(ctx, map[string]interface{}{
 			"Role": roleCount,
 		}, firestore.MergeAll)
 
 		if _err != nil {
-			log.Fatalf("failed to connect to database: %v", _err)
+			return false
 		}
 		if roleCount != 3 {
 			roleCount += 1
@@ -60,7 +62,7 @@ func StartGame(roomId string) bool {
 		"Step": 1,
 	}, firestore.MergeAll)
 	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+		return false
 	}
 	defer client.Close()
 	return true
