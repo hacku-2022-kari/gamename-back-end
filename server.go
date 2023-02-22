@@ -39,6 +39,10 @@ type DecideTheme struct {
 type StartGame struct {
 	RoomId string `json:"roomId"`
 }
+type Answer struct {
+	RoomId string `json:"roomId"`
+	Answer string `json:"answer"`
+}
 
 func main() {
 	e := echo.New()
@@ -66,6 +70,7 @@ func main() {
 	e.POST("/create-hint", postCreateHint)
 	e.POST("/delete-hint", postDeleteHint)
 	e.POST("/start-game", postStartGame)
+	e.POST("/update-answer", postUpdateAnswer)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -169,6 +174,16 @@ func postDecideTheme(c echo.Context) error {
 	roomId := reqBody.RoomId
 	howToDecideTheme := reqBody.HowToDecideTheme
 	return c.JSON(http.StatusOK, useDB.DecideTheme(roomId, howToDecideTheme))
+}
+func postUpdateAnswer(c echo.Context) error {
+	reqBody := new(Answer)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+	answer := reqBody.Answer
+
+	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId))
 }
 
 // $body = @{
