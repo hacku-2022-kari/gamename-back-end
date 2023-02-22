@@ -98,9 +98,9 @@ func getHintList(c echo.Context) [][]interface{} {
 	return hintList
 }
 func getStep(c echo.Context) error {
-	roomid := c.QueryParam("roomid")
-	fmt.Println(roomid)
-	return c.JSON(http.StatusOK, useDB.GetStep(roomid))
+	roomId := c.QueryParam("roomId")
+	fmt.Println(roomId)
+	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
 }
 func getRandomTheme(c echo.Context) error {
 	var theme string = "テスト"
