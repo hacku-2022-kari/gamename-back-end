@@ -2,10 +2,9 @@ package useDB
 
 import (
 	"log"
-	"strconv"
 )
 
-func GetStep(roomId string) int {
+func GetStep(roomId string) interface{} {
 	ctx, client, err := connectDB()
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
@@ -17,8 +16,7 @@ func GetStep(roomId string) int {
 		log.Fatalf("error getting Room documents: %v\n", err)
 	}
 
-	data := iter.Data()
-	step, _ := strconv.Atoi(data["Step"].(string)) //TODO型チェックをおこなう
+	step := iter.Data()["Step"] //TODO型チェックをおこなう
 
 	return step
 
