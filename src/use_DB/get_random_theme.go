@@ -6,20 +6,19 @@ import (
 	"time"
 )
 
-func GetRandomTheme() string{
-    ctx, client, err := connectDB()
-	
+func GetRandomTheme() string {
+	ctx, client, err := connectDB()
+
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
-
-    docs, err := client.Collection("Random_theme").Documents(ctx).GetAll()
-    if err != nil {
-        log.Printf("An error has occurred: %s", err)
-    }
-    rand.Seed(time.Now().UnixNano())
-    idx := rand.Intn(len(docs))
+	docs, err := client.Collection("Random_theme").Documents(ctx).GetAll()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
+	}
+	rand.Seed(time.Now().UnixNano())
+	idx := rand.Intn(len(docs))
 
 	docRef := docs[idx].Ref
 
@@ -27,7 +26,7 @@ func GetRandomTheme() string{
 	if err != nil {
 		log.Fatalf("error getting Room documents: %v\n", err)
 	}
-    theme := iter.Data()["theme"].(string)
+	theme := iter.Data()["theme"].(string)
 	defer client.Close()
-    return theme
+	return theme
 }
