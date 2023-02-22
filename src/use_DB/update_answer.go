@@ -11,11 +11,17 @@ func UpdateAnswer(answer string, roomId string) bool {
 	if err != nil {
 		return false
 	}
-	docRef := client.Collection("Room").Doc(roomId)
-	_, _err := docRef.Set(ctx, map[string]interface{}{
+	roomRef := client.Collection("Room").Doc(roomId)
+	_, _err := roomRef.Set(ctx, map[string]interface{}{
 		"Answer": answer,
 	}, firestore.MergeAll)
 	if _err != nil {
+		return false
+	}
+	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+		{Path: "Step", Value: 6},
+	})
+	if err != nil {
 		return false
 	}
 	defer client.Close()

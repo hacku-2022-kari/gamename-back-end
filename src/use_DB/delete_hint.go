@@ -4,7 +4,7 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
-func DeleteHint(hintList []string) bool {
+func DeleteHint(hintList []string, roomId string) bool {
 	ctx, client, err := connectDB()
 	if err != nil {
 		return false
@@ -27,6 +27,15 @@ func DeleteHint(hintList []string) bool {
 			}
 		}
 	}
+
+	roomRef := client.Collection("Room").Doc(roomId)
+	_, _err := roomRef.Set(ctx, map[string]interface{}{
+		"Step": 5,
+	}, firestore.MergeAll)
+	if _err != nil {
+		return false
+	}
+
 	defer client.Close()
 	return true
 }
