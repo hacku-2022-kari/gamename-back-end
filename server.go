@@ -10,7 +10,6 @@ import (
 
 type Room struct { //TODO　create_dbと被るからそこを考えよう
 	Password string `json:"password"`
-	PaticNum int    `json:"particNum"`
 }
 
 type Player struct {
@@ -21,12 +20,19 @@ type Player struct {
 
 type Theme struct {
 	PlayerId string `json:"playerId"`
-	Text   string `json:"theme"`
+	Text     string `json:"theme"`
 }
 
 type Hint struct {
 	PlayerId string `json:"playerId"`
 	Hint     string `json:"hint"`
+}
+
+type DeleteHint struct { //TODO structの名前と型の修正
+	Hint []string `json:"hint"`
+}
+type StartGame struct {
+	RoomId string `json:"roomId"`
 }
 
 func main() {
@@ -37,7 +43,7 @@ func main() {
 	e.Use(middleware.Recover())
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-room-exit", isRoomExit)
-	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
+	e.GET("/partic-list", func(c echo.Context) error { //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
@@ -46,25 +52,26 @@ func main() {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
 	})
-	e.GET("/step/:roomId", getStep)
+	e.GET("/step", getStep)
 	e.GET("/random-theme", getRandomTheme)
+	e.GET("/get-role", getRole)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
+	e.POST("/delete-hint", postDeleteHint)
+	e.POST("/start-game", postStartGame)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
 func isRoomExit(c echo.Context) error {
-	var exit bool = true
 	roomId := c.QueryParam("roomId")
-	password := c.QueryParam("password")
+	exit := useDB.IsRoomExit(roomId)
 
-	useDB.IsRoomExit(roomId, password)
 	return c.JSON(http.StatusOK, exit)
 }
 
-func getParticList(c echo.Context) [][]interface{} {
+func getParticList(c echo.Context) []useDB.PlayerNNNIcon {
 	roomId := c.QueryParam("roomId")
 	playerList := useDB.PlayerList(roomId)
 	return playerList
@@ -85,25 +92,25 @@ func getHintList(c echo.Context) [][]interface{} {
 	return hintList
 }
 func getStep(c echo.Context) error {
-	var step int = 1
-	return c.JSON(http.StatusOK, step)
+	roomId := c.QueryParam("roomId")
+	fmt.Println(roomId)
+	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
 }
 func getRandomTheme(c echo.Context) error {
 	var theme string = "テスト"
 	return c.JSON(http.StatusOK, theme)
 }
-
+func getRole(c echo.Context) error {
+	playerId := c.QueryParam("playerId")
+	return c.JSON(http.StatusOK, useDB.GetRole(playerId))
+}
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
 	password := reqBody.Password
-	particNum := reqBody.PaticNum
-
-	useDB.CreateRoom(password, particNum, "theme", 0, 0)
-
-	return c.String(http.StatusOK, "OK")
+	return c.String(http.StatusOK, useDB.CreateRoom(password, 1, "theme", 0, 0))
 }
 
 func postAddPlayer(c echo.Context) error {
@@ -137,9 +144,27 @@ func postCreateHint(c echo.Context) error {
 	hint := reqBody.Hint
 	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
 }
+func postDeleteHint(c echo.Context) error {
+	reqBody := new(DeleteHint)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	hintList := reqBody.Hint
+	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList))
+}
+func postStartGame(c echo.Context) error {
+	reqBody := new(StartGame)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+
+	return c.JSON(http.StatusOK, useDB.StartGame(roomId))
+}
+
 // $body = @{
 //     password = "yourpass"
 //     particNum = 3
 // } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/createRoom -Body $body -ContentType "application/json"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-room -Body $body -ContentType "application/json"
 //curl -d "roomId = cbBipgOwuA8wxu5XAXFW" -d "playerName = testman" -d "playerIcon = 3" http://localhost:1323/addPlayer
