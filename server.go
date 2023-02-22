@@ -66,7 +66,7 @@ func isRoomExit(c echo.Context) error {
 	return c.JSON(http.StatusOK, exit)
 }
 
-func getParticList(c echo.Context) [][]interface{} {
+func getParticList(c echo.Context) []useDB.PlayerNNNIcon {
 	roomId := c.QueryParam("roomId")
 	playerList := useDB.PlayerList(roomId)
 	return playerList
