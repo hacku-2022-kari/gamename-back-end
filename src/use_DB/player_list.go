@@ -11,14 +11,14 @@ func PlayerList(roomId string) [][]interface{} {
 	}
 	defer client.Close()
 	var playerList [][]interface{}
-	rpQuery := client.Collection("RoomPlayer").Where("Roomid", "==", roomId)
+	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
 		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
 	}
 
 	for _, rpDoc := range rpDocs {
-		playerID := rpDoc.Data()["Playerid"].(string)
+		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
 			log.Fatalf("error getting Player document: %v\n", err)
