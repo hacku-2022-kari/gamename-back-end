@@ -47,6 +47,8 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	// ローカル環境の場合、http://localhost:1323/
+	e.GET("/", hello)
+	e.GET("/is-room-exit", isRoomExit)
 	e.GET("/is-room-exit", isRoomExit)
 	e.GET("/partic-list", func(c echo.Context) error { //TODO関数の管理ときに修正
 		playerList := getParticList(c)
@@ -68,7 +70,9 @@ func main() {
 	e.POST("/start-game", postStartGame)
 	e.Logger.Fatal(e.Start(":1323"))
 }
-
+func hello(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello")
+}
 func isRoomExit(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	exit := useDB.IsRoomExit(roomId)
