@@ -2,6 +2,7 @@ package useDB
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -46,7 +47,7 @@ func StartGame(roomId string) bool {
 			return false
 		}
 		_, _err := playerDoc.Set(ctx, map[string]interface{}{
-			"Role": roleCount,
+			"Role": strconv.Itoa(roleCount),
 		}, firestore.MergeAll)
 
 		if _err != nil {

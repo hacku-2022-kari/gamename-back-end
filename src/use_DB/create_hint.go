@@ -1,6 +1,7 @@
 package useDB
 
 import (
+	"fmt"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -23,7 +24,7 @@ func CreateHint(inputHint string, playerId string, roomId string) bool {
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 
-	var okCount int = 1
+	var addStep bool = true
 
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
@@ -31,18 +32,23 @@ func CreateHint(inputHint string, playerId string, roomId string) bool {
 		if err != nil {
 			return false
 		}
-		if playerDoc.Data()["Role"] != 1 {
-			if playerDoc.Data()["Hint"].(string) != "no-hint" {
-				okCount += 1
+		if playerDoc.Data()["Role"].(string) != "1" {
+			if playerDoc.Data()["Hint"].(string) == "no-hint" {
+				fmt.Println(playerID)
+				addStep = false
 			}
 		}
+
 	}
 
 	rdoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {
 		return false
 	}
-	if okCount == rdoc.Data()["PaticNum"] {
+	fmt.Println("OK")
+	fmt.Println(rdoc.Data()["PaticNum"])
+	if addStep == true {
+		fmt.Println("OK")
 		_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
 			{Path: "Step", Value: 4},
 		})

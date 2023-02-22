@@ -12,7 +12,7 @@ import (
 type Player struct {
 	PlayerName string
 	Icon       int
-	Role       int
+	Role       string
 	Theme      string
 	Hint       string
 	IsDelete   bool
@@ -45,7 +45,7 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	player := Player{
 		PlayerName: playerName,
 		Icon:       playerIcon,
-		Role:       0,
+		Role:       "0",
 		Theme:      "no-theme",
 		Hint:       "no-hint",
 		IsDelete:   false,

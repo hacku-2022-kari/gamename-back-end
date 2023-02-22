@@ -1,6 +1,7 @@
 package useDB
 
 import (
+	"fmt"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -26,36 +27,44 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 
-	var okCount int = 1
+	var addStep bool = true
 
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
+			fmt.Println("OK1")
 			return false
 		}
-		if playerDoc.Data()["Role"] != 1 { //TODO int(playerDoc.Data()["Role"](int))これでいけないのはなぜ
-			if playerDoc.Data()["Theme"].(string) != "no-theme" {
-				okCount += 1
+
+		if playerDoc.Data()["Role"].(string) != "1" { //TODO int(playerDoc.Data()["Role"](int))これでいけないのはなぜ
+			if playerDoc.Data()["Theme"].(string) == "no-theme" {
+				fmt.Println(playerDoc.Data()["Theme"].(string))
+				fmt.Println("OK")
+				addStep = false
 			}
 		}
 	}
 
-	rdoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
-	if err != nil {
-		return false
-	}
-	if okCount == rdoc.Data()["PaticNum"] {
+	if addStep == true {
 		_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
 			{Path: "Step", Value: 3},
 		})
 		if err != nil {
+			fmt.Println("OK")
 			return false
 		}
 	}
 
 	defer client.Close()
 	return true
+}
+
+func isEqualToInt(i interface{}, x int) bool {
+	if v, ok := i.(int); ok {
+		return v == x
+	}
+	return false
 }
 
 // $body = @{
