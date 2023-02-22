@@ -18,6 +18,7 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 	if _err != nil {
 		return false
 	}
+
 	var step int = 2
 	if howToDecideTheme == 1 {
 		step = 3
