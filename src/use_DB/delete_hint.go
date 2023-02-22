@@ -1,24 +1,35 @@
 package useDB
 
 import (
-	"log"
+	"fmt"
+
+	"cloud.google.com/go/firestore"
 )
 
 func DeleteHint(hintList []string) bool {
-
+	fmt.Println(hintList)
 	ctx, client, err := connectDB()
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		return false
 	}
 	for i := 0; i < len(hintList); i++ {
+
 		docRef := client.Collection("Player").Where("Hint", "==", hintList[i])
 		docs, err := docRef.Documents(ctx).GetAll()
 		if err != nil {
-			log.Fatalf("error getting RoomPlayer documents: %v\n", err)
+			return false
 		}
+		fmt.Println(hintList[i])
 		for _, doc := range docs {
-			playerID := doc.Data()["PlayerId"].(string)
-			CreateHint("no-hint", playerID)
+			playerID := doc.Ref.ID
+			fmt.Println(playerID)
+			docRef := client.Collection("Player").Doc(playerID)
+			_, _err := docRef.Set(ctx, map[string]interface{}{
+				"Hint": "no-hint",
+			}, firestore.MergeAll)
+			if _err != nil {
+				return false
+			}
 		}
 	}
 	defer client.Close()
@@ -26,7 +37,6 @@ func DeleteHint(hintList []string) bool {
 }
 
 // $body = @{
-//     hint ={"黄色"}
+//     hint = @("黄色")
 // } | ConvertTo-Json -Depth 100
-
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/delete-hint -Body $body -ContentType "application/json;charset=UTF-8"
