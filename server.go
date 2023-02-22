@@ -82,7 +82,7 @@ func getTheme(c echo.Context) error {
 	return c.JSON(http.StatusOK, theme)
 }
 
-func getHintList(c echo.Context) [][]interface{} {
+func getHintList(c echo.Context) []useDB.HintKey {
 	roomId := c.QueryParam("roomId")
 	return useDB.HintList(roomId)
 }
