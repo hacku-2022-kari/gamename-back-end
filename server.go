@@ -21,7 +21,7 @@ type Player struct {
 
 type Theme struct {
 	PlayerId string `json:"playerId"`
-	Text   string `json:"theme"`
+	Text     string `json:"theme"`
 }
 
 type Hint struct {
@@ -29,7 +29,7 @@ type Hint struct {
 	Hint     string `json:"hint"`
 }
 
-type DeleteHint struct {//TODO structの名前と型の修正
+type DeleteHint struct { //TODO structの名前と型の修正
 	Hint []string `json:"hint"`
 }
 
@@ -41,7 +41,7 @@ func main() {
 	e.Use(middleware.Recover())
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-room-exit", isRoomExit)
-	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
+	e.GET("/partic-list", func(c echo.Context) error { //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
@@ -61,11 +61,9 @@ func main() {
 }
 
 func isRoomExit(c echo.Context) error {
-	var exit bool = true
 	roomId := c.QueryParam("roomId")
-	password := c.QueryParam("password")
+	exit := useDB.IsRoomExit(roomId)
 
-	useDB.IsRoomExit(roomId, password)
 	return c.JSON(http.StatusOK, exit)
 }
 
