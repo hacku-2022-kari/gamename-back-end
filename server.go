@@ -29,6 +29,10 @@ type Hint struct {
 	Hint     string `json:"hint"`
 }
 
+type DeleteHint struct { //TODO structの名前と型の修正
+	Hint []string `json:"hint"`
+}
+
 func main() {
 	e := echo.New()
 	e.Use(middleware.CORS())
@@ -52,6 +56,7 @@ func main() {
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
+	e.POST("/delete-hint", postDeleteHint)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -134,6 +139,14 @@ func postCreateHint(c echo.Context) error {
 	playerId := reqBody.PlayerId
 	hint := reqBody.Hint
 	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
+}
+func postDeleteHint(c echo.Context) error {
+	reqBody := new(DeleteHint)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	hintList := reqBody.Hint
+	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList))
 }
 
 // $body = @{
