@@ -1,8 +1,6 @@
 package useDB
 
 import (
-	"fmt"
-
 	"cloud.google.com/go/firestore"
 )
 
@@ -20,7 +18,6 @@ func DeleteHint(hintList []string) bool {
 		}
 		for _, doc := range docs {
 			playerID := doc.Ref.ID
-			fmt.Println(playerID)
 			docRef := client.Collection("Player").Doc(playerID)
 			_, _err := docRef.Set(ctx, map[string]interface{}{
 				"Hint": "no-hint",
