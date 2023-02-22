@@ -22,8 +22,8 @@ func UpdateAnswer(answer string, roomId string) bool {
 	return true
 }
 
-$body = @{
-    roomId = "4ZNlgKuuDC7TdYl4xnih"
-    answer = "ピカチュウ"
-} | ConvertTo-Json
-Invoke-RestMethod -Method POST -Uri http://localhost:1323/update-answer -Body $body -ContentType "application/json;charset=UTF-8"
+// $body = @{
+//     roomId = "4ZNlgKuuDC7TdYl4xnih"
+//     answer = "ピカチュウ"
+// } | ConvertTo-Json
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/update-answer -Body $body -ContentType "application/json;charset=UTF-8"
