@@ -69,6 +69,6 @@ func StartGame(roomId string) bool {
 }
 
 // $body = @{
-//     roomId = "zjH7Si3lo3vjtcqJSaE1"
+//     roomId = "idkAj1Km0ACPCkQybbPD"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/start-game -Body $body -ContentType "application/json"

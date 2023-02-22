@@ -34,8 +34,8 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 		if err != nil {
 			return false
 		}
-		if int(playerDoc.Data()["Role"].(int)) != 1 {
-			if rpDoc.Data()["Theme"].(string) != "no-theme" {
+		if playerDoc.Data()["Role"] != 1 { //TODO int(playerDoc.Data()["Role"](int))これでいけないのはなぜ
+			if playerDoc.Data()["Theme"].(string) != "no-theme" {
 				okCount += 1
 			}
 		}
@@ -59,11 +59,9 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 }
 
 // $body = @{
-
-//     playerId = "RB6srVwHGZ8Jih3QwKZ5"
-
-//     Theme= "pokemon"
-
+// 	playerId = "FMJDJf3S6uGhEwfsf5qR"
+// 	Theme= "ポケモン"
+// 	roomId = "idkAj1Km0ACPCkQybbPD"
 // } | ConvertTo-Json
 
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/createTheme -Body $body -ContentType "application/json"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-theme -Body $body -ContentType "application/json;charset=UTF-8"

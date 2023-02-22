@@ -35,7 +35,7 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 }
 
 // $body = @{
-//     roomId = "zjH7Si3lo3vjtcqJSaE1"
+//     roomId = "idkAj1Km0ACPCkQybbPD"
 //     howToDecideTheme = 1
 // } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/how-to-decide-theme -Body $body -ContentType "application/json"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/how-decide-theme -Body $body -ContentType "application/json"

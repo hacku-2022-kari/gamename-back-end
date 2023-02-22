@@ -40,6 +40,7 @@ func DeleteHint(hintList []string, roomId string) bool {
 }
 
 // $body = @{
+//	roomId = "idkAj1Km0ACPCkQybbPD"
 //     hint = @("黄色")
 // } | ConvertTo-Json -Depth 100
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/delete-hint -Body $body -ContentType "application/json;charset=UTF-8"

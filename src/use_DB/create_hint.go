@@ -31,8 +31,8 @@ func CreateHint(inputHint string, playerId string, roomId string) bool {
 		if err != nil {
 			return false
 		}
-		if int(playerDoc.Data()["Role"].(int)) != 1 {
-			if rpDoc.Data()["Hint"].(string) != "no-hint" {
+		if playerDoc.Data()["Role"] != 1 {
+			if playerDoc.Data()["Hint"].(string) != "no-hint" {
 				okCount += 1
 			}
 		}
@@ -56,8 +56,9 @@ func CreateHint(inputHint string, playerId string, roomId string) bool {
 }
 
 // $body = @{
-//     playerId = "RB6srVwHGZ8Jih3QwKZ5"
-//     Hint = '"黄色"'
-// } | ConvertTo-Json -Depth 100
+// 	playerId = "FMJDJf3S6uGhEwfsf5qR"
+// 	Hint= "黄色"
+// 	roomId = "idkAj1Km0ACPCkQybbPD"
+// } | ConvertTo-Json
 
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/createHint -Body $body -ContentType "application/json;charset=UTF-8"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-hint -Body $body -ContentType "application/json;charset=UTF-8"
