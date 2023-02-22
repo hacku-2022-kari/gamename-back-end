@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	useDB "gamename-back-end/src/use_DB"
 	"net/http"
 
@@ -35,6 +36,9 @@ type DecideTheme struct {
 	RoomId           string `json:"roomId"`
 	HowToDecideTheme int    `json:"howToDecideTheme"`
 }
+type StartGame struct {
+	RoomId string `json:"roomId"`
+}
 
 func main() {
 	e := echo.New()
@@ -53,14 +57,15 @@ func main() {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
 	})
-	e.GET("/step/:roomId", getStep)
+	e.GET("/step", getStep)
 	e.GET("/random-theme", getRandomTheme)
+	e.GET("/get-role", getRole)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
 	e.POST("/delete-hint", postDeleteHint)
-	e.POST("/how-to-decide-theme", postDecideTheme)
+	e.POST("/start-game", postStartGame)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -71,7 +76,7 @@ func isRoomExit(c echo.Context) error {
 	return c.JSON(http.StatusOK, exit)
 }
 
-func getParticList(c echo.Context) [][]interface{} {
+func getParticList(c echo.Context) []useDB.PlayerNNNIcon {
 	roomId := c.QueryParam("roomId")
 	playerList := useDB.PlayerList(roomId)
 	return playerList
@@ -92,14 +97,18 @@ func getHintList(c echo.Context) [][]interface{} {
 	return hintList
 }
 func getStep(c echo.Context) error {
-	var step int = 1
-	return c.JSON(http.StatusOK, step)
+	roomId := c.QueryParam("roomId")
+	fmt.Println(roomId)
+	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
 }
 func getRandomTheme(c echo.Context) error {
 	var theme string = "テスト"
 	return c.JSON(http.StatusOK, theme)
 }
-
+func getRole(c echo.Context) error {
+	playerId := c.QueryParam("playerId")
+	return c.JSON(http.StatusOK, useDB.GetRole(playerId))
+}
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
 	if err := c.Bind(reqBody); err != nil {
@@ -147,6 +156,15 @@ func postDeleteHint(c echo.Context) error {
 	}
 	hintList := reqBody.Hint
 	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList))
+}
+func postStartGame(c echo.Context) error {
+	reqBody := new(StartGame)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+
+	return c.JSON(http.StatusOK, useDB.StartGame(roomId))
 }
 func postDecideTheme(c echo.Context) error {
 	reqBody := new(DecideTheme)
