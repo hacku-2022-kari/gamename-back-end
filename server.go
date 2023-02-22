@@ -31,6 +31,9 @@ type Hint struct {
 type DeleteHint struct { //TODO structの名前と型の修正
 	Hint []string `json:"hint"`
 }
+type StartGame struct {
+	RoomId string `json:"roomId"`
+}
 
 func main() {
 	e := echo.New()
@@ -56,6 +59,7 @@ func main() {
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
 	e.POST("/delete-hint", postDeleteHint)
+	e.POST("/start-game", postStartGame)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -142,6 +146,15 @@ func postDeleteHint(c echo.Context) error {
 	}
 	hintList := reqBody.Hint
 	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList))
+}
+func postStartGame(c echo.Context) error {
+	reqBody := new(StartGame)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+
+	return c.JSON(http.StatusOK, useDB.StartGame(roomId))
 }
 
 // $body = @{
