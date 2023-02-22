@@ -28,11 +28,10 @@ func DeleteHint(hintList []string, roomId string) bool {
 		}
 	}
 
-	roomRef := client.Collection("Room").Doc(roomId)
-	_, _err := roomRef.Set(ctx, map[string]interface{}{
-		"Step": 5,
-	}, firestore.MergeAll)
-	if _err != nil {
+	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+		{Path: "Step", Value: 5},
+	})
+	if err != nil {
 		return false
 	}
 

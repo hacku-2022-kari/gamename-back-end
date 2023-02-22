@@ -9,14 +9,23 @@ func IsCorrect(roomId string, isCorrect bool) bool {
 	if _err != nil {
 		return false
 	}
-	defer client.Close()
-	_, err := client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+
+	roomRef := client.Collection("Room").Doc(roomId)
+	_, err := roomRef.Update(ctx, []firestore.Update{
 		{Path: "IsCorrect", Value: isCorrect},
 	})
 	if err != nil {
 		return false
 	}
 
+	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+		{Path: "Step", Value: 7},
+	})
+	if err != nil {
+		return false
+	}
+
+	defer client.Close()
 	return true
 
 }
