@@ -10,7 +10,6 @@ import (
 
 type Room struct { //TODO　create_dbと被るからそこを考えよう
 	Password string `json:"password"`
-	PaticNum int    `json:"particNum"`
 }
 
 type Player struct {
@@ -21,7 +20,7 @@ type Player struct {
 
 type Theme struct {
 	PlayerId string `json:"playerId"`
-	Text   string `json:"theme"`
+	Text     string `json:"theme"`
 }
 
 type Hint struct {
@@ -37,7 +36,7 @@ func main() {
 	e.Use(middleware.Recover())
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-room-exit", isRoomExit)
-	e.GET("/partic-list", func(c echo.Context) error {  //TODO関数の管理ときに修正
+	e.GET("/partic-list", func(c echo.Context) error { //TODO関数の管理ときに修正
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
@@ -99,9 +98,7 @@ func createRoom(c echo.Context) error {
 		return err
 	}
 	password := reqBody.Password
-	particNum := reqBody.PaticNum
-
-	return c.String(http.StatusOK, useDB.CreateRoom(password, particNum, "theme", 0, 0))
+	return c.String(http.StatusOK, useDB.CreateRoom(password, 1, "theme", 0, 0))
 }
 
 func postAddPlayer(c echo.Context) error {
@@ -135,6 +132,7 @@ func postCreateHint(c echo.Context) error {
 	hint := reqBody.Hint
 	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
 }
+
 // $body = @{
 //     password = "yourpass"
 //     particNum = 3
