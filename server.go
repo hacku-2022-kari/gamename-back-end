@@ -96,9 +96,8 @@ func getRandomTheme(c echo.Context) error {
 	return c.JSON(http.StatusOK, theme)
 }
 func getRole(c echo.Context) error {
-	roomId := c.QueryParam("roomId")
-	theme := useDB.GetTheme(roomId)
-	return c.JSON(http.StatusOK, step)
+	playerId := c.QueryParam("playerId")
+	return c.JSON(http.StatusOK, useDB.GetRole(playerId))
 }
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
