@@ -7,7 +7,6 @@ import (
 )
 
 func DeleteHint(hintList []string) bool {
-	fmt.Println(hintList)
 	ctx, client, err := connectDB()
 	if err != nil {
 		return false
@@ -19,7 +18,6 @@ func DeleteHint(hintList []string) bool {
 		if err != nil {
 			return false
 		}
-		fmt.Println(hintList[i])
 		for _, doc := range docs {
 			playerID := doc.Ref.ID
 			fmt.Println(playerID)
