@@ -98,8 +98,7 @@ func getStep(c echo.Context) error {
 	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
 }
 func getRandomTheme(c echo.Context) error {
-	var theme string = "テスト"
-	return c.JSON(http.StatusOK, theme)
+	return c.JSON(http.StatusOK, useDB.GetRandomTheme())
 }
 func getRole(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
