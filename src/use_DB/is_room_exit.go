@@ -1,25 +1,17 @@
 package useDB
 
-import (
-	"log"
-)
-
-func IsRoomExit(id string, password string) bool {
+func IsRoomExit(id string) bool {
 	ctx, client := connnectDB()
 	docRef := client.Collection("Room").Doc(id)
 
 	docSnapshot, err := docRef.Get(ctx)
 	if err != nil {
-		log.Fatalf("Failed to get document: %v", err)
+		return false
 	}
 
-	if docSnapshot.Exists() {//TODO ここが必要かの検証
-		data := docSnapshot.Data()
-		value, ok := data["password"]
-		if ok && value == password {
-			return true
-		}
+	if docSnapshot.Exists() { //TODO ここが必要かの検証
+		return true
 	}
+
 	return false
-
 }
