@@ -25,15 +25,17 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
+
 	var okCount int = 1
+
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			return false
 		}
 		if int(playerDoc.Data()["Role"].(int)) != 1 {
-			if rpDoc.Data()["Hint"].(string) != "no-hint" {
+			if rpDoc.Data()["Theme"].(string) != "no-theme" {
 				okCount += 1
 			}
 		}
@@ -51,6 +53,7 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 			return false
 		}
 	}
+
 	defer client.Close()
 	return true
 }
