@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	useDB "gamename-back-end/src/use_DB"
 	"net/http"
 
@@ -30,6 +31,10 @@ type Hint struct {
 
 type DeleteHint struct { //TODO structの名前と型の修正
 	Hint []string `json:"hint"`
+}
+type DecideTheme struct {
+	RoomId           string `json:"roomId"`
+	HowToDecideTheme int    `json:"howToDecideTheme"`
 }
 type StartGame struct {
 	RoomId string `json:"roomId"`
@@ -160,6 +165,15 @@ func postStartGame(c echo.Context) error {
 	roomId := reqBody.RoomId
 
 	return c.JSON(http.StatusOK, useDB.StartGame(roomId))
+}
+func postDecideTheme(c echo.Context) error {
+	reqBody := new(DecideTheme)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+	howToDecideTheme := reqBody.HowToDecideTheme
+	return c.JSON(http.StatusOK, useDB.DecideTheme(roomId, howToDecideTheme))
 }
 
 // $body = @{
