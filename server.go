@@ -51,6 +51,7 @@ func main() {
 	})
 	e.GET("/step/:roomId", getStep)
 	e.GET("/random-theme", getRandomTheme)
+	e.GET("/get-role", getRole)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
@@ -94,7 +95,11 @@ func getRandomTheme(c echo.Context) error {
 	var theme string = "テスト"
 	return c.JSON(http.StatusOK, theme)
 }
-
+func getRole(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	theme := useDB.GetTheme(roomId)
+	return c.JSON(http.StatusOK, step)
+}
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
 	if err := c.Bind(reqBody); err != nil {
