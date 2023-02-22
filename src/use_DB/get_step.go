@@ -18,9 +18,10 @@ func GetStep(roomId string) int {
 	}
 
 	data := iter.Data()
-	step ,_:= strconv.Atoi(data["Step"].(string))
+	step, _ := strconv.Atoi(data["Step"].(string)) //TODO型チェックをおこなう
 
 	return step
 
 }
+
 //http://localhost:1323/step?roomid=cbBipgOwuA8wxu5XAXFW
