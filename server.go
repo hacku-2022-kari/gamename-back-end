@@ -69,6 +69,7 @@ func main() {
 	e.GET("/random-theme", getRandomTheme)
 	e.GET("/get-role", getRole)
 	e.GET("/answer", getAnswer)
+	e.GET("/judgement-answer", getJudgement)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
@@ -119,6 +120,11 @@ func getRole(c echo.Context) error {
 func getAnswer(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	answer := useDB.GetAnswer(roomId)
+	return c.JSON(http.StatusOK, answer)
+}
+func getJudgement(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	answer := useDB.JudgementAnswer(roomId)
 	return c.JSON(http.StatusOK, answer)
 }
 func createRoom(c echo.Context) error {
