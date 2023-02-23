@@ -21,5 +21,3 @@ func GetStep(roomId string) interface{} {
 	return step
 
 }
-
-//http://localhost:1323/step?roomid=cbBipgOwuA8wxu5XAXFW

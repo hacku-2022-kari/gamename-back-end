@@ -27,9 +27,3 @@ func UpdateAnswer(answer string, roomId string) bool {
 	defer client.Close()
 	return true
 }
-
-// $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
-//     answer = "ピカチュウ"
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/update-answer -Body $body -ContentType "application/json;charset=UTF-8"

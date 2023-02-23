@@ -30,19 +30,14 @@ func PlayerList(roomId string) []PlayerNNNIcon {
 		if err != nil {
 			log.Fatalf("error getting Player document: %v\n", err)
 		}
-		// playerName := playerDoc.Data()["PlayerName"].(string)
-		// playerIcon := int(playerDoc.Data()["Icon"].(int64))
 
 		var addPlayer PlayerNNNIcon
 		addPlayer.NickName = playerDoc.Data()["PlayerName"].(string)
 		addPlayer.ParticIcon = int(playerDoc.Data()["Icon"].(int64))
 		playerList = append(playerList, addPlayer)
 
-		// playerList = append(playerList, []interface{}{playerName, playerIcon})
 	}
 
 	return playerList
 
 }
-
-//cbBipgOwuA8wxu5XAXFW

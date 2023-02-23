@@ -33,9 +33,3 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 	defer client.Close()
 	return true
 }
-
-// $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
-//     howToDecideTheme = 1
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/how-decide-theme -Body $body -ContentType "application/json"

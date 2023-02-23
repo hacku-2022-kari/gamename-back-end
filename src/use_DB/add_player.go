@@ -80,10 +80,3 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	defer client.Close()
 	return docRef.ID
 }
-
-// $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
-//     playerName = "まえだ"
-// 	playerIcon = 3
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/add-player -Body $body -ContentType "application/json;charset=UTF-8"

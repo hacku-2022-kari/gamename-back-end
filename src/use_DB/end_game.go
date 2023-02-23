@@ -48,8 +48,3 @@ func EndGame(roomId string) bool {
 	defer client.Close()
 	return true
 }
-
-// $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/initialize -Body $body -ContentType "application/json"

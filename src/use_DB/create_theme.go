@@ -78,11 +78,3 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 	defer client.Close()
 	return true
 }
-
-// $body = @{
-// 	playerId = "0Cxer8AsOhAuOzG9EjEC"
-// 	Theme= "ポケモン"
-// 	roomId = "idkAj1Km0ACPCkQybbPD"
-// } | ConvertTo-Json
-
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-theme -Body $body -ContentType "application/json;charset=UTF-8"
