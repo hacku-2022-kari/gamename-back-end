@@ -134,7 +134,7 @@ func createRoom(c echo.Context) error {
 		return err
 	}
 	password := reqBody.Password
-	return c.String(http.StatusOK, useDB.CreateRoom(password, 1, "theme", 0, 0))
+	return c.String(http.StatusOK, useDB.CreateRoom(password, 0, "theme", 0, 0))
 }
 
 func postAddPlayer(c echo.Context) error {
