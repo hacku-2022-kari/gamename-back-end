@@ -3,6 +3,8 @@ package useDB
 import (
 	"encoding/json"
 	"log"
+	"math/rand"
+	"time"
 
 	"cloud.google.com/go/firestore"
 )
@@ -50,12 +52,27 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 	}
 
 	if addStep == true {
-		_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
-			{Path: "Step", Value: 3},
-		})
+		var playerList []string
+		rand.Seed(time.Now().UnixNano())
+		for _, rpDoc := range rpDocs {
+			playerId := rpDoc.Data()["PlayerId"].(string)
+			playerList = append(playerList, playerId)
+		}
+		num := rand.Intn(len(playerList))
+		playerDoc, err := client.Collection("Player").Doc(playerList[num]).Get(ctx)
 		if err != nil {
 			return false
 		}
+
+		roomRef := client.Collection("Room").Doc(roomId)
+		_, _err := roomRef.Set(ctx, map[string]interface{}{
+			"Step":  3,
+			"Theme": playerDoc.Data()["Theme"].(string),
+		}, firestore.MergeAll)
+		if _err != nil {
+			return false
+		}
+
 	}
 
 	defer client.Close()
@@ -63,7 +80,7 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 }
 
 // $body = @{
-// 	playerId = "FMJDJf3S6uGhEwfsf5qR"
+// 	playerId = "0Cxer8AsOhAuOzG9EjEC"
 // 	Theme= "ポケモン"
 // 	roomId = "idkAj1Km0ACPCkQybbPD"
 // } | ConvertTo-Json
