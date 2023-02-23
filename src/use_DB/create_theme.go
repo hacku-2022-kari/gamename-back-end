@@ -56,7 +56,19 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 		rand.Seed(time.Now().UnixNano())
 		for _, rpDoc := range rpDocs {
 			playerId := rpDoc.Data()["PlayerId"].(string)
-			playerList = append(playerList, playerId)
+			playerDoc, err := client.Collection("Player").Doc(playerId).Get(ctx)
+			if err != nil {
+				log.Println("error getting Player document: \n", err)
+			}
+			bytes, _ := json.Marshal(playerDoc.Data()["Role"])
+			var roleInt int64
+			err = json.Unmarshal(bytes, &roleInt)
+			if err != nil {
+				log.Println("error getting Player document: \n", err)
+			}
+			if int(roleInt) != 1 {
+				playerList = append(playerList, playerId)
+			}
 		}
 		num := rand.Intn(len(playerList))
 		playerDoc, err := client.Collection("Player").Doc(playerList[num]).Get(ctx)
@@ -80,9 +92,9 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 }
 
 // $body = @{
-// 	playerId = "0Cxer8AsOhAuOzG9EjEC"
+// 	playerId = "amE2nBLwfvcoak2NQ9vE"
 // 	Theme= "ポケモン"
-// 	roomId = "idkAj1Km0ACPCkQybbPD"
+// 	roomId = "OJy8kLIPuStZn3tw8H0d"
 // } | ConvertTo-Json
 
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-theme -Body $body -ContentType "application/json;charset=UTF-8"
