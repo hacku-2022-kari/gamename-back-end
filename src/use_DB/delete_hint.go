@@ -13,7 +13,6 @@ func DeleteHint(hintList []string, roomId string) bool {
 
 		docRef := client.Collection("Player").Doc(hintList[i])
 		_, _err := docRef.Set(ctx, map[string]interface{}{
-			"Hint":     "同担拒否",
 			"IsDelete": true,
 		}, firestore.MergeAll)
 		if _err != nil {
