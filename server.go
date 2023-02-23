@@ -50,6 +50,10 @@ type IsCorrect struct {
 	RoomId    string `json:"roomId"`
 	IsCorrect bool   `json:"isCorrect"`
 }
+type Vote struct {
+	PlayerId string `json:"playerId"`
+	RoomId   string `json:"roomId"`
+}
 
 func main() {
 	e := echo.New()
@@ -82,6 +86,7 @@ func main() {
 	e.POST("/is-correct", postIsCorrect)
 	e.POST("/initialize", postEndGame)
 	e.POST("/how-decide-theme", postDecideTheme)
+	e.POST("/vote", postVote)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -224,6 +229,16 @@ func postEndGame(c echo.Context) error {
 	roomId := reqBody.RoomId
 
 	return c.JSON(http.StatusOK, useDB.EndGame(roomId))
+}
+
+func postVote(c echo.Context) error {
+	reqBody := new(Vote)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.Vote(playerId, roomId))
 }
 
 // $body = @{
