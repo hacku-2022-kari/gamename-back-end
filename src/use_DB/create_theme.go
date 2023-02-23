@@ -62,13 +62,6 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 	return true
 }
 
-func isEqualToInt(i interface{}, x int) bool {
-	if v, ok := i.(int); ok {
-		return v == x
-	}
-	return false
-}
-
 // $body = @{
 // 	playerId = "FMJDJf3S6uGhEwfsf5qR"
 // 	Theme= "ポケモン"
