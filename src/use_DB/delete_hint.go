@@ -13,6 +13,7 @@ func DeleteHint(hintList []string, roomId string) bool {
 
 		docRef := client.Collection("Player").Doc(hintList[i])
 		_, _err := docRef.Set(ctx, map[string]interface{}{
+			"Hint":     "同担拒否",
 			"IsDelete": true,
 		}, firestore.MergeAll)
 		if _err != nil {
@@ -33,7 +34,7 @@ func DeleteHint(hintList []string, roomId string) bool {
 }
 
 // $body = @{
-// 	roomId = "idkAj1Km0ACPCkQybbPD"
-//     hint = @("0Cxer8AsOhAuOzG9EjEC")
+// 	roomId = "cvi4EfisvGjd5jUJu3PS"
+//     hint = @("OfjME4tAGeheTuUHLIQu")
 // } | ConvertTo-Json -Depth 100
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/delete-hint -Body $body -ContentType "application/json;charset=UTF-8"
