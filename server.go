@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	useDB "gamename-back-end/src/use_DB"
 	"net/http"
 
@@ -20,16 +21,34 @@ type Player struct {
 
 type Theme struct {
 	PlayerId string `json:"playerId"`
+	RoomId   string `json:"roomId"`
 	Text     string `json:"theme"`
 }
 
 type Hint struct {
 	PlayerId string `json:"playerId"`
+	RoomId   string `json:"roomId"`
 	Hint     string `json:"hint"`
 }
 
 type DeleteHint struct { //TODO structの名前と型の修正
-	Hint []string `json:"hint"`
+	RoomId string   `json:"roomId"`
+	Hint   []string `json:"hint"`
+}
+type DecideTheme struct {
+	RoomId           string `json:"roomId"`
+	HowToDecideTheme int    `json:"howToDecideTheme"`
+}
+type Game struct {
+	RoomId string `json:"roomId"`
+}
+type Answer struct {
+	RoomId string `json:"roomId"`
+	Answer string `json:"answer"`
+}
+type IsCorrect struct {
+	RoomId    string `json:"roomId"`
+	IsCorrect bool   `json:"isCorrect"`
 }
 
 func main() {
@@ -44,18 +63,26 @@ func main() {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
-	e.GET("/theme:description", getTheme)
-	e.GET("/hint-list/:roomId", func(c echo.Context) error {
+	e.GET("/theme", getTheme)
+	e.GET("/hint-list", func(c echo.Context) error {
 		hintList := getHintList(c)
 		return c.JSON(http.StatusOK, hintList)
 	})
-	e.GET("/step/:roomId", getStep)
+	e.GET("/step", getStep)
 	e.GET("/random-theme", getRandomTheme)
+	e.GET("/get-role", getRole)
+	e.GET("/answer", getAnswer)
+	e.GET("/judgement-answer", getJudgement)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
 	e.POST("/create-hint", postCreateHint)
 	e.POST("/delete-hint", postDeleteHint)
+	e.POST("/start-game", postStartGame)
+	e.POST("/update-answer", postUpdateAnswer)
+	e.POST("/is-correct", postIsCorrect)
+	e.POST("/initialize", postEndGame)
+	e.POST("/how-decide-theme", postDecideTheme)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -66,7 +93,7 @@ func isRoomExit(c echo.Context) error {
 	return c.JSON(http.StatusOK, exit)
 }
 
-func getParticList(c echo.Context) [][]interface{} {
+func getParticList(c echo.Context) []useDB.PlayerNNNIcon {
 	roomId := c.QueryParam("roomId")
 	playerList := useDB.PlayerList(roomId)
 	return playerList
@@ -78,23 +105,33 @@ func getTheme(c echo.Context) error {
 	return c.JSON(http.StatusOK, theme)
 }
 
-func getHintList(c echo.Context) [][]interface{} {
-	var hintList = [][]interface{}{
-		{"key", "hint1", true},
-		{"key2", "hint2", true},
-		{"key3", "hint3", true},
-	}
-	return hintList
+func getHintList(c echo.Context) []useDB.HintKey {
+	roomId := c.QueryParam("roomId")
+	return useDB.HintList(roomId)
 }
 func getStep(c echo.Context) error {
-	var step int = 1
-	return c.JSON(http.StatusOK, step)
+	roomId := c.QueryParam("roomId")
+	fmt.Println(roomId)
+	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
 }
 func getRandomTheme(c echo.Context) error {
-	var theme string = "テスト"
-	return c.JSON(http.StatusOK, theme)
+	return c.JSON(http.StatusOK, useDB.GetRandomTheme())
+}
+func getRole(c echo.Context) error {
+	playerId := c.QueryParam("playerId")
+	return c.JSON(http.StatusOK, useDB.GetRole(playerId))
 }
 
+func getAnswer(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	answer := useDB.GetAnswer(roomId)
+	return c.JSON(http.StatusOK, answer)
+}
+func getJudgement(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	answer := useDB.JudgementAnswer(roomId)
+	return c.JSON(http.StatusOK, answer)
+}
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
 	if err := c.Bind(reqBody); err != nil {
@@ -123,8 +160,8 @@ func postCreateTheme(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	theme := reqBody.Text
-
-	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId, roomId))
 }
 func postCreateHint(c echo.Context) error {
 	reqBody := new(Hint)
@@ -133,7 +170,8 @@ func postCreateHint(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	hint := reqBody.Hint
-	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId, roomId))
 }
 func postDeleteHint(c echo.Context) error {
 	reqBody := new(DeleteHint)
@@ -141,12 +179,59 @@ func postDeleteHint(c echo.Context) error {
 		return err
 	}
 	hintList := reqBody.Hint
-	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList))
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList, roomId))
+}
+func postStartGame(c echo.Context) error {
+	reqBody := new(Game)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+
+	return c.JSON(http.StatusOK, useDB.StartGame(roomId))
+}
+func postDecideTheme(c echo.Context) error {
+	reqBody := new(DecideTheme)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+	howToDecideTheme := reqBody.HowToDecideTheme
+	return c.JSON(http.StatusOK, useDB.DecideTheme(roomId, howToDecideTheme))
+}
+func postUpdateAnswer(c echo.Context) error {
+	reqBody := new(Answer)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+	answer := reqBody.Answer
+
+	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId))
+}
+func postIsCorrect(c echo.Context) error {
+	reqBody := new(IsCorrect)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+	isCorrect := reqBody.IsCorrect
+
+	return c.JSON(http.StatusOK, useDB.IsCorrect(roomId, isCorrect))
+}
+func postEndGame(c echo.Context) error {
+	reqBody := new(Game)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+
+	return c.JSON(http.StatusOK, useDB.EndGame(roomId))
 }
 
 // $body = @{
 //     password = "yourpass"
-//     particNum = 3
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-room -Body $body -ContentType "application/json"
 //curl -d "roomId = cbBipgOwuA8wxu5XAXFW" -d "playerName = testman" -d "playerIcon = 3" http://localhost:1323/addPlayer

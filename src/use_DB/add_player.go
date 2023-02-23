@@ -24,7 +24,7 @@ type RoomPlayer struct {
 	PlayerId string
 }
 
-func connectDB() (context.Context, *firestore.Client, error) {//TODO この関数とcreateDBにある関数で出力が違うため要検討
+func connectDB() (context.Context, *firestore.Client, error) { //TODO この関数とcreateDBにある関数で出力が違うため要検討
 	ctx := context.Background()
 	sa := option.WithCredentialsFile("path/to/serviceAccount.json")
 	config := &firebase.Config{ProjectID: "gotest-bc4c6"}
@@ -55,9 +55,16 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	ctx, client, err := connectDB()
 
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 	docRef, _, err := client.Collection("Player").Add(ctx, player)
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
+	}
+	roomRef := client.Collection("Room").Doc(roomId)
+	_, err = roomRef.Update(ctx, []firestore.Update{
+		{Path: "PaticNum", Value: firestore.Increment(1)},
+	})
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
@@ -75,9 +82,8 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 }
 
 // $body = @{
-//     roomId = "cbBipgOwuA8wxu5XAXFW"
-//     playerName = "aparatia"
-// 		playerIcon = 3
+//     roomId = "idkAj1Km0ACPCkQybbPD"
+//     playerName = "まえだ"
+// 	playerIcon = 3
 // } | ConvertTo-Json
-
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/add-player -Body $body -ContentType "application/json"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/add-player -Body $body -ContentType "application/json;charset=UTF-8"
