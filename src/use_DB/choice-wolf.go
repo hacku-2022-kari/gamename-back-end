@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"math/rand"
+
+	"cloud.google.com/go/firestore"
 )
 
 // TODO: 構造体の命名の検討
@@ -17,7 +19,7 @@ func ChoiceWolf(roomId string) string {
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
-		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
+		log.Println("failed to connect to database: ", _err)
 	}
 
 	var maxVote int = 0
@@ -27,7 +29,7 @@ func ChoiceWolf(roomId string) string {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			log.Println("failed to connect to database: ", _err)
 		}
 
 		bytes, _ := json.Marshal(playerDoc.Data()["Vote"])
@@ -55,6 +57,12 @@ func ChoiceWolf(roomId string) string {
 
 	}
 
+	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+		{Path: "Step", Value: 10},
+	})
+	if err != nil {
+		log.Println("failed to connect to database: ", _err)
+	}
 	defer client.Close()
 	return choicedWolf[0]
 
