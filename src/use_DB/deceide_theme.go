@@ -21,6 +21,13 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 
 	var step int = 2
 	if howToDecideTheme == 1 {
+		roomRef := client.Collection("Room").Doc(roomId)
+		_, _err := roomRef.Set(ctx, map[string]interface{}{
+			"Theme": GetRandomTheme(),
+		}, firestore.MergeAll)
+		if _err != nil {
+			return false
+		}
 		step = 3
 	}
 
@@ -35,7 +42,7 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 }
 
 // $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
+//     roomId = "gdCSnyP2pm3Gqf7UCIA4"
 //     howToDecideTheme = 1
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/how-decide-theme -Body $body -ContentType "application/json"

@@ -69,7 +69,6 @@ func main() {
 		return c.JSON(http.StatusOK, hintList)
 	})
 	e.GET("/step", getStep)
-	e.GET("/random-theme", getRandomTheme)
 	e.GET("/get-role", getRole)
 	e.GET("/answer", getAnswer)
 	e.GET("/judgement-answer", getJudgement)
@@ -113,9 +112,6 @@ func getStep(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	fmt.Println(roomId)
 	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
-}
-func getRandomTheme(c echo.Context) error {
-	return c.JSON(http.StatusOK, useDB.GetRandomTheme())
 }
 func getRole(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
