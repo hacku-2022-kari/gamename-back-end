@@ -2,7 +2,6 @@ package useDB
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -46,7 +45,6 @@ func Vote(inputPlayerId string, roomId string) bool {
 			return false
 		}
 		sumVote += int(voteInt)
-		fmt.Println(sumVote, particNumInt)
 		if sumVote == int(particNumInt) {
 			addStep = true
 		}
