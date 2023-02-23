@@ -5,6 +5,7 @@ import (
 )
 
 type HintKey struct {
+	PlayerId    string `json:"playerId"`
 	AvatarIndex int    `json:"avatarIndex"`
 	Hint        string `json:"hint"`
 	IsDelete    bool   `json:"isDelete"`
@@ -29,6 +30,7 @@ func HintList(roomId string) []HintKey {
 			log.Fatalf("error getting Player document: %v\n", err)
 		}
 		var addHint HintKey
+		addHint.PlayerId = playerID
 		addHint.AvatarIndex = int(playerDoc.Data()["Icon"].(int64))
 		addHint.Hint = playerDoc.Data()["Hint"].(string)
 		addHint.IsDelete = bool(playerDoc.Data()["IsDelete"].(bool))
