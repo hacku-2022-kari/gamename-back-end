@@ -5,12 +5,14 @@ import (
 )
 
 // TODO: 構造体の命名の検討
-type PlayerNNNIcon struct {
-	NickName   string `json:"nickname"`
-	ParticIcon int    `json:"particIcon"`
+type PlayerInfo struct {
+	NickName   string
+	ParticIcon int
+	Wolf       bool
+	Point      int
 }
 
-func PlayerList(roomId string) []PlayerNNNIcon {
+func PlayerList(roomId string) []PlayerInfo {
 	ctx, client, _err := connectDB()
 	if _err != nil {
 		log.Fatalf("failed to connect to database: %v", _err)
@@ -22,7 +24,7 @@ func PlayerList(roomId string) []PlayerNNNIcon {
 		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
 	}
 
-	var playerList []PlayerNNNIcon
+	var playerList []PlayerInfo
 
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
@@ -30,15 +32,14 @@ func PlayerList(roomId string) []PlayerNNNIcon {
 		if err != nil {
 			log.Fatalf("error getting Player document: %v\n", err)
 		}
-		// playerName := playerDoc.Data()["PlayerName"].(string)
-		// playerIcon := int(playerDoc.Data()["Icon"].(int64))
 
-		var addPlayer PlayerNNNIcon
+		var addPlayer PlayerInfo
 		addPlayer.NickName = playerDoc.Data()["PlayerName"].(string)
 		addPlayer.ParticIcon = int(playerDoc.Data()["Icon"].(int64))
+		addPlayer.Wolf = playerDoc.Data()["IsWolf"].(bool)
+		addPlayer.Point = int(playerDoc.Data()["Point"].(int64))
 		playerList = append(playerList, addPlayer)
 
-		// playerList = append(playerList, []interface{}{playerName, playerIcon})
 	}
 
 	return playerList
