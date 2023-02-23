@@ -82,8 +82,8 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 }
 
 // $body = @{
-//     roomId = "zjH7Si3lo3vjtcqJSaE1"
-//     playerName = "testman"
-// 		playerIcon = 3
+//     roomId = "idkAj1Km0ACPCkQybbPD"
+//     playerName = "まえだ"
+// 	playerIcon = 3
 // } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/add-player -Body $body -ContentType "application/json"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/add-player -Body $body -ContentType "application/json;charset=UTF-8"
