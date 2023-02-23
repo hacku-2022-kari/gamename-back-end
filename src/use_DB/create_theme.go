@@ -1,7 +1,7 @@
 package useDB
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -33,14 +33,17 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			fmt.Println("OK1")
 			return false
 		}
 
-		if playerDoc.Data()["Role"].(string) != "1" { //TODO int(playerDoc.Data()["Role"](int))これでいけないのはなぜ
+		bytes, _ := json.Marshal(playerDoc.Data()["Role"])
+		var roleInt int64
+		err = json.Unmarshal(bytes, &roleInt)
+		if err != nil {
+			return false
+		}
+		if int(roleInt) != 1 {
 			if playerDoc.Data()["Theme"].(string) == "no-theme" {
-				fmt.Println(playerDoc.Data()["Theme"].(string))
-				fmt.Println("OK")
 				addStep = false
 			}
 		}
@@ -51,7 +54,6 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 			{Path: "Step", Value: 3},
 		})
 		if err != nil {
-			fmt.Println("OK")
 			return false
 		}
 	}

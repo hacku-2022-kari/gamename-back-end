@@ -1,7 +1,7 @@
 package useDB
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -32,23 +32,21 @@ func CreateHint(inputHint string, playerId string, roomId string) bool {
 		if err != nil {
 			return false
 		}
-		if playerDoc.Data()["Role"].(string) != "1" {
+		bytes, _ := json.Marshal(playerDoc.Data()["Role"])
+		var roleInt int64
+		err = json.Unmarshal(bytes, &roleInt)
+		if err != nil {
+			return false
+		}
+		if int(roleInt) != 1 {
 			if playerDoc.Data()["Hint"].(string) == "no-hint" {
-				fmt.Println(playerID)
 				addStep = false
 			}
 		}
 
 	}
 
-	rdoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
-	if err != nil {
-		return false
-	}
-	fmt.Println("OK")
-	fmt.Println(rdoc.Data()["PaticNum"])
 	if addStep == true {
-		fmt.Println("OK")
 		_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
 			{Path: "Step", Value: 4},
 		})
