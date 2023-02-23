@@ -3,7 +3,9 @@ package useDB
 import (
 	"context"
 	"log"
+	"math/rand"
 	"os"
+	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -11,11 +13,13 @@ import (
 )
 
 type Room struct {
-	Password string
-	PaticNum int
-	Theme    string
-	Phase    int
-	Step     int
+	PaticNum   int
+	Theme      string
+	Phase      int
+	Step       int
+	IsMoodWolf bool
+	IsExitWolf bool
+	PeaceVote  int
 }
 
 func connnectDB() (context.Context, *firestore.Client) {
@@ -32,13 +36,23 @@ func connnectDB() (context.Context, *firestore.Client) {
 	return ctx, client
 }
 
-func CreateRoom(password string, particNum int, theme string, phase int, step int) string{
+func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int) string {
+	if wolfMode == true {
+		rand.Seed(time.Now().UnixNano())
+		if rand.Intn(3)%3 != 0 {
+			isExitWolf = true
+		}
+
+	}
+
 	room := Room{
-		Password: password,
-		PaticNum: particNum,
-		Theme:    theme,
-		Phase:    phase,
-		Step:     step,
+		PaticNum:   particNum,
+		Theme:      theme,
+		Phase:      phase,
+		Step:       step,
+		IsMoodWolf: wolfMode,
+		IsExitWolf: isExitWolf,
+		PeaceVote:  peaceVote,
 	}
 
 	ctx, client := connnectDB()
@@ -51,3 +65,8 @@ func CreateRoom(password string, particNum int, theme string, phase int, step in
 	defer client.Close()
 	return ref.ID
 }
+
+// $body = @{
+// 	wolfMode = $True
+// } | ConvertTo-Json
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-room -Body $body -ContentType "application/json"
