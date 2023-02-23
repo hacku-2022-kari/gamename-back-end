@@ -1,9 +1,6 @@
 package useDB
 
 import (
-	"math/rand"
-	"time"
-
 	"cloud.google.com/go/firestore"
 )
 
@@ -15,11 +12,16 @@ func EndGame(roomId string) bool {
 		return false
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
-	_, err = roomRef.Update(ctx, []firestore.Update{
-		{Path: "Answer", Value: "no-answer"},
-		{Path: "Step", Value: 0},
-		{Path: "Theme", Value: "no-theme"},
-	})
+	_, _err := roomRef.Set(ctx, map[string]interface{}{
+		"Answer":           "no-answer",
+		"Step":             0,
+		"HowToDecideTheme": 0,
+		"IsCorrect":        false,
+		"Theme":            "no-theme",
+	}, firestore.MergeAll)
+	if _err != nil {
+		return false
+	}
 
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
@@ -30,26 +32,24 @@ func EndGame(roomId string) bool {
 
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
-		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
+		playerRef := client.Collection("Player").Doc(playerID)
+		_, err = playerRef.Set(ctx, map[string]interface{}{
+			"Answer":   "no-answer",
+			"Hint":     "no-hint",
+			"Role":     0,
+			"IsDelete": false,
+			"Theme":    "no-theme",
+		}, firestore.MergeAll)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
-		}
-		roomRef := client.Collection("Player").Doc(playerID)
-		_, err = roomRef.Update(ctx, []firestore.Update{
-			{Path: "Answer", Value: "no-answer"},
-			{Path: "Step", Value: 0},
-			{Path: "Theme", Value: "no-theme"},
-		})
+			return false
 		}
 	}
 
-	rand.Seed(time.Now().UnixNano())
-	_, _err := roomRef.Set(ctx, map[string]interface{}{
-		"Step": 1,
-	}, firestore.MergeAll)
-	if _err != nil {
-		return false
-	}
 	defer client.Close()
 	return true
 }
+
+// $body = @{
+//     roomId = "idkAj1Km0ACPCkQybbPD"
+// } | ConvertTo-Json
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/initialize -Body $body -ContentType "application/json"

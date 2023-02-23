@@ -77,7 +77,7 @@ func main() {
 	e.POST("/start-game", postStartGame)
 	e.POST("/update-answer", postUpdateAnswer)
 	e.POST("/is-correct", postIsCorrect)
-	e.POST("/initialize", postIsCorrect)
+	e.POST("/initialize", postEndGame)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
