@@ -39,7 +39,7 @@ type DecideTheme struct {
 	RoomId           string `json:"roomId"`
 	HowToDecideTheme int    `json:"howToDecideTheme"`
 }
-type StartGame struct {
+type Game struct {
 	RoomId string `json:"roomId"`
 }
 type Answer struct {
@@ -81,6 +81,7 @@ func main() {
 	e.POST("/start-game", postStartGame)
 	e.POST("/update-answer", postUpdateAnswer)
 	e.POST("/is-correct", postIsCorrect)
+	e.POST("/initialize", postEndGame)
 	e.POST("/how-decide-theme", postDecideTheme)
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -182,7 +183,7 @@ func postDeleteHint(c echo.Context) error {
 	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList, roomId))
 }
 func postStartGame(c echo.Context) error {
-	reqBody := new(StartGame)
+	reqBody := new(Game)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -218,6 +219,15 @@ func postIsCorrect(c echo.Context) error {
 	isCorrect := reqBody.IsCorrect
 
 	return c.JSON(http.StatusOK, useDB.IsCorrect(roomId, isCorrect))
+}
+func postEndGame(c echo.Context) error {
+	reqBody := new(Game)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+
+	return c.JSON(http.StatusOK, useDB.EndGame(roomId))
 }
 
 // $body = @{
