@@ -5,7 +5,7 @@ import (
 )
 
 type HintKey struct {
-	AvatorIndex int    `json:"avatorIndex"`
+	AvatarIndex int    `json:"avatarIndex"`
 	Hint        string `json:"hint"`
 	IsDelete    bool   `json:"isDelete"`
 }
@@ -29,7 +29,7 @@ func HintList(roomId string) []HintKey {
 			log.Fatalf("error getting Player document: %v\n", err)
 		}
 		var addHint HintKey
-		addHint.AvatorIndex = int(playerDoc.Data()["Icon"].(int64))
+		addHint.AvatarIndex = int(playerDoc.Data()["Icon"].(int64))
 		addHint.Hint = playerDoc.Data()["Hint"].(string)
 		addHint.IsDelete = bool(playerDoc.Data()["IsDelete"].(bool))
 		hintList = append(hintList, addHint)
