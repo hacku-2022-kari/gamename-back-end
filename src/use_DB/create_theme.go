@@ -78,13 +78,17 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 
 		roomRef := client.Collection("Room").Doc(roomId)
 		_, _err := roomRef.Set(ctx, map[string]interface{}{
-			"Step":  3,
 			"Theme": playerDoc.Data()["Theme"].(string),
 		}, firestore.MergeAll)
 		if _err != nil {
 			return false
 		}
-
+		_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+			{Path: "Step", Value: 3},
+		})
+		if err != nil {
+			return false
+		}
 	}
 
 	defer client.Close()
