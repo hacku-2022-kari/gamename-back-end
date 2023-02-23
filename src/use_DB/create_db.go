@@ -3,9 +3,7 @@ package useDB
 import (
 	"context"
 	"log"
-	"math/rand"
 	"os"
-	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -37,13 +35,6 @@ func connnectDB() (context.Context, *firestore.Client) {
 }
 
 func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int) string {
-	if wolfMode == true {
-		rand.Seed(time.Now().UnixNano())
-		if rand.Intn(3)%3 != 0 {
-			isExitWolf = true
-		}
-
-	}
 
 	room := Room{
 		PaticNum:   particNum,
