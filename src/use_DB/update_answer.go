@@ -11,11 +11,17 @@ func UpdateAnswer(answer string, roomId string) bool {
 	if err != nil {
 		return false
 	}
-	docRef := client.Collection("Room").Doc(roomId)
-	_, _err := docRef.Set(ctx, map[string]interface{}{
+	roomRef := client.Collection("Room").Doc(roomId)
+	_, _err := roomRef.Set(ctx, map[string]interface{}{
 		"Answer": answer,
 	}, firestore.MergeAll)
 	if _err != nil {
+		return false
+	}
+	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+		{Path: "Step", Value: 6},
+	})
+	if err != nil {
 		return false
 	}
 	defer client.Close()
@@ -23,7 +29,7 @@ func UpdateAnswer(answer string, roomId string) bool {
 }
 
 // $body = @{
-//     roomId = "4ZNlgKuuDC7TdYl4xnih"
+//     roomId = "idkAj1Km0ACPCkQybbPD"
 //     answer = "ピカチュウ"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/update-answer -Body $body -ContentType "application/json;charset=UTF-8"

@@ -11,11 +11,23 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 	if err != nil {
 		return false
 	}
-	docRef := client.Collection("Room").Doc(roomId)
-	_, _err := docRef.Set(ctx, map[string]interface{}{
+	roomRef := client.Collection("Room").Doc(roomId)
+	_, _err := roomRef.Set(ctx, map[string]interface{}{
 		"HowToDecideTheme": howToDecideTheme,
 	}, firestore.MergeAll)
 	if _err != nil {
+		return false
+	}
+
+	var step int = 2
+	if howToDecideTheme == 1 {
+		step = 3
+	}
+
+	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+		{Path: "Step", Value: step},
+	})
+	if err != nil {
 		return false
 	}
 	defer client.Close()
@@ -23,7 +35,7 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 }
 
 // $body = @{
-//     roomId = "zjH7Si3lo3vjtcqJSaE1"
+//     roomId = "idkAj1Km0ACPCkQybbPD"
 //     howToDecideTheme = 1
 // } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/how-to-decide-theme -Body $body -ContentType "application/json"
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/how-decide-theme -Body $body -ContentType "application/json"

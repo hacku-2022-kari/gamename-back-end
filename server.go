@@ -21,16 +21,19 @@ type Player struct {
 
 type Theme struct {
 	PlayerId string `json:"playerId"`
+	RoomId   string `json:"roomId"`
 	Text     string `json:"theme"`
 }
 
 type Hint struct {
 	PlayerId string `json:"playerId"`
+	RoomId   string `json:"roomId"`
 	Hint     string `json:"hint"`
 }
 
 type DeleteHint struct { //TODO structの名前と型の修正
-	Hint []string `json:"hint"`
+	RoomId string   `json:"roomId"`
+	Hint   []string `json:"hint"`
 }
 type DecideTheme struct {
 	RoomId           string `json:"roomId"`
@@ -69,6 +72,7 @@ func main() {
 	e.GET("/random-theme", getRandomTheme)
 	e.GET("/get-role", getRole)
 	e.GET("/answer", getAnswer)
+	e.GET("/judgement-answer", getJudgement)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
@@ -78,6 +82,7 @@ func main() {
 	e.POST("/update-answer", postUpdateAnswer)
 	e.POST("/is-correct", postIsCorrect)
 	e.POST("/initialize", postEndGame)
+	e.POST("/how-decide-theme", postDecideTheme)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -122,6 +127,11 @@ func getAnswer(c echo.Context) error {
 	answer := useDB.GetAnswer(roomId)
 	return c.JSON(http.StatusOK, answer)
 }
+func getJudgement(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	answer := useDB.JudgementAnswer(roomId)
+	return c.JSON(http.StatusOK, answer)
+}
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
 	if err := c.Bind(reqBody); err != nil {
@@ -150,8 +160,8 @@ func postCreateTheme(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	theme := reqBody.Text
-
-	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId))
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId, roomId))
 }
 func postCreateHint(c echo.Context) error {
 	reqBody := new(Hint)
@@ -160,7 +170,8 @@ func postCreateHint(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	hint := reqBody.Hint
-	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId))
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId, roomId))
 }
 func postDeleteHint(c echo.Context) error {
 	reqBody := new(DeleteHint)
@@ -168,7 +179,8 @@ func postDeleteHint(c echo.Context) error {
 		return err
 	}
 	hintList := reqBody.Hint
-	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList))
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList, roomId))
 }
 func postStartGame(c echo.Context) error {
 	reqBody := new(Game)
@@ -220,7 +232,6 @@ func postEndGame(c echo.Context) error {
 
 // $body = @{
 //     password = "yourpass"
-//     particNum = 3
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-room -Body $body -ContentType "application/json"
 //curl -d "roomId = cbBipgOwuA8wxu5XAXFW" -d "playerName = testman" -d "playerIcon = 3" http://localhost:1323/addPlayer
