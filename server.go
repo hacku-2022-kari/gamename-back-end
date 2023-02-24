@@ -62,6 +62,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	// ローカル環境の場合、http://localhost:1323/
+	e.GET("/is-mode-wolf", isModeWolf)
 	e.GET("/is-room-exit", isRoomExit)
 	e.GET("/partic-list", func(c echo.Context) error { //TODO関数の管理ときに修正
 		playerList := getParticList(c)
@@ -89,7 +90,10 @@ func main() {
 	e.POST("/vote", postVote)
 	e.Logger.Fatal(e.Start(":1323"))
 }
-
+func isModeWolf(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	return c.JSON(http.StatusOK,  useDB.IsModeWolf(roomId))
+}
 func isRoomExit(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	exit := useDB.IsRoomExit(roomId)
