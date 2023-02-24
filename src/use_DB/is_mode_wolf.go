@@ -15,6 +15,6 @@ func IsModeWolf(roomId string) bool {
 	}
 
 	defer client.Close()
-	return roomDoc.Data()["WolfMode"].(bool)
+	return roomDoc.Data()["IsMoodWolf"].(bool)
 }
 
