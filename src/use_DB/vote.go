@@ -7,21 +7,42 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
-func Vote(inputPlayerId string, roomId string) bool {
+func Vote(playerId string,inputPlayerId string, roomId string) bool {
 
 	ctx, client, err := connectDB()
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
-	playerRef := client.Collection("Player").Doc(inputPlayerId)
-	_, err = playerRef.Update(ctx, []firestore.Update{
-		{Path: "Vote", Value: firestore.Increment(1)},
-	})
+
+	if playerId ==inputPlayerId{
+		roomRef := client.Collection("Room").Doc(roomId)
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path: "PeaceVote", Value: firestore.Increment(1)},
+		})
+		if err != nil {
+			return false
+		}
+	}else{
+		playerRef := client.Collection("Player").Doc(inputPlayerId)
+		_, err = playerRef.Update(ctx, []firestore.Update{
+			{Path: "Vote", Value: firestore.Increment(1)},
+		})
+		if err != nil {
+			return false
+		}
+		}
 
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
+	if err != nil {
+		return false
+	}
 
 	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
+	if err != nil {
+		return false
+	}
+
 	bytes, _ := json.Marshal(roomDoc.Data()["PaticNum"])
 	var particNumInt int64
 	err = json.Unmarshal(bytes, &particNumInt)
@@ -31,7 +52,16 @@ func Vote(inputPlayerId string, roomId string) bool {
 
 	var addStep bool = false
 
-	var sumVote int = 0
+	bytes, _ = json.Marshal(roomDoc.Data()["PeaceVote"])
+	var peaceVoteInt int64
+	err = json.Unmarshal(bytes, &peaceVoteInt)
+	if err != nil {
+		return false
+	}
+
+	var sumVote int = int(peaceVoteInt)
+
+
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
@@ -64,7 +94,8 @@ func Vote(inputPlayerId string, roomId string) bool {
 }
 
 // $body = @{
-// 	roomId = "WgBySaSIBvs92OsDdd4i"
-//     playerId = "W8fAxy12FB8fGF9vysxy"
+// 	roomId = "YWgvWDZf3gXtNkzDCiyC"
+//     playerId = "WcQFa9xVcw9NVtMWGA6i"
+//     inputPlayerId = "4fCj7TXEclKsjiMSBGRT"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/vote -Body $body -ContentType "application/json"
