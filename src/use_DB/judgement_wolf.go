@@ -13,7 +13,11 @@ func JudgementWolf(roomId string, playerId string) int {
 		log.Fatalf("failed to connect to database: %v", _err)
 	}
 
+
 	var branch = []bool{true, true}
+
+	roomRef := client.Collection("Room").Doc(roomId)
+
 	roomIter, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {
 		log.Fatalf("error getting Room documents: %v\n", err)
@@ -33,6 +37,12 @@ func JudgementWolf(roomId string, playerId string) int {
 
 	if err != nil {
 		if branch[0] == false {
+			_, err = roomRef.Update(ctx, []firestore.Update{
+				{Path:"IsCorrectWolf",Value:false},
+			})
+			if err != nil {
+				log.Fatalf("error getting Room documents: %v\n", err)
+			}
 			return 4
 		} else {
 			return 1
@@ -47,14 +57,26 @@ func JudgementWolf(roomId string, playerId string) int {
 			branch[1] = false
 		}
 	}
-
+	
 	if branch[0] == true && branch[1] == true {
 		return 1
 	} else if branch[0] == true && branch[1] == false {
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"IsCorrectWolf",Value:false},
+		})
+		if err != nil {
+			log.Fatalf("error getting Room documents: %v\n", err)
+		}
 		return 2
 	} else if branch[0] == false && branch[1] == true {
 		return 3
 	} else {
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"IsCorrectWolf",Value:false},
+		})
+		if err != nil {
+			log.Fatalf("error getting Room documents: %v\n", err)
+		}
 		return 4
 	}
 

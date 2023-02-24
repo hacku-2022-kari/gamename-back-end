@@ -88,6 +88,7 @@ func main() {
 	e.GET("/answer", getAnswer)
 	e.GET("/judgement-answer", getJudgement)
 	e.GET("/vanish-wolf", getChoiceWolf)
+	e.GET("/point", getPoint)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
@@ -163,6 +164,11 @@ func getChoiceWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	return c.JSON(http.StatusOK, useDB.ChoiceWolf(roomId))
 }
+func getPoint(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	fmt.Println(roomId)
+	return c.JSON(http.StatusOK, useDB.PointCal(roomId))
+}
 func getVotePlayerList(c echo.Context) []useDB.VotePlayerInfo{
 	roomId := c.QueryParam("roomId")
 	return useDB.VotePlayerList(roomId)
@@ -173,7 +179,7 @@ func createRoom(c echo.Context) error {
 		return err
 	}
 	wolfMode := reqBody.WolfMode
-	return c.String(http.StatusOK, useDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0))
+	return c.String(http.StatusOK, useDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0,true))
 }
 
 func postAddPlayer(c echo.Context) error {
