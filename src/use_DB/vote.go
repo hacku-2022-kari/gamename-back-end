@@ -94,8 +94,8 @@ func Vote(playerId string,inputPlayerId string, roomId string) bool {
 }
 
 // $body = @{
-// 	roomId = "YWgvWDZf3gXtNkzDCiyC"
-//     playerId = "WcQFa9xVcw9NVtMWGA6i"
-//     inputPlayerId = "4fCj7TXEclKsjiMSBGRT"
+// 	roomId = "nEduCUJZ6F5bjRImr1fL"
+//     playerId = "QDYwbFIF34UxLVI7qEbZ"
+//     inputPlayerId = "jLOqW1BmSYVxDkekMvm4"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/vote -Body $body -ContentType "application/json"

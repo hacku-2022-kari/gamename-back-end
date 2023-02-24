@@ -68,7 +68,7 @@ func StartGame(roomId string) bool {
 			_, err = roomRef.Update(ctx, []firestore.Update{
 				{Path:"IsExitWolf",Value:true},
 			})
-		}
+		
 		for i := range playerList {
 			j := rand.Intn(i + 1)
 			playerList[i], playerList[j] = playerList[j], playerList[i]
@@ -85,7 +85,7 @@ func StartGame(roomId string) bool {
 		if _err != nil {
 			return false
 		}
-
+	}
 	}
 	
 	_, _err := roomRef.Set(ctx, map[string]interface{}{

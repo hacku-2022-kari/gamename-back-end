@@ -29,7 +29,7 @@ func JudgementWolf(roomId string, playerId string) int {
 	defer client.Close()
 
 	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
-		{Path: "Step", Value: 11},
+		{Path: "Step", Value: 10},
 	})
 	if err != nil {
 		log.Fatalf("error getting Room documents: %v\n", err)
@@ -43,8 +43,14 @@ func JudgementWolf(roomId string, playerId string) int {
 			if err != nil {
 				log.Fatalf("error getting Room documents: %v\n", err)
 			}
+			_, err = roomRef.Update(ctx, []firestore.Update{
+				{Path:"Result",Value:4},
+			})
 			return 4
 		} else {
+			_, err = roomRef.Update(ctx, []firestore.Update{
+				{Path:"Result",Value:1},
+			})
 			return 1
 		}
 	}
@@ -59,6 +65,9 @@ func JudgementWolf(roomId string, playerId string) int {
 	}
 	
 	if branch[0] == true && branch[1] == true {
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"Result",Value:1},
+		})
 		return 1
 	} else if branch[0] == true && branch[1] == false {
 		_, err = roomRef.Update(ctx, []firestore.Update{
@@ -67,8 +76,14 @@ func JudgementWolf(roomId string, playerId string) int {
 		if err != nil {
 			log.Fatalf("error getting Room documents: %v\n", err)
 		}
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"Result",Value:2},
+		})
 		return 2
 	} else if branch[0] == false && branch[1] == true {
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"Result",Value:3},
+		})
 		return 3
 	} else {
 		_, err = roomRef.Update(ctx, []firestore.Update{
@@ -77,13 +92,16 @@ func JudgementWolf(roomId string, playerId string) int {
 		if err != nil {
 			log.Fatalf("error getting Room documents: %v\n", err)
 		}
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"Result",Value:4},
+		})
 		return 4
 	}
 
 }
 
 // $body = @{
-// 	roomId = "WgBySaSIBvs92OsDdd4i"
-//     playerId = "W8fAxy12FB8fGF9vysxy"
+// 	roomId = "me9OY2OTl4qaNKveuRsW"
+//     playerId = "yRH4FFUe2QNPuyRamGVj"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/judgement-wolf -Body $body -ContentType "application/json"

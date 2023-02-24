@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"math/rand"
-
-	"cloud.google.com/go/firestore"
 )
 
 // TODO: 構造体の命名の検討
@@ -90,12 +88,6 @@ func ChoiceWolf(roomId string) ChoseWolf {
 	}
 
 
-	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
-		{Path: "Step", Value: 10},
-	})
-	if err != nil {
-		log.Println("failed to connect to database: ", _err)
-	}
 
 	
 	return choseWolf
