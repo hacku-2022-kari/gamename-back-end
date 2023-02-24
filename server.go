@@ -79,6 +79,7 @@ func main() {
 	})
 	e.GET("/step", getStep)
 	e.GET("/get-role", getRole)
+	e.GET("/get-role-wolf", getRoleWolf)
 	e.GET("/answer", getAnswer)
 	e.GET("/judgement-answer", getJudgement)
 	e.GET("/choice-wolf", getChoiceWolf)
@@ -138,7 +139,10 @@ func getRole(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
 	return c.JSON(http.StatusOK, useDB.GetRole(playerId))
 }
-
+func getRoleWolf(c echo.Context) error {
+	playerId := c.QueryParam("playerId")
+	return c.JSON(http.StatusOK, useDB.GetRoleWolf(playerId))
+}
 func getAnswer(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	answer := useDB.GetAnswer(roomId)
