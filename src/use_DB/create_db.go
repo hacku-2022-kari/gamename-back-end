@@ -18,6 +18,7 @@ type Room struct {
 	IsModeWolf bool
 	IsExitWolf bool
 	PeaceVote  int
+	IsCorrectWolf bool
 }
 
 func connnectDB() (context.Context, *firestore.Client) {
@@ -34,7 +35,7 @@ func connnectDB() (context.Context, *firestore.Client) {
 	return ctx, client
 }
 
-func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int) string {
+func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int,isCorrectWolf bool) string {
 
 	room := Room{
 		PaticNum:   particNum,
@@ -44,6 +45,7 @@ func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool,
 		IsModeWolf: wolfMode,
 		IsExitWolf: isExitWolf,
 		PeaceVote:  peaceVote,
+		IsCorrectWolf: isCorrectWolf,
 	}
 
 	ctx, client := connnectDB()
