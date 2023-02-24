@@ -73,6 +73,10 @@ func main() {
 		playerList := getParticListWolf(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
+	e.GET("/partic-list-vote", func(c echo.Context) error { //TODO関数の管理ときに修正
+		playerList := getVotePlayerList(c)
+		return c.JSON(http.StatusOK, playerList)
+	})
 	e.GET("/theme", getTheme)
 	e.GET("/hint-list", func(c echo.Context) error {
 		hintList := getHintList(c)
@@ -157,6 +161,10 @@ func getJudgement(c echo.Context) error {
 func getChoiceWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	return c.JSON(http.StatusOK, useDB.ChoiceWolf(roomId))
+}
+func getVotePlayerList(c echo.Context) []useDB.VotePlayerInfo{
+	roomId := c.QueryParam("roomId")
+	return useDB.VotePlayerList(roomId)
 }
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
