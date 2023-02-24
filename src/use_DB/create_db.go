@@ -3,7 +3,9 @@ package useDB
 import (
 	"context"
 	"log"
+	"math/rand"
 	"os"
+	"strconv"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -20,18 +22,25 @@ type Room struct {
 	PeaceVote  int
 }
 
-func connnectDB() (context.Context, *firestore.Client) {
-	ctx := context.Background()
-	sa := option.WithCredentialsFile("path/to/serviceAccount.json")
-	config := &firebase.Config{ProjectID: os.Getenv("PROJECT_ID")}
-	app, err := firebase.NewApp(ctx, config, sa)
+// DB を分散するための乱数
+var randInt int = rand.Intn(3)
+var randString string = strconv.Itoa(randInt)
 
+func connectDB() (context.Context, *firestore.Client, error) { //TODO この関数とcreateDBにある関数で出力が違うため要検討
+	ctx := context.Background()
+	sa := option.WithCredentialsFile("path/to/key-" + randString + ".json")
+	config := &firebase.Config{ProjectID: os.Getenv("PROJECT_ID-" + randString)}
+	app, err := firebase.NewApp(ctx, config, sa)
 	if err != nil {
-		log.Fatalln(err)
+		return nil, nil, err
 	}
 
 	client, err := app.Firestore(ctx)
-	return ctx, client
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return ctx, client, nil
 }
 
 func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int) string {
@@ -46,14 +55,14 @@ func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool,
 		PeaceVote:  peaceVote,
 	}
 
-	ctx, client := connnectDB()
+	ctx, client, _ := connectDB()
 
 	ref := client.Collection("Room").NewDoc()
 	_, err := ref.Set(ctx, room)
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
-	defer client.Close() 
+	defer client.Close()
 	return ref.ID
 }
 

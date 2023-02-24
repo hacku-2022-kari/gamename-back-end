@@ -1,7 +1,7 @@
 package useDB
 
 func IsRoomExit(id string) bool {
-	ctx, client := connnectDB()
+	ctx, client, _ := connectDB()
 	docRef := client.Collection("Room").Doc(id)
 
 	docSnapshot, err := docRef.Get(ctx)
