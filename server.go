@@ -73,6 +73,10 @@ func main() {
 		playerList := getParticListWolf(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
+	e.GET("/partic-list-vote", func(c echo.Context) error { //TODO関数の管理ときに修正
+		playerList := getVotePlayerList(c)
+		return c.JSON(http.StatusOK, playerList)
+	})
 	e.GET("/theme", getTheme)
 	e.GET("/hint-list", func(c echo.Context) error {
 		hintList := getHintList(c)
@@ -97,6 +101,7 @@ func main() {
 	e.POST("/how-decide-theme", postDecideTheme)
 	e.POST("/vote", postVote)
 	e.POST("/judgement-wolf", postJudgementWolf)
+	e.POST("/add-step", postAddStep)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 func isModeWolf(c echo.Context) error {
@@ -163,6 +168,10 @@ func getPoint(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	fmt.Println(roomId)
 	return c.JSON(http.StatusOK, useDB.PointCal(roomId))
+}
+func getVotePlayerList(c echo.Context) []useDB.VotePlayerInfo{
+	roomId := c.QueryParam("roomId")
+	return useDB.VotePlayerList(roomId)
 }
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
@@ -281,7 +290,15 @@ func postJudgementWolf(c echo.Context) error {
 	roomId := reqBody.RoomId
 	return c.JSON(http.StatusOK, useDB.JudgementWolf(roomId, playerId))
 }
+func postAddStep(c echo.Context) error {
+	reqBody := new(Game)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
 
+	return c.JSON(http.StatusOK, useDB.AddStep(roomId))
+}
 // $body = @{
 //     password = "yourpass"
 // } | ConvertTo-Json

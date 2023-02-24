@@ -27,6 +27,14 @@ func JudgementWolf(roomId string, playerId string) int {
 	}
 	playerIter, err := client.Collection("Player").Doc(playerId).Get(ctx)
 	defer client.Close()
+
+	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+		{Path: "Step", Value: 11},
+	})
+	if err != nil {
+		log.Fatalf("error getting Room documents: %v\n", err)
+	}
+
 	if err != nil {
 		if branch[0] == false {
 			_, err = roomRef.Update(ctx, []firestore.Update{

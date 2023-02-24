@@ -56,6 +56,7 @@ func VotePlayerList(roomId string) []VotePlayerInfo {
 			votePlayerList= append(votePlayerList, addPlayer)
 
 		}
+		
 	}
 	fmt.Println(votePlayerList)
 	return votePlayerList
