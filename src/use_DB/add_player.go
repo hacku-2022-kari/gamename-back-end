@@ -17,6 +17,9 @@ type Player struct {
 	Hint       string
 	IsDelete   bool
 	Answer     string
+	Wolf 		bool
+	Vote 		int
+	Point		int
 }
 
 type RoomPlayer struct {
@@ -50,7 +53,11 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 		Hint:       "no-hint",
 		IsDelete:   false,
 		Answer:     "no-answer",
+		Wolf :		false,
+		Vote: 		0,
+		Point:		0,
 	}
+	
 
 	ctx, client, err := connectDB()
 
@@ -82,7 +89,7 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 }
 
 // $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
+//     roomId = "RxrqHHTY5mfJ00rgJwpv"
 //     playerName = "まえだ"
 // 	playerIcon = 3
 // } | ConvertTo-Json
