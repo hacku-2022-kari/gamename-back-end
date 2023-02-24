@@ -1,7 +1,6 @@
 package useDB
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -51,6 +50,7 @@ func StartGame(roomId string) bool {
 		}
 		_, _err := playerDoc.Set(ctx, map[string]interface{}{
 			"Role": roleCount,
+			"Wolf": false,
 		}, firestore.MergeAll)
 
 		if _err != nil {
@@ -63,13 +63,27 @@ func StartGame(roomId string) bool {
 
 	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if roomDoc.Data()["WolfMode"].(bool)== true {
-		fmt.Println("OK")
 		rand.Seed(time.Now().UnixNano())
-		if rand.Intn(3)%3 != 0 {
+		if rand.Intn(3)!= 0 {
 			_, err = roomRef.Update(ctx, []firestore.Update{
-				{Path:"IsExitWolf",Value:false},
-
+				{Path:"IsExitWolf",Value:true},
 			})
+		}
+		for i := range playerList {
+			j := rand.Intn(i + 1)
+			playerList[i], playerList[j] = playerList[j], playerList[i]
+		}
+
+		playerDoc := client.Collection("Player").Doc(playerList[0])
+		if err != nil {
+			return false
+		}
+		_, _err := playerDoc.Set(ctx, map[string]interface{}{
+			"Wolf": true,
+		}, firestore.MergeAll)
+
+		if _err != nil {
+			return false
 		}
 
 	}
