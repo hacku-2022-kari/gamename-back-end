@@ -10,7 +10,7 @@ import (
 )
 
 type Room struct { //TODO　create_dbと被るからそこを考えよう
-	Password string `json:"password"`
+	WolfMode bool `json:"wolfMode"`
 }
 
 type Player struct {
@@ -148,8 +148,8 @@ func createRoom(c echo.Context) error {
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
-	password := reqBody.Password
-	return c.String(http.StatusOK, useDB.CreateRoom(password, 0, "theme", 0, 0))
+	wolfMode := reqBody.WolfMode
+	return c.String(http.StatusOK, useDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0))
 }
 
 func postAddPlayer(c echo.Context) error {

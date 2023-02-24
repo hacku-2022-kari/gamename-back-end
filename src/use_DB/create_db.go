@@ -11,11 +11,13 @@ import (
 )
 
 type Room struct {
-	Password string
-	PaticNum int
-	Theme    string
-	Phase    int
-	Step     int
+	PaticNum   int
+	Theme      string
+	Phase      int
+	Step       int
+	IsModeWolf bool
+	IsExitWolf bool
+	PeaceVote  int
 }
 
 func connnectDB() (context.Context, *firestore.Client) {
@@ -32,13 +34,16 @@ func connnectDB() (context.Context, *firestore.Client) {
 	return ctx, client
 }
 
-func CreateRoom(password string, particNum int, theme string, phase int, step int) string{
+func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int) string {
+
 	room := Room{
-		Password: password,
-		PaticNum: particNum,
-		Theme:    theme,
-		Phase:    phase,
-		Step:     step,
+		PaticNum:   particNum,
+		Theme:      theme,
+		Phase:      phase,
+		Step:       step,
+		IsModeWolf: wolfMode,
+		IsExitWolf: isExitWolf,
+		PeaceVote:  peaceVote,
 	}
 
 	ctx, client := connnectDB()
@@ -48,6 +53,11 @@ func CreateRoom(password string, particNum int, theme string, phase int, step in
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
-	defer client.Close()
+	defer client.Close() 
 	return ref.ID
 }
+
+// $body = @{
+// 	wolfMode = $True
+// } | ConvertTo-Json
+// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-room -Body $body -ContentType "application/json"
