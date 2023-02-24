@@ -41,7 +41,7 @@ func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool,
 		Theme:      theme,
 		Phase:      phase,
 		Step:       step,
-		IsMoodWolf: wolfMode,
+		IsModeWolf: wolfMode,
 		IsExitWolf: isExitWolf,
 		PeaceVote:  peaceVote,
 	}
@@ -53,7 +53,7 @@ func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool,
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
-	defer client.Close()
+	defer client.Close() 
 	return ref.ID
 }
 
