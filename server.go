@@ -68,6 +68,10 @@ func main() {
 		playerList := getParticList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
+	e.GET("/partic-list-wolf", func(c echo.Context) error { //TODO関数の管理ときに修正
+		playerList := getParticListWolf(c)
+		return c.JSON(http.StatusOK, playerList)
+	})
 	e.GET("/theme", getTheme)
 	e.GET("/hint-list", func(c echo.Context) error {
 		hintList := getHintList(c)
@@ -107,6 +111,12 @@ func getParticList(c echo.Context) []useDB.PlayerNNNIcon {
 	roomId := c.QueryParam("roomId")
 	playerList := useDB.PlayerList(roomId)
 	return playerList
+}
+
+func getParticListWolf(c echo.Context) []useDB.PlayerInfo {
+	roomId := c.QueryParam("roomId")
+	playerListWolf := useDB.PlayerListWolf(roomId)
+	return playerListWolf
 }
 
 func getTheme(c echo.Context) error {
