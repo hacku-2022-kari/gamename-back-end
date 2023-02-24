@@ -96,6 +96,7 @@ func main() {
 	e.POST("/how-decide-theme", postDecideTheme)
 	e.POST("/vote", postVote)
 	e.POST("/judgement-wolf", postJudgementWolf)
+	e.POST("/add-step", postAddStep)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 func isModeWolf(c echo.Context) error {
@@ -275,7 +276,15 @@ func postJudgementWolf(c echo.Context) error {
 	roomId := reqBody.RoomId
 	return c.JSON(http.StatusOK, useDB.JudgementWolf(roomId, playerId))
 }
+func postAddStep(c echo.Context) error {
+	reqBody := new(Game)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
 
+	return c.JSON(http.StatusOK, useDB.AddStep(roomId))
+}
 // $body = @{
 //     password = "yourpass"
 // } | ConvertTo-Json
