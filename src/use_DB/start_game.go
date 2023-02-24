@@ -1,6 +1,7 @@
 package useDB
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -16,7 +17,9 @@ func StartGame(roomId string) bool {
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
 	_, err = roomRef.Update(ctx, []firestore.Update{
-		{Path: "Phase", Value: firestore.Increment(1)},
+		{Path:"Phase",Value:firestore.Increment(1)},
+		{Path:"IsExitWolf",Value:false},
+		{Path:"PeaceVote",Value:0},
 	})
 
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
@@ -39,7 +42,8 @@ func StartGame(roomId string) bool {
 	}
 
 	var roleCount int = 1
-
+	rand.Seed(time.Now().UnixNano())
+ 
 	for i := range playerList {
 		playerDoc := client.Collection("Player").Doc(playerList[i])
 		if err != nil {
@@ -57,7 +61,19 @@ func StartGame(roomId string) bool {
 		}
 	}
 
-	rand.Seed(time.Now().UnixNano())
+	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
+	if roomDoc.Data()["WolfMode"].(bool)== true {
+		fmt.Println("OK")
+		rand.Seed(time.Now().UnixNano())
+		if rand.Intn(3)%3 != 0 {
+			_, err = roomRef.Update(ctx, []firestore.Update{
+				{Path:"IsExitWolf",Value:false},
+
+			})
+		}
+
+	}
+	
 	_, _err := roomRef.Set(ctx, map[string]interface{}{
 		"Step": 1,
 	}, firestore.MergeAll)
@@ -69,6 +85,6 @@ func StartGame(roomId string) bool {
 }
 
 // $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
+//     roomId = "WgBySaSIBvs92OsDdd4i"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/start-game -Body $body -ContentType "application/json"
