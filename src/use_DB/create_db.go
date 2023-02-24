@@ -15,7 +15,7 @@ type Room struct {
 	Theme      string
 	Phase      int
 	Step       int
-	IsMoodWolf bool
+	IsModeWolf bool
 	IsExitWolf bool
 	PeaceVote  int
 }
