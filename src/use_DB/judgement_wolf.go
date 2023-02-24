@@ -83,7 +83,7 @@ func JudgementWolf(roomId string, playerId string) int {
 }
 
 // $body = @{
-// 	roomId = "WgBySaSIBvs92OsDdd4i"
-//     playerId = "W8fAxy12FB8fGF9vysxy"
+// 	roomId = "me9OY2OTl4qaNKveuRsW"
+//     playerId = "yRH4FFUe2QNPuyRamGVj"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/judgement-wolf -Body $body -ContentType "application/json"
