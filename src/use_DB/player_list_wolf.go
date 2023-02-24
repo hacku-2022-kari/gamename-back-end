@@ -6,10 +6,9 @@ import (
 
 // TODO: 構造体の命名の検討
 type PlayerInfo struct {
-	NickName   string
-	ParticIcon int
-	Wolf       bool
-	Point      int
+	NickName   string	`json:"nickname"`
+	ParticIcon int		`json:"particIcon"`
+	Point      int		`json:"point"`
 }
 
 func PlayerListWolf(roomId string) []PlayerInfo {
@@ -36,7 +35,6 @@ func PlayerListWolf(roomId string) []PlayerInfo {
 		var addPlayer PlayerInfo
 		addPlayer.NickName = playerDoc.Data()["PlayerName"].(string)
 		addPlayer.ParticIcon = int(playerDoc.Data()["Icon"].(int64))
-		addPlayer.Wolf = playerDoc.Data()["Wolf"].(bool)
 		addPlayer.Point = int(playerDoc.Data()["Point"].(int64))
 		playerList = append(playerList, addPlayer)
 
