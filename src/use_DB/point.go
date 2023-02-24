@@ -1,6 +1,8 @@
 package useDB
 
 import (
+	"log"
+
 	"cloud.google.com/go/firestore"
 )
 
@@ -42,7 +44,6 @@ func PointCal(roomId string) bool{
 		}
 	}
 
-	
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
@@ -57,6 +58,13 @@ func PointCal(roomId string) bool{
 			_, err = playerRef.Update(ctx, []firestore.Update{
 				{Path:"Point",Value:firestore.Increment(villagePoint)},
 			})}
+	}
+
+	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+		{Path: "Step", Value: 11},
+	})
+	if err != nil {
+		log.Println("failed to connect to database: ", _err)
 	}
 
 	return true
