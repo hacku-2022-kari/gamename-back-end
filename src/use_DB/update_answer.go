@@ -4,7 +4,7 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
-func UpdateAnswer(answer string, roomId string) bool {
+func UpdateAnswer(answer string, roomId string,playerId string) bool {
 
 	ctx, client, err := connectDB()
 
@@ -16,6 +16,13 @@ func UpdateAnswer(answer string, roomId string) bool {
 		"Answer": answer,
 	}, firestore.MergeAll)
 	if _err != nil {
+		return false
+	}
+	playerRef := client.Collection("Player").Doc(playerId)
+	_, err = playerRef.Set(ctx, map[string]interface{}{
+		"Answer": answer,
+	}, firestore.MergeAll)
+	if err != nil {
 		return false
 	}
 	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
@@ -30,6 +37,7 @@ func UpdateAnswer(answer string, roomId string) bool {
 
 // $body = @{
 //     roomId = "idkAj1Km0ACPCkQybbPD"
+//		playerId = ""
 //     answer = "ピカチュウ"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/update-answer -Body $body -ContentType "application/json;charset=UTF-8"
