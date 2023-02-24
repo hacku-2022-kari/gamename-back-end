@@ -43,8 +43,14 @@ func JudgementWolf(roomId string, playerId string) int {
 			if err != nil {
 				log.Fatalf("error getting Room documents: %v\n", err)
 			}
+			_, err = roomRef.Update(ctx, []firestore.Update{
+				{Path:"Result",Value:4},
+			})
 			return 4
 		} else {
+			_, err = roomRef.Update(ctx, []firestore.Update{
+				{Path:"Result",Value:1},
+			})
 			return 1
 		}
 	}
@@ -59,6 +65,9 @@ func JudgementWolf(roomId string, playerId string) int {
 	}
 	
 	if branch[0] == true && branch[1] == true {
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"Result",Value:1},
+		})
 		return 1
 	} else if branch[0] == true && branch[1] == false {
 		_, err = roomRef.Update(ctx, []firestore.Update{
@@ -67,8 +76,14 @@ func JudgementWolf(roomId string, playerId string) int {
 		if err != nil {
 			log.Fatalf("error getting Room documents: %v\n", err)
 		}
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"Result",Value:2},
+		})
 		return 2
 	} else if branch[0] == false && branch[1] == true {
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"Result",Value:3},
+		})
 		return 3
 	} else {
 		_, err = roomRef.Update(ctx, []firestore.Update{
@@ -77,6 +92,9 @@ func JudgementWolf(roomId string, playerId string) int {
 		if err != nil {
 			log.Fatalf("error getting Room documents: %v\n", err)
 		}
+		_, err = roomRef.Update(ctx, []firestore.Update{
+			{Path:"Result",Value:4},
+		})
 		return 4
 	}
 

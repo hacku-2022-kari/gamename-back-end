@@ -19,6 +19,7 @@ type Room struct {
 	IsExitWolf bool
 	PeaceVote  int
 	IsCorrectWolf bool
+	Result int
 }
 
 func connnectDB() (context.Context, *firestore.Client) {
@@ -46,6 +47,7 @@ func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool,
 		IsExitWolf: isExitWolf,
 		PeaceVote:  peaceVote,
 		IsCorrectWolf: isCorrectWolf,
+		Result :1,
 	}
 
 	ctx, client := connnectDB()
@@ -55,7 +57,7 @@ func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool,
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
-	defer client.Close() 
+	defer client.Close()
 	return ref.ID
 }
 
