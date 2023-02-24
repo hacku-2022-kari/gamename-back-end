@@ -23,7 +23,7 @@ type Room struct {
 }
 
 // DB を分散するための乱数
-var randInt int = rand.Intn(3)
+var randInt int = rand.Intn(5)
 var randString string = strconv.Itoa(randInt)
 
 func connectDB() (context.Context, *firestore.Client, error) { //TODO この関数とcreateDBにある関数で出力が違うため要検討
