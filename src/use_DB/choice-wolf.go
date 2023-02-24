@@ -10,7 +10,7 @@ import (
 
 // TODO: 構造体の命名の検討
 type ChoseWolf struct {
-	Name   	  string		`json:"name"`
+	Name   	  string		`json:"nickname"`
 	Vote     int		`json:"vote"`
 }
 
