@@ -76,6 +76,7 @@ func main() {
 	e.GET("/get-role", getRole)
 	e.GET("/answer", getAnswer)
 	e.GET("/judgement-answer", getJudgement)
+	e.GET("/choice-wolf", getChoiceWolf)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
@@ -87,6 +88,7 @@ func main() {
 	e.POST("/initialize", postEndGame)
 	e.POST("/how-decide-theme", postDecideTheme)
 	e.POST("/vote", postVote)
+	e.POST("/judgement-wolf", postJudgementWolf)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -97,7 +99,7 @@ func isRoomExit(c echo.Context) error {
 	return c.JSON(http.StatusOK, exit)
 }
 
-func getParticList(c echo.Context) []useDB.PlayerInfo {
+func getParticList(c echo.Context) []useDB.PlayerNNNIcon {
 	roomId := c.QueryParam("roomId")
 	playerList := useDB.PlayerList(roomId)
 	return playerList
@@ -132,6 +134,10 @@ func getJudgement(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	answer := useDB.JudgementAnswer(roomId)
 	return c.JSON(http.StatusOK, answer)
+}
+func getChoiceWolf(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	return c.JSON(http.StatusOK, useDB.ChoiceWolf(roomId))
 }
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
@@ -239,6 +245,15 @@ func postVote(c echo.Context) error {
 	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
 	return c.JSON(http.StatusOK, useDB.Vote(playerId, roomId))
+}
+func postJudgementWolf(c echo.Context) error {
+	reqBody := new(Vote)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.JudgementWolf(roomId, playerId))
 }
 
 // $body = @{
