@@ -51,9 +51,9 @@ type IsCorrect struct {
 	IsCorrect bool   `json:"isCorrect"`
 }
 type Vote struct {
-	InputPlayerId   string `json:"inputPlayerId"`
-	PlayerId string `json:"playerId"`
-	RoomId   string `json:"roomId"`
+	InputPlayerId string `json:"inputPlayerId"`
+	PlayerId      string `json:"playerId"`
+	RoomId        string `json:"roomId"`
 }
 
 func main() {
@@ -100,7 +100,7 @@ func main() {
 }
 func isModeWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK,  useDB.IsModeWolf(roomId))
+	return c.JSON(http.StatusOK, useDB.IsModeWolf(roomId))
 }
 func isRoomExit(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
@@ -263,8 +263,8 @@ func postVote(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
-	inputPlayerId :=reqBody.InputPlayerId
-	return c.JSON(http.StatusOK, useDB.Vote(playerId,inputPlayerId, roomId))
+	inputPlayerId := reqBody.InputPlayerId
+	return c.JSON(http.StatusOK, useDB.Vote(playerId, inputPlayerId, roomId))
 }
 func postJudgementWolf(c echo.Context) error {
 	reqBody := new(Vote)
