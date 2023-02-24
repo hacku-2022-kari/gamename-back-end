@@ -28,7 +28,7 @@ func JudgementWolf(roomId string, playerId string) int {
 			return 1
 		}
 	}
-	if playerIter.Data()["IsWolf"].(bool) == true {
+	if playerIter.Data()["Wolf"].(bool) == true {
 		if branch[0] == true {
 			branch[1] = false
 		}
