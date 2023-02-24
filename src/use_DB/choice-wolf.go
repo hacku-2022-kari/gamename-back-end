@@ -9,13 +9,17 @@ import (
 )
 
 // TODO: 構造体の命名の検討
+type ChoseWolf struct {
+	Name   	  string		`json:"name"`
+	Vote     int		`json:"vote"`
+}
 
-func ChoiceWolf(roomId string) string {
+func ChoiceWolf(roomId string) ChoseWolf {
 	ctx, client, _err := connectDB()
 	if _err != nil {
 		log.Println("failed to connect to database: ", _err)
 	}
-
+	defer client.Close()
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
@@ -57,13 +61,40 @@ func ChoiceWolf(roomId string) string {
 
 	}
 
+	var choseWolf ChoseWolf
+
+	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
+	if err != nil {
+		log.Println("failed to connect to database: ", _err)
+	}
+	playerDoc, err := client.Collection("Player").Doc(choicedWolf[0]).Get(ctx)
+	if err != nil {
+		log.Println("failed to connect to database: ", _err)
+	}
+
+	bytes, _ := json.Marshal(roomDoc.Data()["PeaceVote"])
+	var voteInt int64
+	err = json.Unmarshal(bytes, &voteInt)
+	if err != nil {
+		log.Println("failed to connect to database: ", _err)
+	}
+	if maxVote <= int(voteInt){
+		choseWolf.Name = "なし"
+		choseWolf.Vote = int(voteInt)
+	}else{
+		choseWolf.Name = playerDoc.Data()["PlayerName"].(string)
+		choseWolf.Vote = maxVote
+	}
+
+
 	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
 		{Path: "Step", Value: 10},
 	})
 	if err != nil {
 		log.Println("failed to connect to database: ", _err)
 	}
-	defer client.Close()
-	return choicedWolf[0]
+
+	
+	return choseWolf
 
 }
