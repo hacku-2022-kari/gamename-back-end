@@ -88,6 +88,7 @@ func main() {
 	e.POST("/initialize", postEndGame)
 	e.POST("/how-decide-theme", postDecideTheme)
 	e.POST("/vote", postVote)
+	e.POST("/judgement-wolf", postJudgementWolf)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
@@ -244,6 +245,15 @@ func postVote(c echo.Context) error {
 	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
 	return c.JSON(http.StatusOK, useDB.Vote(playerId, roomId))
+}
+func postJudgementWolf(c echo.Context) error {
+	reqBody := new(Vote)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.JudgementWolf(roomId, playerId))
 }
 
 // $body = @{
