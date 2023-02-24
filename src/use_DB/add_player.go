@@ -1,12 +1,9 @@
 package useDB
 
 import (
-	"context"
 	"log"
 
 	"cloud.google.com/go/firestore"
-	firebase "firebase.google.com/go"
-	"google.golang.org/api/option"
 )
 
 type Player struct {
@@ -17,31 +14,14 @@ type Player struct {
 	Hint       string
 	IsDelete   bool
 	Answer     string
-	Wolf 		bool
-	Vote 		int
-	Point		int
+	Wolf       bool
+	Vote       int
+	Point      int
 }
 
 type RoomPlayer struct {
 	RoomId   string
 	PlayerId string
-}
-
-func connectDB() (context.Context, *firestore.Client, error) { //TODO この関数とcreateDBにある関数で出力が違うため要検討
-	ctx := context.Background()
-	sa := option.WithCredentialsFile("path/to/serviceAccount.json")
-	config := &firebase.Config{ProjectID: "gotest-bc4c6"}
-	app, err := firebase.NewApp(ctx, config, sa)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	client, err := app.Firestore(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return ctx, client, nil
 }
 
 func AddPlayer(roomId string, playerName string, playerIcon int) string {
@@ -53,11 +33,10 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 		Hint:       "no-hint",
 		IsDelete:   false,
 		Answer:     "no-answer",
-		Wolf :		false,
-		Vote: 		0,
-		Point:		0,
+		Wolf:       false,
+		Vote:       0,
+		Point:      0,
 	}
-	
 
 	ctx, client, err := connectDB()
 
