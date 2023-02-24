@@ -62,7 +62,7 @@ func StartGame(roomId string) bool {
 	}
 
 	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
-	if roomDoc.Data()["WolfMode"].(bool)== true {
+	if roomDoc.Data()["IsModeWolf"].(bool)== true {
 		rand.Seed(time.Now().UnixNano())
 		if rand.Intn(3)!= 0 {
 			_, err = roomRef.Update(ctx, []firestore.Update{
