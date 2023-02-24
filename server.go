@@ -51,6 +51,7 @@ type IsCorrect struct {
 	IsCorrect bool   `json:"isCorrect"`
 }
 type Vote struct {
+	InputPlayerId   string `json:"inputPlayerId"`
 	PlayerId string `json:"playerId"`
 	RoomId   string `json:"roomId"`
 }
@@ -262,7 +263,8 @@ func postVote(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.Vote(playerId, roomId))
+	inputPlayerId :=reqBody.InputPlayerId
+	return c.JSON(http.StatusOK, useDB.Vote(playerId,inputPlayerId, roomId))
 }
 func postJudgementWolf(c echo.Context) error {
 	reqBody := new(Vote)
