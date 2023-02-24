@@ -19,7 +19,7 @@ func EndGame(roomId string) bool {
 		"HowToDecideTheme": 0,
 		"IsCorrect":        false,
 		"Theme":            "no-theme",
-		"IsMoodWolf" :		 roomDoc.Data()["WolfMode"].(bool),
+		"IsModeWolf" :		 roomDoc.Data()["IsModeWolf"].(bool),
 		"IsExitWolf" : 		false,
 		"PeaceVote"  :		0,
 	}, firestore.MergeAll)
