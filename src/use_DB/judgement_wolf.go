@@ -1,6 +1,7 @@
 package useDB
 
 import (
+	"fmt"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -25,8 +26,7 @@ func JudgementWolf(roomId string, playerId string) int {
 	if roomIter.Data()["IsExitWolf"].(bool) == true {
 		branch[0] = false
 	}
-	playerIter, err := client.Collection("Player").Doc(playerId).Get(ctx)
-	defer client.Close()
+	
 
 	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
 		{Path: "Step", Value: 10},
@@ -35,6 +35,10 @@ func JudgementWolf(roomId string, playerId string) int {
 		log.Fatalf("error getting Room documents: %v\n", err)
 	}
 
+	playerIter, err := client.Collection("Player").Doc(playerId).Get(ctx)
+	
+	defer client.Close()
+	
 	if err != nil {
 		if branch[0] == false {
 			_, err = roomRef.Update(ctx, []firestore.Update{
@@ -56,9 +60,14 @@ func JudgementWolf(roomId string, playerId string) int {
 	}
 	if playerIter.Data()["Wolf"].(bool) == true {
 		if branch[0] == true {
+			fmt.Println("OK")
 			branch[1] = false
 		}
 	} else {
+		if branch[0] == true {
+			fmt.Println("OK")
+			branch[1] = false
+		}
 		if branch[0] == false {
 			branch[1] = false
 		}
@@ -101,7 +110,7 @@ func JudgementWolf(roomId string, playerId string) int {
 }
 
 // $body = @{
-// 	roomId = "me9OY2OTl4qaNKveuRsW"
-//     playerId = "yRH4FFUe2QNPuyRamGVj"
+// 	roomId = "COenfmrcKg45g9XLOIfW"
+//     playerId = "eTphewltmutu8twLqzNR"
 // } | ConvertTo-Json
 // Invoke-RestMethod -Method POST -Uri http://localhost:1323/judgement-wolf -Body $body -ContentType "application/json"
