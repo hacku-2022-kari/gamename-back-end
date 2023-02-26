@@ -7,14 +7,14 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
-func Vote(playerId string,inputPlayerId string, roomId string) bool {
+func Vote(playerId string, inputPlayerId string, roomId string) bool {
 
 	ctx, client, err := connectDB()
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
-	if playerId ==inputPlayerId{
+	if playerId == inputPlayerId {
 		roomRef := client.Collection("Room").Doc(roomId)
 		_, err = roomRef.Update(ctx, []firestore.Update{
 			{Path: "PeaceVote", Value: firestore.Increment(1)},
@@ -22,7 +22,7 @@ func Vote(playerId string,inputPlayerId string, roomId string) bool {
 		if err != nil {
 			return false
 		}
-	}else{
+	} else {
 		playerRef := client.Collection("Player").Doc(inputPlayerId)
 		_, err = playerRef.Update(ctx, []firestore.Update{
 			{Path: "Vote", Value: firestore.Increment(1)},
@@ -30,7 +30,7 @@ func Vote(playerId string,inputPlayerId string, roomId string) bool {
 		if err != nil {
 			return false
 		}
-		}
+	}
 
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
@@ -60,7 +60,6 @@ func Vote(playerId string,inputPlayerId string, roomId string) bool {
 	}
 
 	var sumVote int = int(peaceVoteInt)
-
 
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
