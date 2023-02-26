@@ -23,9 +23,9 @@ func EndGame(roomId string) bool {
 		"HowToDecideTheme": 0,
 		"IsCorrect":        false,
 		"Theme":            "no-theme",
-		"IsModeWolf" :		 modeWolf,
-		"IsExitWolf" : 		false,
-		"PeaceVote"  :		0,
+		"IsModeWolf":       modeWolf,
+		"IsExitWolf":       false,
+		"PeaceVote":        0,
 	}, firestore.MergeAll)
 	if _err != nil {
 		return false
@@ -41,23 +41,23 @@ func EndGame(roomId string) bool {
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerRef := client.Collection("Player").Doc(playerID)
-		playerDoc,err := client.Collection("Player").Doc(playerID).Get(ctx)
+		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 
 		bytes, _ := json.Marshal(playerDoc.Data()["Point"])
-			var pointInt int64
-			err = json.Unmarshal(bytes, &pointInt)
-			if err != nil {
-				log.Println("error getting Player document: \n", err)
-			}
+		var pointInt int64
+		err = json.Unmarshal(bytes, &pointInt)
+		if err != nil {
+			log.Println("error getting Player document: \n", err)
+		}
 		_, err = playerRef.Set(ctx, map[string]interface{}{
 			"Answer":   "no-answer",
 			"Hint":     "no-hint",
 			"Role":     0,
 			"IsDelete": false,
 			"Theme":    "no-theme",
-			"Point":	int(pointInt),
-			"Wolf":		false,
-			"Vote" : 	0,
+			"Point":    int(pointInt),
+			"Wolf":     false,
+			"Vote":     0,
 		}, firestore.MergeAll)
 		if err != nil {
 			return false
