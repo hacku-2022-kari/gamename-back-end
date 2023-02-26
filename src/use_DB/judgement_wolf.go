@@ -1,7 +1,6 @@
 package useDB
 
 import (
-	"fmt"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -14,7 +13,6 @@ func JudgementWolf(roomId string, playerId string) int {
 		log.Fatalf("failed to connect to database: %v", _err)
 	}
 
-
 	var branch = []bool{true, true}
 
 	roomRef := client.Collection("Room").Doc(roomId)
@@ -26,7 +24,6 @@ func JudgementWolf(roomId string, playerId string) int {
 	if roomIter.Data()["IsExitWolf"].(bool) == true {
 		branch[0] = false
 	}
-	
 
 	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
 		{Path: "Step", Value: 10},
@@ -36,73 +33,71 @@ func JudgementWolf(roomId string, playerId string) int {
 	}
 
 	playerIter, err := client.Collection("Player").Doc(playerId).Get(ctx)
-	
+
 	defer client.Close()
-	
+
 	if err != nil {
 		if branch[0] == false {
 			_, err = roomRef.Update(ctx, []firestore.Update{
-				{Path:"IsCorrectWolf",Value:false},
+				{Path: "IsCorrectWolf", Value: false},
 			})
 			if err != nil {
 				log.Fatalf("error getting Room documents: %v\n", err)
 			}
 			_, err = roomRef.Update(ctx, []firestore.Update{
-				{Path:"Result",Value:4},
+				{Path: "Result", Value: 4},
 			})
 			return 4
 		} else {
 			_, err = roomRef.Update(ctx, []firestore.Update{
-				{Path:"Result",Value:1},
+				{Path: "Result", Value: 1},
 			})
 			return 1
 		}
 	}
 	if playerIter.Data()["Wolf"].(bool) == true {
 		if branch[0] == true {
-			fmt.Println("OK")
 			branch[1] = false
 		}
 	} else {
 		if branch[0] == true {
-			fmt.Println("OK")
 			branch[1] = false
 		}
 		if branch[0] == false {
 			branch[1] = false
 		}
 	}
-	
+
 	if branch[0] == true && branch[1] == true {
 		_, err = roomRef.Update(ctx, []firestore.Update{
-			{Path:"Result",Value:1},
+			{Path: "Result", Value: 1},
 		})
 		return 1
 	} else if branch[0] == true && branch[1] == false {
 		_, err = roomRef.Update(ctx, []firestore.Update{
-			{Path:"IsCorrectWolf",Value:false},
+			{Path: "IsCorrectWolf", Value: false},
 		})
 		if err != nil {
 			log.Fatalf("error getting Room documents: %v\n", err)
 		}
 		_, err = roomRef.Update(ctx, []firestore.Update{
-			{Path:"Result",Value:2},
+			{Path: "Result", Value: 2},
 		})
 		return 2
 	} else if branch[0] == false && branch[1] == true {
 		_, err = roomRef.Update(ctx, []firestore.Update{
-			{Path:"Result",Value:3},
+			{Path: "Result", Value: 3},
 		})
 		return 3
 	} else {
 		_, err = roomRef.Update(ctx, []firestore.Update{
-			{Path:"IsCorrectWolf",Value:false},
+			{Path: "IsCorrectWolf", Value: false},
 		})
 		if err != nil {
 			log.Fatalf("error getting Room documents: %v\n", err)
 		}
 		_, err = roomRef.Update(ctx, []firestore.Update{
-			{Path:"Result",Value:4},
+			{Path: "Result", Value: 4},
 		})
 		return 4
 	}
