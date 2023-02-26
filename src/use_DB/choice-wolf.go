@@ -8,9 +8,9 @@ import (
 
 // TODO: 構造体の命名の検討
 type ChoseWolf struct {
-	Id      string	`json:"id"`
-	Name   	  string		`json:"nickname"`
-	Vote     int		`json:"vote"`
+	Id   string `json:"id"`
+	Name string `json:"nickname"`
+	Vote int    `json:"vote"`
 }
 
 func ChoiceWolf(roomId string) ChoseWolf {
@@ -77,19 +77,16 @@ func ChoiceWolf(roomId string) ChoseWolf {
 	if err != nil {
 		log.Println("failed to connect to database: ", _err)
 	}
-	if maxVote <= int(voteInt){
+	if maxVote <= int(voteInt) {
 		choseWolf.Id = "PeaceVillage"
 		choseWolf.Name = "なし"
 		choseWolf.Vote = int(voteInt)
-	}else{
+	} else {
 		choseWolf.Id = choicedWolf[0]
 		choseWolf.Name = playerDoc.Data()["PlayerName"].(string)
 		choseWolf.Vote = maxVote
 	}
 
-
-
-	
 	return choseWolf
 
 }
