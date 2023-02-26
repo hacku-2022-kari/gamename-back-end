@@ -9,7 +9,7 @@ import (
 func AddStep(roomId string) bool {
 	ctx, client, _err := connectDB()
 	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+		log.Printf("An error has occurred: %s", _err)
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
 	_, err := roomRef.Set(ctx, map[string]interface{}{

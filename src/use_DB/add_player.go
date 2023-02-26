@@ -17,9 +17,9 @@ type Player struct {
 	Hint       string
 	IsDelete   bool
 	Answer     string
-	Wolf 		bool
-	Vote 		int
-	Point		int
+	Wolf       bool
+	Vote       int
+	Point      int
 }
 
 type RoomPlayer struct {
@@ -53,11 +53,10 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 		Hint:       "no-hint",
 		IsDelete:   false,
 		Answer:     "no-answer",
-		Wolf :		false,
-		Vote: 		0,
-		Point:		0,
+		Wolf:       false,
+		Vote:       0,
+		Point:      0,
 	}
-	
 
 	ctx, client, err := connectDB()
 
