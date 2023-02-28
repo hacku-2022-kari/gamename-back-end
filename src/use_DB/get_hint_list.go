@@ -1,38 +1,49 @@
 package useDB
 
 import (
+	"encoding/json"
 	"log"
 )
 
 type HintKey struct {
-	Key      string `json:"key"`
-	Hint     string `json:"hint"`
-	IsDelete bool   `json:"isDelete"`
+	PlayerId    string `json:"playerId"`
+	AvatarIndex int    `json:"avatarIndex"`
+	Hint        string `json:"hint"`
+	IsDelete    bool   `json:"isDelete"`
 }
 
 func HintList(roomId string) []HintKey {
-	ctx, client, _err := connectDB()
-	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+	ctx, client, err := connectDB()
+	if err != nil {
+		log.Println("error getting Player document: \n", err)
 	}
 	defer client.Close()
 	var hintList []HintKey
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
-		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
+		log.Println("error getting Player document: \n", err)
 	}
 	for _, rpDoc := range rpDocs {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			log.Println("error getting Player document: \n", err)
 		}
-		var addHint HintKey
-		addHint.Key = playerID
-		addHint.Hint = playerDoc.Data()["Hint"].(string)
-		addHint.IsDelete = bool(playerDoc.Data()["IsDelete"].(bool))
-		hintList = append(hintList, addHint)
+		bytes, _ := json.Marshal(playerDoc.Data()["Role"])
+		var roleInt int64
+		err = json.Unmarshal(bytes, &roleInt)
+		if err != nil {
+			log.Println("error getting Player document: \n", err)
+		}
+		if int(roleInt) != 1 {
+			var addHint HintKey
+			addHint.PlayerId = playerID
+			addHint.AvatarIndex = int(playerDoc.Data()["Icon"].(int64))
+			addHint.Hint = playerDoc.Data()["Hint"].(string)
+			addHint.IsDelete = bool(playerDoc.Data()["IsDelete"].(bool))
+			hintList = append(hintList, addHint)
+		}
 	}
 
 	return hintList

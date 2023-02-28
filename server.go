@@ -10,7 +10,7 @@ import (
 )
 
 type Room struct { //TODO　create_dbと被るからそこを考えよう
-	Password string `json:"password"`
+	WolfMode bool `json:"wolfMode"`
 }
 
 type Player struct {
@@ -44,11 +44,17 @@ type Game struct {
 }
 type Answer struct {
 	RoomId string `json:"roomId"`
+	PlayerId string `json:"playerId"`
 	Answer string `json:"answer"`
 }
 type IsCorrect struct {
 	RoomId    string `json:"roomId"`
 	IsCorrect bool   `json:"isCorrect"`
+}
+type Vote struct {
+	InputPlayerId   string `json:"inputPlayerId"`
+	PlayerId string `json:"playerId"`
+	RoomId   string `json:"roomId"`
 }
 
 func main() {
@@ -58,9 +64,18 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	// ローカル環境の場合、http://localhost:1323/
+	e.GET("/is-mode-wolf", isModeWolf)
 	e.GET("/is-room-exit", isRoomExit)
 	e.GET("/partic-list", func(c echo.Context) error { //TODO関数の管理ときに修正
 		playerList := getParticList(c)
+		return c.JSON(http.StatusOK, playerList)
+	})
+	e.GET("/partic-list-wolf", func(c echo.Context) error { //TODO関数の管理ときに修正
+		playerList := getParticListWolf(c)
+		return c.JSON(http.StatusOK, playerList)
+	})
+	e.GET("/partic-list-vote", func(c echo.Context) error { //TODO関数の管理ときに修正
+		playerList := getVotePlayerList(c)
 		return c.JSON(http.StatusOK, playerList)
 	})
 	e.GET("/theme", getTheme)
@@ -69,10 +84,14 @@ func main() {
 		return c.JSON(http.StatusOK, hintList)
 	})
 	e.GET("/step", getStep)
-	e.GET("/random-theme", getRandomTheme)
 	e.GET("/get-role", getRole)
+	e.GET("/get-role-wolf", getRoleWolf)
 	e.GET("/answer", getAnswer)
 	e.GET("/judgement-answer", getJudgement)
+	e.GET("/vanish-wolf", getChoiceWolf)
+	e.GET("/get-wolf-name", getWolfName)
+	e.GET("/point", getPoint)
+	e.GET("/result", getResult)
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
@@ -83,9 +102,15 @@ func main() {
 	e.POST("/is-correct", postIsCorrect)
 	e.POST("/initialize", postEndGame)
 	e.POST("/how-decide-theme", postDecideTheme)
+	e.POST("/vote", postVote)
+	e.POST("/judgement-wolf", postJudgementWolf)
+	e.POST("/add-step", postAddStep)
 	e.Logger.Fatal(e.Start(":1323"))
 }
-
+func isModeWolf(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	return c.JSON(http.StatusOK,  useDB.IsModeWolf(roomId))
+}
 func isRoomExit(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	exit := useDB.IsRoomExit(roomId)
@@ -97,6 +122,12 @@ func getParticList(c echo.Context) []useDB.PlayerNNNIcon {
 	roomId := c.QueryParam("roomId")
 	playerList := useDB.PlayerList(roomId)
 	return playerList
+}
+
+func getParticListWolf(c echo.Context) []useDB.PlayerInfo {
+	roomId := c.QueryParam("roomId")
+	playerListWolf := useDB.PlayerListWolf(roomId)
+	return playerListWolf
 }
 
 func getTheme(c echo.Context) error {
@@ -114,14 +145,14 @@ func getStep(c echo.Context) error {
 	fmt.Println(roomId)
 	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
 }
-func getRandomTheme(c echo.Context) error {
-	return c.JSON(http.StatusOK, useDB.GetRandomTheme())
-}
 func getRole(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
 	return c.JSON(http.StatusOK, useDB.GetRole(playerId))
 }
-
+func getRoleWolf(c echo.Context) error {
+	playerId := c.QueryParam("playerId")
+	return c.JSON(http.StatusOK, useDB.GetRoleWolf(playerId))
+}
 func getAnswer(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	answer := useDB.GetAnswer(roomId)
@@ -132,13 +163,35 @@ func getJudgement(c echo.Context) error {
 	answer := useDB.JudgementAnswer(roomId)
 	return c.JSON(http.StatusOK, answer)
 }
+func getChoiceWolf(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	return c.JSON(http.StatusOK, useDB.ChoiceWolf(roomId))
+}
+func getPoint(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	fmt.Println(roomId)
+	return c.JSON(http.StatusOK, useDB.PointCal(roomId))
+}
+func getVotePlayerList(c echo.Context) []useDB.VotePlayerInfo{
+	roomId := c.QueryParam("roomId")
+	return useDB.VotePlayerList(roomId)
+}
+
+func getWolfName(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	return c.JSON(http.StatusOK, useDB.WolfName(roomId))
+}
+func getResult(c echo.Context) error {
+	roomId := c.QueryParam("roomId")
+	return c.JSON(http.StatusOK, useDB.GetResult(roomId))
+}
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
-	password := reqBody.Password
-	return c.String(http.StatusOK, useDB.CreateRoom(password, 1, "theme", 0, 0))
+	wolfMode := reqBody.WolfMode
+	return c.String(http.StatusOK, useDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0,true))
 }
 
 func postAddPlayer(c echo.Context) error {
@@ -205,10 +258,11 @@ func postUpdateAnswer(c echo.Context) error {
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
+	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
 	answer := reqBody.Answer
 
-	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId))
+	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId,playerId))
 }
 func postIsCorrect(c echo.Context) error {
 	reqBody := new(IsCorrect)
@@ -230,6 +284,34 @@ func postEndGame(c echo.Context) error {
 	return c.JSON(http.StatusOK, useDB.EndGame(roomId))
 }
 
+func postVote(c echo.Context) error {
+	reqBody := new(Vote)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	roomId := reqBody.RoomId
+	inputPlayerId :=reqBody.InputPlayerId
+	return c.JSON(http.StatusOK, useDB.Vote(playerId,inputPlayerId, roomId))
+}
+func postJudgementWolf(c echo.Context) error {
+	reqBody := new(Vote)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	playerId := reqBody.PlayerId
+	roomId := reqBody.RoomId
+	return c.JSON(http.StatusOK, useDB.JudgementWolf(roomId, playerId))
+}
+func postAddStep(c echo.Context) error {
+	reqBody := new(Game)
+	if err := c.Bind(reqBody); err != nil {
+		return err
+	}
+	roomId := reqBody.RoomId
+
+	return c.JSON(http.StatusOK, useDB.AddStep(roomId))
+}
 // $body = @{
 //     password = "yourpass"
 // } | ConvertTo-Json

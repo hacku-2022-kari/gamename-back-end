@@ -56,7 +56,19 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 		rand.Seed(time.Now().UnixNano())
 		for _, rpDoc := range rpDocs {
 			playerId := rpDoc.Data()["PlayerId"].(string)
-			playerList = append(playerList, playerId)
+			playerDoc, err := client.Collection("Player").Doc(playerId).Get(ctx)
+			if err != nil {
+				log.Println("error getting Player document: \n", err)
+			}
+			bytes, _ := json.Marshal(playerDoc.Data()["Role"])
+			var roleInt int64
+			err = json.Unmarshal(bytes, &roleInt)
+			if err != nil {
+				log.Println("error getting Player document: \n", err)
+			}
+			if int(roleInt) != 1 {
+				playerList = append(playerList, playerId)
+			}
 		}
 		num := rand.Intn(len(playerList))
 		playerDoc, err := client.Collection("Player").Doc(playerList[num]).Get(ctx)
@@ -66,13 +78,17 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 
 		roomRef := client.Collection("Room").Doc(roomId)
 		_, _err := roomRef.Set(ctx, map[string]interface{}{
-			"Step":  3,
 			"Theme": playerDoc.Data()["Theme"].(string),
 		}, firestore.MergeAll)
 		if _err != nil {
 			return false
 		}
-
+		_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
+			{Path: "Step", Value: 3},
+		})
+		if err != nil {
+			return false
+		}
 	}
 
 	defer client.Close()

@@ -21,6 +21,13 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 
 	var step int = 2
 	if howToDecideTheme == 1 {
+		roomRef := client.Collection("Room").Doc(roomId)
+		_, _err := roomRef.Set(ctx, map[string]interface{}{
+			"Theme": GetRandomTheme(),
+		}, firestore.MergeAll)
+		if _err != nil {
+			return false
+		}
 		step = 3
 	}
 
