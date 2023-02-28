@@ -49,5 +49,3 @@ func HintList(roomId string) []HintKey {
 	return hintList
 
 }
-
-//cbBipgOwuA8wxu5XAXFW
