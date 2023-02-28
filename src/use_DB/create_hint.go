@@ -13,11 +13,12 @@ func CreateHint(inputHint string, playerId string, roomId string) bool {
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
+
 	docRef := client.Collection("Player").Doc(playerId)
-	_, _err := docRef.Set(ctx, map[string]interface{}{
+	_, nil := docRef.Set(ctx, map[string]interface{}{
 		"Hint": inputHint,
 	}, firestore.MergeAll)
-	if _err != nil {
+	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
 

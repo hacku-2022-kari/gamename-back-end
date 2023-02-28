@@ -79,9 +79,9 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 		PlayerId: docRef.ID,
 	}
 	ref := client.Collection("RoomPlayer").NewDoc()
-	_, _err := ref.Set(ctx, roomPlayer)
-	if _err != nil {
-		log.Printf("An error has occurred: %s", _err)
+	_, err = ref.Set(ctx, roomPlayer)
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 	defer client.Close()
 	return docRef.ID

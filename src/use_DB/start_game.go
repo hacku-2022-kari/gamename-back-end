@@ -48,12 +48,12 @@ func StartGame(roomId string) bool {
 		if err != nil {
 			return false
 		}
-		_, _err := playerDoc.Set(ctx, map[string]interface{}{
+		_, err := playerDoc.Set(ctx, map[string]interface{}{
 			"Role": roleCount,
 			"Wolf": false,
 		}, firestore.MergeAll)
 
-		if _err != nil {
+		if err != nil {
 			return false
 		}
 		if roleCount != 3 {
@@ -78,11 +78,11 @@ func StartGame(roomId string) bool {
 			if err != nil {
 				return false
 			}
-			_, _err := playerDoc.Set(ctx, map[string]interface{}{
+			_, err := playerDoc.Set(ctx, map[string]interface{}{
 				"Wolf": true,
 			}, firestore.MergeAll)
 
-			if _err != nil {
+			if err != nil {
 				return false
 			}
 		}

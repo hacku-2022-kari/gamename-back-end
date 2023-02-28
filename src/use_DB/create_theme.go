@@ -18,11 +18,11 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 	}
 
 	docRef := client.Collection("Player").Doc(playerId)
-	_, _err := docRef.Set(ctx, map[string]interface{}{
+	_, err = docRef.Set(ctx, map[string]interface{}{
 		"Theme":  inputTheme,
 		"Status": true,
 	}, firestore.MergeAll)
-	if _err != nil {
+	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
 

@@ -29,7 +29,7 @@ func connnectDB() (context.Context, *firestore.Client) {
 	app, err := firebase.NewApp(ctx, config, sa)
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	client, err := app.Firestore(ctx)

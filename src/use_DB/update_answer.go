@@ -12,10 +12,10 @@ func UpdateAnswer(answer string, roomId string) bool {
 		return false
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
-	_, _err := roomRef.Set(ctx, map[string]interface{}{
+	_, err = roomRef.Set(ctx, map[string]interface{}{
 		"Answer": answer,
 	}, firestore.MergeAll)
-	if _err != nil {
+	if err != nil {
 		return false
 	}
 	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
