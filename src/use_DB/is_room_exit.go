@@ -1,7 +1,12 @@
 package useDB
 
+import "log"
+
 func IsRoomExit(id string) bool {
-	ctx, client := connnectDB()
+	ctx, client, err := connectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
+	}
 	docRef := client.Collection("Room").Doc(id)
 
 	docSnapshot, err := docRef.Get(ctx)
