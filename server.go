@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	useDB "gamename-back-end/pkg/use_DB/cruds"
+	useDB "gamename-back-end/pkg/use_DB"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
