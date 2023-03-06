@@ -6,8 +6,8 @@ import (
 )
 
 func GetResult(roomId string) interface{} {
-	ctx, client, _err := connectDB.ConnectDB()
-	if _err != nil {
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
 		log.Println("error getting Player document: \n", err)
 
 	}

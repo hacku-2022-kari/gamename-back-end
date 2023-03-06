@@ -15,8 +15,8 @@ type VotePlayerInfo struct {
 }
 
 func VotePlayerList(roomId string) []VotePlayerInfo {
-	ctx, client, _err := connectDB.ConnectDB()
-	if _err != nil {
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
 		log.Println("error getting Player document: \n", err)
 
 	}
