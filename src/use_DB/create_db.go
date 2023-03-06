@@ -11,15 +11,15 @@ import (
 )
 
 type Room struct {
-	PaticNum   int
-	Theme      string
-	Phase      int
-	Step       int
-	IsModeWolf bool
-	IsExitWolf bool
-	PeaceVote  int
+	PaticNum      int
+	Theme         string
+	Phase         int
+	Step          int
+	IsModeWolf    bool
+	IsExitWolf    bool
+	PeaceVote     int
 	IsCorrectWolf bool
-	Result int
+	Result        int
 }
 
 func connnectDB() (context.Context, *firestore.Client) {
@@ -29,25 +29,25 @@ func connnectDB() (context.Context, *firestore.Client) {
 	app, err := firebase.NewApp(ctx, config, sa)
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	client, err := app.Firestore(ctx)
 	return ctx, client
 }
 
-func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int,isCorrectWolf bool) string {
+func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int, isCorrectWolf bool) string {
 
 	room := Room{
-		PaticNum:   particNum,
-		Theme:      theme,
-		Phase:      phase,
-		Step:       step,
-		IsModeWolf: wolfMode,
-		IsExitWolf: isExitWolf,
-		PeaceVote:  peaceVote,
+		PaticNum:      particNum,
+		Theme:         theme,
+		Phase:         phase,
+		Step:          step,
+		IsModeWolf:    wolfMode,
+		IsExitWolf:    isExitWolf,
+		PeaceVote:     peaceVote,
 		IsCorrectWolf: isCorrectWolf,
-		Result :1,
+		Result:        1,
 	}
 
 	ctx, client := connnectDB()

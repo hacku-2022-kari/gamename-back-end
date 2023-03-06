@@ -5,9 +5,9 @@ import (
 )
 
 func IsModeWolf(roomId string) bool {
-	ctx, client ,err:= connectDB()
+	ctx, client, err := connectDB()
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {
@@ -17,4 +17,3 @@ func IsModeWolf(roomId string) bool {
 	defer client.Close()
 	return roomDoc.Data()["IsModeWolf"].(bool)
 }
-

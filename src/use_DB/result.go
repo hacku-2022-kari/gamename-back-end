@@ -4,15 +4,15 @@ import (
 	"log"
 )
 
-func GetResult(roomId string) interface{}{
-	ctx, client, _err := connectDB()
-	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+func GetResult(roomId string) interface{} {
+	ctx, client, err := connectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	iter, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {
-		log.Fatalf("error getting Room documents: %v\n", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 	result := iter.Data()["Result"]
 	defer client.Close()

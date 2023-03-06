@@ -14,16 +14,16 @@ func CreateTheme(inputTheme string, playerId string, roomId string) bool {
 	ctx, client, err := connectDB()
 
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	docRef := client.Collection("Player").Doc(playerId)
-	_, _err := docRef.Set(ctx, map[string]interface{}{
+	_, err = docRef.Set(ctx, map[string]interface{}{
 		"Theme":  inputTheme,
 		"Status": true,
 	}, firestore.MergeAll)
-	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)

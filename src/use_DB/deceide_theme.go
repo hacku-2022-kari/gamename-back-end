@@ -12,20 +12,20 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 		return false
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
-	_, _err := roomRef.Set(ctx, map[string]interface{}{
+	_, err = roomRef.Set(ctx, map[string]interface{}{
 		"HowToDecideTheme": howToDecideTheme,
 	}, firestore.MergeAll)
-	if _err != nil {
+	if err != nil {
 		return false
 	}
 
 	var step int = 2
 	if howToDecideTheme == 1 {
 		roomRef := client.Collection("Room").Doc(roomId)
-		_, _err := roomRef.Set(ctx, map[string]interface{}{
+		_, err := roomRef.Set(ctx, map[string]interface{}{
 			"Theme": GetRandomTheme(),
 		}, firestore.MergeAll)
-		if _err != nil {
+		if err != nil {
 			return false
 		}
 		step = 3

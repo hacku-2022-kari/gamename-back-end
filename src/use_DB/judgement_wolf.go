@@ -8,9 +8,9 @@ import (
 
 // 0(平和村,true),1(平和村,false),2(人狼村,true),3(人狼村,false)
 func JudgementWolf(roomId string, playerId string) int {
-	ctx, client, _err := connectDB()
-	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+	ctx, client, err := connectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	var branch = []bool{true, true}
@@ -19,7 +19,7 @@ func JudgementWolf(roomId string, playerId string) int {
 
 	roomIter, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {
-		log.Fatalf("error getting Room documents: %v\n", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 	if roomIter.Data()["IsExitWolf"].(bool) == true {
 		branch[0] = false
@@ -29,7 +29,7 @@ func JudgementWolf(roomId string, playerId string) int {
 		{Path: "Step", Value: 10},
 	})
 	if err != nil {
-		log.Fatalf("error getting Room documents: %v\n", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	playerIter, err := client.Collection("Player").Doc(playerId).Get(ctx)
@@ -42,7 +42,7 @@ func JudgementWolf(roomId string, playerId string) int {
 				{Path: "IsCorrectWolf", Value: false},
 			})
 			if err != nil {
-				log.Fatalf("error getting Room documents: %v\n", err)
+				log.Printf("An error has occurred: %s", err)
 			}
 			_, err = roomRef.Update(ctx, []firestore.Update{
 				{Path: "Result", Value: 4},
@@ -78,7 +78,7 @@ func JudgementWolf(roomId string, playerId string) int {
 			{Path: "IsCorrectWolf", Value: false},
 		})
 		if err != nil {
-			log.Fatalf("error getting Room documents: %v\n", err)
+			log.Printf("An error has occurred: %s", err)
 		}
 		_, err = roomRef.Update(ctx, []firestore.Update{
 			{Path: "Result", Value: 2},
@@ -94,7 +94,7 @@ func JudgementWolf(roomId string, playerId string) int {
 			{Path: "IsCorrectWolf", Value: false},
 		})
 		if err != nil {
-			log.Fatalf("error getting Room documents: %v\n", err)
+			log.Printf("An error has occurred: %s", err)
 		}
 		_, err = roomRef.Update(ctx, []firestore.Update{
 			{Path: "Result", Value: 4},

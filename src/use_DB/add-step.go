@@ -7,12 +7,12 @@ import (
 )
 
 func AddStep(roomId string) bool {
-	ctx, client, _err := connectDB()
-	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+	ctx, client, err := connectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
-	_, err := roomRef.Set(ctx, map[string]interface{}{
+	_, nil := roomRef.Set(ctx, map[string]interface{}{
 		"Step": 8,
 	}, firestore.MergeAll)
 	if err != nil {

@@ -8,22 +8,22 @@ import (
 
 // TODO: 構造体の命名の検討
 type VotePlayerInfo struct {
-	PlayerId   string	`json:"playerid"`
-	NickName   string	`json:"nickname"`
-	ParticIcon int		`json:"particIcon"`
-	Text      string	`json:"text"`
+	PlayerId   string `json:"playerid"`
+	NickName   string `json:"nickname"`
+	ParticIcon int    `json:"particIcon"`
+	Text       string `json:"text"`
 }
 
 func VotePlayerList(roomId string) []VotePlayerInfo {
-	ctx, client, _err := connectDB()
-	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+	ctx, client, err := connectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 	defer client.Close()
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
-		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	var votePlayerList []VotePlayerInfo
@@ -32,7 +32,7 @@ func VotePlayerList(roomId string) []VotePlayerInfo {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			log.Printf("An error has occurred: %s", err)
 		}
 
 		var addPlayer VotePlayerInfo
@@ -45,18 +45,18 @@ func VotePlayerList(roomId string) []VotePlayerInfo {
 		var roleInt int64
 		err = json.Unmarshal(bytes, &roleInt)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			log.Printf("An error has occurred: %s", err)
 		}
 
 		if int(roleInt) == 1 {
 			addPlayer.Text = playerDoc.Data()["Answer"].(string)
 			votePlayerList = append([]VotePlayerInfo{addPlayer}, votePlayerList...)
-		}else{
+		} else {
 			addPlayer.Text = playerDoc.Data()["Hint"].(string)
-			votePlayerList= append(votePlayerList, addPlayer)
+			votePlayerList = append(votePlayerList, addPlayer)
 
 		}
-		
+
 	}
 	fmt.Println(votePlayerList)
 	return votePlayerList
