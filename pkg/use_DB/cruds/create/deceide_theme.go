@@ -14,10 +14,10 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 		return false
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
-	_, _err := roomRef.Set(ctx, map[string]interface{}{
+	_, err = roomRef.Set(ctx, map[string]interface{}{
 		"HowToDecideTheme": howToDecideTheme,
 	}, firestore.MergeAll)
-	if _err != nil {
+	if err != nil {
 		return false
 	}
 

@@ -14,7 +14,8 @@ type RoleWolf struct {
 func GetRoleWolf(playerId string) RoleWolf {
 	ctx, client, _err := connectDB.ConnectDB()
 	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+		log.Println("error getting Player document: \n", err)
+
 	}
 	iter, err := client.Collection("Player").Doc(playerId).Get(ctx)
 	if err != nil {

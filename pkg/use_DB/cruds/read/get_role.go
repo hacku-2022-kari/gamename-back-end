@@ -8,7 +8,7 @@ import (
 func GetRole(playerId string) interface{} {
 	ctx, client, _err := connectDB.ConnectDB()
 	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+		log.Printf("An error has occurred: %s", _err)
 	}
 	iter, err := client.Collection("Player").Doc(playerId).Get(ctx)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 func IsModeWolf(roomId string) bool {
 	ctx, client, err := connectDB.ConnectDB()
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		log.Println("error getting Player document: \n", err)
 	}
 	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {

@@ -8,12 +8,12 @@ import (
 func GetAnswer(roomId string) string {
 	ctx, client, err := connectDB.ConnectDB()
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		log.Println("error getting Player document: \n", err)
 	}
 
 	iter, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {
-		log.Fatalf("error getting Room documents: %v\n", err)
+		log.Println("error getting Player document: \n", err)
 	}
 	answer := iter.Data()["Answer"].(string)
 	defer client.Close()

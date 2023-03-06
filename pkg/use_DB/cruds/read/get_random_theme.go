@@ -11,7 +11,7 @@ func GetRandomTheme() string {
 	ctx, client, err := connectDB.ConnectDB()
 
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	docs, err := client.Collection("Random_theme").Documents(ctx).GetAll()
@@ -25,7 +25,7 @@ func GetRandomTheme() string {
 
 	iter, err := client.Collection("Random_theme").Doc(docRef.ID).Get(ctx)
 	if err != nil {
-		log.Fatalf("error getting Room documents: %v\n", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 	theme := iter.Data()["theme"].(string)
 	defer client.Close()

@@ -2,7 +2,6 @@ package readDB
 
 import (
 	"encoding/json"
-	"fmt"
 	connectDB "gamename-back-end/pkg/connect_db"
 	"log"
 )
@@ -18,13 +17,15 @@ type VotePlayerInfo struct {
 func VotePlayerList(roomId string) []VotePlayerInfo {
 	ctx, client, _err := connectDB.ConnectDB()
 	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+		log.Println("error getting Player document: \n", err)
+
 	}
 	defer client.Close()
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
-		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
+		log.Println("error getting Player document: \n", err)
+
 	}
 
 	var votePlayerList []VotePlayerInfo
@@ -33,7 +34,8 @@ func VotePlayerList(roomId string) []VotePlayerInfo {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			log.Println("error getting Player document: \n", err)
+
 		}
 
 		var addPlayer VotePlayerInfo
@@ -46,7 +48,8 @@ func VotePlayerList(roomId string) []VotePlayerInfo {
 		var roleInt int64
 		err = json.Unmarshal(bytes, &roleInt)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			log.Println("error getting Player document: \n", err)
+
 		}
 
 		if int(roleInt) == 1 {
@@ -59,7 +62,7 @@ func VotePlayerList(roomId string) []VotePlayerInfo {
 		}
 
 	}
-	fmt.Println(votePlayerList)
+
 	return votePlayerList
 
 }

@@ -13,10 +13,10 @@ func UpdateAnswer(answer string, roomId string, playerId string) bool {
 		return false
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
-	_, _err := roomRef.Set(ctx, map[string]interface{}{
+	_, err = roomRef.Set(ctx, map[string]interface{}{
 		"Answer": answer,
 	}, firestore.MergeAll)
-	if _err != nil {
+	if err != nil {
 		return false
 	}
 	playerRef := client.Collection("Player").Doc(playerId)
@@ -36,9 +36,4 @@ func UpdateAnswer(answer string, roomId string, playerId string) bool {
 	return true
 }
 
-// $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
-//		playerId = ""
-//     answer = "ピカチュウ"
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/update-answer -Body $body -ContentType "application/json;charset=UTF-8"
+

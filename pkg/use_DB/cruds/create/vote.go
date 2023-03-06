@@ -12,7 +12,7 @@ func Vote(playerId string, inputPlayerId string, roomId string) bool {
 
 	ctx, client, err := connectDB.ConnectDB()
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	if playerId == inputPlayerId {

@@ -31,9 +31,3 @@ func IsCorrect(roomId string, isCorrect bool) bool {
 	return true
 
 }
-
-// $body = @{
-//     roomId = "idkAj1Km0ACPCkQybbPD"
-// 	isCorrect = $False
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/is-correct -Body $body -ContentType "application/json"

@@ -14,13 +14,13 @@ type PlayerNNNIcon struct {
 func PlayerList(roomId string) []PlayerNNNIcon {
 	ctx, client, _err := connectDB.ConnectDB()
 	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+		log.Printf("An error has occurred: %s", _err)
 	}
 	defer client.Close()
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
-		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	var playerList []PlayerNNNIcon
@@ -29,21 +29,16 @@ func PlayerList(roomId string) []PlayerNNNIcon {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			log.Printf("An error has occurred: %s", err)
 		}
-		// playerName := playerDoc.Data()["PlayerName"].(string)
-		// playerIcon := int(playerDoc.Data()["Icon"].(int64))
 
 		var addPlayer PlayerNNNIcon
 		addPlayer.NickName = playerDoc.Data()["PlayerName"].(string)
 		addPlayer.ParticIcon = int(playerDoc.Data()["Icon"].(int64))
 		playerList = append(playerList, addPlayer)
 
-		// playerList = append(playerList, []interface{}{playerName, playerIcon})
 	}
 
 	return playerList
 
 }
-
-//cbBipgOwuA8wxu5XAXFW
