@@ -31,9 +31,3 @@ func DeleteHint(hintList []string, roomId string) bool {
 	defer client.Close()
 	return true
 }
-
-// $body = @{
-// 	roomId = "cvi4EfisvGjd5jUJu3PS"
-//     hint = @("OfjME4tAGeheTuUHLIQu")
-// } | ConvertTo-Json -Depth 100
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/delete-hint -Body $body -ContentType "application/json;charset=UTF-8"

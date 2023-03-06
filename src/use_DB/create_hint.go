@@ -59,11 +59,3 @@ func CreateHint(inputHint string, playerId string, roomId string) bool {
 	defer client.Close()
 	return true
 }
-
-// $body = @{
-// 	playerId = "FMJDJf3S6uGhEwfsf5qR"
-// 	Hint= "黄色"
-// 	roomId = "idkAj1Km0ACPCkQybbPD"
-// } | ConvertTo-Json
-
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-hint -Body $body -ContentType "application/json;charset=UTF-8"

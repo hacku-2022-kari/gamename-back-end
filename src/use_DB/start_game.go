@@ -16,9 +16,9 @@ func StartGame(roomId string) bool {
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
 	_, err = roomRef.Update(ctx, []firestore.Update{
-		{Path: "Phase", Value: firestore.Increment(1)},
-		{Path: "IsExitWolf", Value: false},
-		{Path: "PeaceVote", Value: 0},
+		{Path:"Phase",Value:firestore.Increment(1)},
+		{Path:"IsExitWolf",Value:false},
+		{Path:"PeaceVote",Value:0},
 	})
 
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
@@ -43,6 +43,7 @@ func StartGame(roomId string) bool {
 	var roleCount int = 1
 	rand.Seed(time.Now().UnixNano())
 
+
 	for i := range playerList {
 		playerDoc := client.Collection("Player").Doc(playerList[i])
 		if err != nil {
@@ -63,11 +64,19 @@ func StartGame(roomId string) bool {
 
 	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if roomDoc.Data()["IsModeWolf"].(bool) == true {
+	if roomDoc.Data()["IsModeWolf"].(bool) == true {
 		rand.Seed(time.Now().UnixNano())
+		if rand.Intn(3) != 0 {
 		if rand.Intn(3) != 0 {
 			_, err = roomRef.Update(ctx, []firestore.Update{
 				{Path: "IsExitWolf", Value: true},
+				{Path: "IsExitWolf", Value: true},
 			})
+
+			for i := range playerList {
+				j := rand.Intn(i + 1)
+				playerList[i], playerList[j] = playerList[j], playerList[i]
+			}
 
 			for i := range playerList {
 				j := rand.Intn(i + 1)
@@ -88,17 +97,13 @@ func StartGame(roomId string) bool {
 		}
 	}
 
-	_, _err := roomRef.Set(ctx, map[string]interface{}{
+
+	_, err = roomRef.Set(ctx, map[string]interface{}{
 		"Step": 1,
 	}, firestore.MergeAll)
-	if _err != nil {
+	if err != nil {
 		return false
 	}
 	defer client.Close()
 	return true
 }
-
-// $body = @{
-//     roomId = "YWgvWDZf3gXtNkzDCiyC"
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/start-game -Body $body -ContentType "application/json"

@@ -44,6 +44,7 @@ type Game struct {
 }
 type Answer struct {
 	RoomId string `json:"roomId"`
+	PlayerId string `json:"playerId"`
 	Answer string `json:"answer"`
 }
 type IsCorrect struct {
@@ -257,10 +258,11 @@ func postUpdateAnswer(c echo.Context) error {
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
+	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
 	answer := reqBody.Answer
 
-	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId))
+	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId,playerId))
 }
 func postIsCorrect(c echo.Context) error {
 	reqBody := new(IsCorrect)
