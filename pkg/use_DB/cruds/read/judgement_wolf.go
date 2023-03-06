@@ -1,5 +1,4 @@
-package useDB
-
+package readDB
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
 	"log"

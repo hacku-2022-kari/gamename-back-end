@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	useDB "gamename-back-end/pkg/use_DB"
+	useDB "gamename-back-end/pkg/use_DB/cruds/create"
+	readDB "gamename-back-end/pkg/use_DB/cruds/read"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -98,80 +99,80 @@ func main() {
 }
 func isModeWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.IsModeWolf(roomId))
+	return c.JSON(http.StatusOK, readDB.IsModeWolf(roomId))
 }
 func isRoomExit(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	exit := useDB.IsRoomExit(roomId)
+	exit := readDB.IsRoomExit(roomId)
 
 	return c.JSON(http.StatusOK, exit)
 }
 func getParticList(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	playerList := useDB.PlayerList(roomId)
+	playerList := readDB.PlayerList(roomId)
 	return c.JSON(http.StatusOK, playerList)
 }
 
 func getParticListWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	playerListWolf := useDB.PlayerListWolf(roomId)
+	playerListWolf := readDB.PlayerListWolf(roomId)
 	return c.JSON(http.StatusOK, playerListWolf)
 }
 
 func getTheme(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	theme := useDB.GetTheme(roomId)
+	theme := readDB.GetTheme(roomId)
 	return c.JSON(http.StatusOK, theme)
 }
 
 func getHintList(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.HintList(roomId))
+	return c.JSON(http.StatusOK, readDB.HintList(roomId))
 }
 func getStep(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	fmt.Println(roomId)
-	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
+	return c.JSON(http.StatusOK, readDB.GetStep(roomId))
 }
 func getRole(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
-	return c.JSON(http.StatusOK, useDB.GetRole(playerId))
+	return c.JSON(http.StatusOK, readDB.GetRole(playerId))
 }
 func getRoleWolf(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
-	return c.JSON(http.StatusOK, useDB.GetRoleWolf(playerId))
+	return c.JSON(http.StatusOK, readDB.GetRoleWolf(playerId))
 }
 func getAnswer(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	answer := useDB.GetAnswer(roomId)
+	answer := readDB.GetAnswer(roomId)
 	return c.JSON(http.StatusOK, answer)
 }
 func getJudgement(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	answer := useDB.JudgementAnswer(roomId)
+	answer := readDB.JudgementAnswer(roomId)
 	return c.JSON(http.StatusOK, answer)
 }
 func getChoiceWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.ChoiceWolf(roomId))
+	return c.JSON(http.StatusOK, readDB.ChoiceWolf(roomId))
 }
 func getPoint(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	fmt.Println(roomId)
-	return c.JSON(http.StatusOK, useDB.PointCal(roomId))
+	return c.JSON(http.StatusOK, readDB.PointCal(roomId))
 }
 func getVotePlayerList(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.VotePlayerList(roomId))
+	return c.JSON(http.StatusOK, readDB.VotePlayerList(roomId))
 }
 
 func getWolfName(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.WolfName(roomId))
+	return c.JSON(http.StatusOK, readDB.WolfName(roomId))
 }
 func getResult(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.GetResult(roomId))
+	return c.JSON(http.StatusOK, readDB.GetResult(roomId))
 }
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
@@ -289,7 +290,7 @@ func postJudgementWolf(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.JudgementWolf(roomId, playerId))
+	return c.JSON(http.StatusOK, readDB.JudgementWolf(roomId, playerId))
 }
 func postAddStep(c echo.Context) error {
 	reqBody := new(Game)

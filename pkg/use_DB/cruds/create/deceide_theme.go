@@ -2,6 +2,7 @@ package useDB
 
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
+	readDB "gamename-back-end/pkg/use_DB/cruds/read"
 
 	"cloud.google.com/go/firestore"
 )
@@ -24,7 +25,7 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 	if howToDecideTheme == 1 {
 		roomRef := client.Collection("Room").Doc(roomId)
 		_, _err := roomRef.Set(ctx, map[string]interface{}{
-			"Theme": GetRandomTheme(),
+			"Theme": readDB.GetRandomTheme(),
 		}, firestore.MergeAll)
 		if _err != nil {
 			return false
