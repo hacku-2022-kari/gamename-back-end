@@ -1,4 +1,5 @@
 package readDB
+
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
 	"log"
@@ -8,9 +9,9 @@ import (
 
 // 0(平和村,true),1(平和村,false),2(人狼村,true),3(人狼村,false)
 func JudgementWolf(roomId string, playerId string) int {
-	ctx, client, _err := connectDB.ConnectDB()
-	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	var branch = []bool{true, true}
@@ -19,7 +20,7 @@ func JudgementWolf(roomId string, playerId string) int {
 
 	roomIter, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {
-		log.Fatalf("error getting Room documents: %v\n", err)
+		log.Printf("error getting Room documents: %v\n", err)
 	}
 	if roomIter.Data()["IsExitWolf"].(bool) == true {
 		branch[0] = false
@@ -29,7 +30,7 @@ func JudgementWolf(roomId string, playerId string) int {
 		{Path: "Step", Value: 10},
 	})
 	if err != nil {
-		log.Fatalf("error getting Room documents: %v\n", err)
+		log.Printf("error getting Room documents: %v\n", err)
 	}
 
 	playerIter, err := client.Collection("Player").Doc(playerId).Get(ctx)
@@ -42,7 +43,7 @@ func JudgementWolf(roomId string, playerId string) int {
 				{Path: "IsCorrectWolf", Value: false},
 			})
 			if err != nil {
-				log.Fatalf("error getting Room documents: %v\n", err)
+				log.Printf("error getting Room documents: %v\n", err)
 			}
 			_, err = roomRef.Update(ctx, []firestore.Update{
 				{Path: "Result", Value: 4},
@@ -78,7 +79,7 @@ func JudgementWolf(roomId string, playerId string) int {
 			{Path: "IsCorrectWolf", Value: false},
 		})
 		if err != nil {
-			log.Fatalf("error getting Room documents: %v\n", err)
+			log.Printf("error getting Room documents: %v\n", err)
 		}
 		_, err = roomRef.Update(ctx, []firestore.Update{
 			{Path: "Result", Value: 2},
@@ -94,7 +95,7 @@ func JudgementWolf(roomId string, playerId string) int {
 			{Path: "IsCorrectWolf", Value: false},
 		})
 		if err != nil {
-			log.Fatalf("error getting Room documents: %v\n", err)
+			log.Printf("error getting Room documents: %v\n", err)
 		}
 		_, err = roomRef.Update(ctx, []firestore.Update{
 			{Path: "Result", Value: 4},
@@ -103,9 +104,3 @@ func JudgementWolf(roomId string, playerId string) int {
 	}
 
 }
-
-// $body = @{
-// 	roomId = "COenfmrcKg45g9XLOIfW"
-//     playerId = "eTphewltmutu8twLqzNR"
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/judgement-wolf -Body $body -ContentType "application/json"

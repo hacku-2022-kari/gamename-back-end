@@ -13,15 +13,15 @@ type PlayerInfo struct {
 }
 
 func PlayerListWolf(roomId string) []PlayerInfo {
-	ctx, client, _err := connectDB.ConnectDB()
-	if _err != nil {
-		log.Fatalf("failed to connect to database: %v", _err)
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 	defer client.Close()
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
-		log.Fatalf("error getting RoomPlayer documents: %v\n", err)
+		log.Printf("error getting RoomPlayer documents: %v\n", err)
 	}
 
 	var playerList []PlayerInfo
@@ -30,7 +30,7 @@ func PlayerListWolf(roomId string) []PlayerInfo {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			log.Fatalf("error getting Player document: %v\n", err)
+			log.Printf("error getting Player document: %v\n", err)
 		}
 
 		var addPlayer PlayerInfo
