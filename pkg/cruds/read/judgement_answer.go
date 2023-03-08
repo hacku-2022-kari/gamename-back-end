@@ -6,9 +6,9 @@ import (
 )
 
 func JudgementAnswer(roomId string) bool {
-	ctx, client, _err := connectDB.ConnectDB()
-	if _err != nil {
-		log.Printf("An error has occurred: %s", _err)
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 
 	iter, err := client.Collection("Room").Doc(roomId).Get(ctx)

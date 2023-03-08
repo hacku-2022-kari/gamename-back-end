@@ -14,10 +14,10 @@ func DeleteHint(hintList []string, roomId string) bool {
 	for i := 0; i < len(hintList); i++ {
 
 		docRef := client.Collection("Player").Doc(hintList[i])
-		_, _err := docRef.Set(ctx, map[string]interface{}{
+		_, err = docRef.Set(ctx, map[string]interface{}{
 			"IsDelete": true,
 		}, firestore.MergeAll)
-		if _err != nil {
+		if err != nil {
 			return false
 		}
 

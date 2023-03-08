@@ -15,15 +15,15 @@ type ChoseWolf struct {
 }
 
 func ChoiceWolf(roomId string) ChoseWolf {
-	ctx, client, _err := connectDB.ConnectDB()
-	if _err != nil {
-		log.Println("failed to connect to database: ", _err)
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
+		log.Println("failed to connect to database: ", err)
 	}
 	defer client.Close()
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)
 	rpDocs, err := rpQuery.Documents(ctx).GetAll()
 	if err != nil {
-		log.Println("failed to connect to database: ", _err)
+		log.Println("failed to connect to database: ", err)
 	}
 
 	var maxVote int = 0
@@ -33,14 +33,14 @@ func ChoiceWolf(roomId string) ChoseWolf {
 		playerID := rpDoc.Data()["PlayerId"].(string)
 		playerDoc, err := client.Collection("Player").Doc(playerID).Get(ctx)
 		if err != nil {
-			log.Println("failed to connect to database: ", _err)
+			log.Println("failed to connect to database: ", err)
 		}
 
 		bytes, _ := json.Marshal(playerDoc.Data()["Vote"])
 		var voteInt int64
 		err = json.Unmarshal(bytes, &voteInt)
 		if err != nil {
-			log.Println("failed to connect to database: ", _err)
+			log.Println("failed to connect to database: ", err)
 		}
 		if maxVote == int(voteInt) {
 			choicedWolf = append(choicedWolf, playerID)
@@ -65,18 +65,18 @@ func ChoiceWolf(roomId string) ChoseWolf {
 
 	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	if err != nil {
-		log.Println("failed to connect to database: ", _err)
+		log.Println("failed to connect to database: ", err)
 	}
 	playerDoc, err := client.Collection("Player").Doc(choicedWolf[0]).Get(ctx)
 	if err != nil {
-		log.Println("failed to connect to database: ", _err)
+		log.Println("failed to connect to database: ", err)
 	}
 
 	bytes, _ := json.Marshal(roomDoc.Data()["PeaceVote"])
 	var voteInt int64
 	err = json.Unmarshal(bytes, &voteInt)
 	if err != nil {
-		log.Println("failed to connect to database: ", _err)
+		log.Println("failed to connect to database: ", err)
 	}
 	if maxVote <= int(voteInt) {
 		choseWolf.Id = "PeaceVillage"

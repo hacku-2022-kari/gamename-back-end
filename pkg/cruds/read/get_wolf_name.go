@@ -5,9 +5,9 @@ import (
 )
 
 func WolfName(roomId string) string {
-	ctx, client, _err := connectDB.ConnectDB()
-	if _err != nil {
-		log.Printf("An error has occurred: %s", _err)
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
 	}
 	defer client.Close()
 	rpQuery := client.Collection("RoomPlayer").Where("RoomId", "==", roomId)

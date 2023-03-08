@@ -18,7 +18,7 @@ func EndGame(roomId string) bool {
 	roomRef := client.Collection("Room").Doc(roomId)
 	roomDoc, err := client.Collection("Room").Doc(roomId).Get(ctx)
 	modeWolf := roomDoc.Data()["IsModeWolf"].(bool)
-	_, _err := roomRef.Set(ctx, map[string]interface{}{
+	_, err = roomRef.Set(ctx, map[string]interface{}{
 		"Answer":           "no-answer",
 		"Step":             0,
 		"HowToDecideTheme": 0,
@@ -28,7 +28,7 @@ func EndGame(roomId string) bool {
 		"IsExitWolf":       false,
 		"PeaceVote":        0,
 	}, firestore.MergeAll)
-	if _err != nil {
+	if err != nil {
 		return false
 	}
 

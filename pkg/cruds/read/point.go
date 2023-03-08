@@ -8,8 +8,8 @@ import (
 )
 
 func PointCal(roomId string) bool {
-	ctx, client, _err := connectDB.ConnectDB()
-	if _err != nil {
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
 		return false
 	}
 	defer client.Close()
@@ -66,7 +66,7 @@ func PointCal(roomId string) bool {
 		{Path: "Step", Value: 11},
 	})
 	if err != nil {
-		log.Println("failed to connect to database: ", _err)
+		log.Println("failed to connect to database: ", err)
 	}
 
 	return true
