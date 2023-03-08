@@ -1,4 +1,4 @@
-package useDB
+package createDB
 
 import (
 	"encoding/json"

@@ -1,13 +1,12 @@
-package useDB
+package createDB
 
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
-	readDB "gamename-back-end/pkg/use_DB/cruds/read"
 
 	"cloud.google.com/go/firestore"
 )
 
-func DecideTheme(roomId string, howToDecideTheme int) bool {
+func UpdateAnswer(answer string, roomId string, playerId string) bool {
 
 	ctx, client, err := connectDB.ConnectDB()
 	if err != nil {
@@ -15,26 +14,20 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
 	_, err = roomRef.Set(ctx, map[string]interface{}{
-		"HowToDecideTheme": howToDecideTheme,
+		"Answer": answer,
 	}, firestore.MergeAll)
 	if err != nil {
 		return false
 	}
-
-	var step int = 2
-	if howToDecideTheme == 1 {
-		roomRef := client.Collection("Room").Doc(roomId)
-		_, _err := roomRef.Set(ctx, map[string]interface{}{
-			"Theme": readDB.GetRandomTheme(),
-		}, firestore.MergeAll)
-		if _err != nil {
-			return false
-		}
-		step = 3
+	playerRef := client.Collection("Player").Doc(playerId)
+	_, err = playerRef.Set(ctx, map[string]interface{}{
+		"Answer": answer,
+	}, firestore.MergeAll)
+	if err != nil {
+		return false
 	}
-
 	_, err = client.Collection("Room").Doc(roomId).Update(ctx, []firestore.Update{
-		{Path: "Step", Value: step},
+		{Path: "Step", Value: 6},
 	})
 	if err != nil {
 		return false
@@ -42,3 +35,5 @@ func DecideTheme(roomId string, howToDecideTheme int) bool {
 	defer client.Close()
 	return true
 }
+
+

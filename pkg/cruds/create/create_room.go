@@ -1,4 +1,4 @@
-package useDB
+package createDB
 
 import (
 	connectDB "gamename-back-end/pkg/connect_db"

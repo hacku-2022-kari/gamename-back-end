@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	useDB "gamename-back-end/pkg/use_DB/cruds/create"
-	readDB "gamename-back-end/pkg/use_DB/cruds/read"
+	createDB "gamename-back-end/pkg/cruds/create"
+	readDB "gamename-back-end/pkg/cruds/read"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -180,7 +180,7 @@ func createRoom(c echo.Context) error {
 		return err
 	}
 	wolfMode := reqBody.WolfMode
-	return c.String(http.StatusOK, useDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0, true))
+	return c.String(http.StatusOK, createDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0, true))
 }
 
 func postAddPlayer(c echo.Context) error {
@@ -191,7 +191,7 @@ func postAddPlayer(c echo.Context) error {
 	roomId := reqBody.RoomId
 	playerName := reqBody.PlayerName
 	playerIcon := reqBody.PlayerIcon
-	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
+	playerId := createDB.AddPlayer(roomId, playerName, playerIcon)
 	return c.JSON(http.StatusOK, playerId)
 }
 
@@ -203,7 +203,7 @@ func postCreateTheme(c echo.Context) error {
 	playerId := reqBody.PlayerId
 	theme := reqBody.Text
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId, roomId))
+	return c.JSON(http.StatusOK, createDB.CreateTheme(theme, playerId, roomId))
 }
 func postCreateHint(c echo.Context) error {
 	reqBody := new(Hint)
@@ -213,7 +213,7 @@ func postCreateHint(c echo.Context) error {
 	playerId := reqBody.PlayerId
 	hint := reqBody.Hint
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId, roomId))
+	return c.JSON(http.StatusOK, createDB.CreateHint(hint, playerId, roomId))
 }
 func postDeleteHint(c echo.Context) error {
 	reqBody := new(DeleteHint)
@@ -222,7 +222,7 @@ func postDeleteHint(c echo.Context) error {
 	}
 	hintList := reqBody.Hint
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList, roomId))
+	return c.JSON(http.StatusOK, createDB.DeleteHint(hintList, roomId))
 }
 func postStartGame(c echo.Context) error {
 	reqBody := new(Game)
@@ -231,7 +231,7 @@ func postStartGame(c echo.Context) error {
 	}
 	roomId := reqBody.RoomId
 
-	return c.JSON(http.StatusOK, useDB.StartGame(roomId))
+	return c.JSON(http.StatusOK, createDB.StartGame(roomId))
 }
 func postDecideTheme(c echo.Context) error {
 	reqBody := new(DecideTheme)
@@ -240,7 +240,7 @@ func postDecideTheme(c echo.Context) error {
 	}
 	roomId := reqBody.RoomId
 	howToDecideTheme := reqBody.HowToDecideTheme
-	return c.JSON(http.StatusOK, useDB.DecideTheme(roomId, howToDecideTheme))
+	return c.JSON(http.StatusOK, createDB.DecideTheme(roomId, howToDecideTheme))
 }
 func postUpdateAnswer(c echo.Context) error {
 	reqBody := new(Answer)
@@ -251,7 +251,7 @@ func postUpdateAnswer(c echo.Context) error {
 	roomId := reqBody.RoomId
 	answer := reqBody.Answer
 
-	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId, playerId))
+	return c.JSON(http.StatusOK, createDB.UpdateAnswer(answer, roomId, playerId))
 }
 func postIsCorrect(c echo.Context) error {
 	reqBody := new(IsCorrect)
@@ -261,7 +261,7 @@ func postIsCorrect(c echo.Context) error {
 	roomId := reqBody.RoomId
 	isCorrect := reqBody.IsCorrect
 
-	return c.JSON(http.StatusOK, useDB.IsCorrect(roomId, isCorrect))
+	return c.JSON(http.StatusOK, createDB.IsCorrect(roomId, isCorrect))
 }
 func postEndGame(c echo.Context) error {
 	reqBody := new(Game)
@@ -270,7 +270,7 @@ func postEndGame(c echo.Context) error {
 	}
 	roomId := reqBody.RoomId
 
-	return c.JSON(http.StatusOK, useDB.EndGame(roomId))
+	return c.JSON(http.StatusOK, createDB.EndGame(roomId))
 }
 
 func postVote(c echo.Context) error {
@@ -281,7 +281,7 @@ func postVote(c echo.Context) error {
 	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
 	inputPlayerId := reqBody.InputPlayerId
-	return c.JSON(http.StatusOK, useDB.Vote(playerId, inputPlayerId, roomId))
+	return c.JSON(http.StatusOK, createDB.Vote(playerId, inputPlayerId, roomId))
 }
 func postJudgementWolf(c echo.Context) error {
 	reqBody := new(Vote)
@@ -299,14 +299,6 @@ func postAddStep(c echo.Context) error {
 	}
 	roomId := reqBody.RoomId
 
-	return c.JSON(http.StatusOK, useDB.AddStep(roomId))
+	return c.JSON(http.StatusOK, createDB.AddStep(roomId))
 }
 
-// $body = @{
-// $body = @{
-//     roomId = "UY8mx0mjFedKiIf1ME0n"
-//		playerName = "1"
-//		playerIcon = 2
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/add-player -Body $body -ContentType "application/json"
-//curl -d "roomId = cbBipgOwuA8wxu5XAXFW" -d "playerName = testman" -d "playerIcon = 3" http://localhost:1323/addPlayer
