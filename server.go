@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	useDB "gamename-back-end/src/use_DB"
+	createDB "gamename-back-end/pkg/cruds/create"
+	readDB "gamename-back-end/pkg/cruds/read"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -43,18 +44,18 @@ type Game struct {
 	RoomId string `json:"roomId"`
 }
 type Answer struct {
-	RoomId string `json:"roomId"`
+	RoomId   string `json:"roomId"`
 	PlayerId string `json:"playerId"`
-	Answer string `json:"answer"`
+	Answer   string `json:"answer"`
 }
 type IsCorrect struct {
 	RoomId    string `json:"roomId"`
 	IsCorrect bool   `json:"isCorrect"`
 }
 type Vote struct {
-	InputPlayerId   string `json:"inputPlayerId"`
-	PlayerId string `json:"playerId"`
-	RoomId   string `json:"roomId"`
+	InputPlayerId string `json:"inputPlayerId"`
+	PlayerId      string `json:"playerId"`
+	RoomId        string `json:"roomId"`
 }
 
 func main() {
@@ -66,23 +67,11 @@ func main() {
 	// ローカル環境の場合、http://localhost:1323/
 	e.GET("/is-mode-wolf", isModeWolf)
 	e.GET("/is-room-exit", isRoomExit)
-	e.GET("/partic-list", func(c echo.Context) error { //TODO関数の管理ときに修正
-		playerList := getParticList(c)
-		return c.JSON(http.StatusOK, playerList)
-	})
-	e.GET("/partic-list-wolf", func(c echo.Context) error { //TODO関数の管理ときに修正
-		playerList := getParticListWolf(c)
-		return c.JSON(http.StatusOK, playerList)
-	})
-	e.GET("/partic-list-vote", func(c echo.Context) error { //TODO関数の管理ときに修正
-		playerList := getVotePlayerList(c)
-		return c.JSON(http.StatusOK, playerList)
-	})
+	e.GET("/partic-list", getParticList)
+	e.GET("/partic-list-wolf", getParticListWolf)
+	e.GET("/partic-list-vote", getVotePlayerList)
 	e.GET("/theme", getTheme)
-	e.GET("/hint-list", func(c echo.Context) error {
-		hintList := getHintList(c)
-		return c.JSON(http.StatusOK, hintList)
-	})
+	e.GET("/hint-list", getHintList)
 	e.GET("/step", getStep)
 	e.GET("/get-role", getRole)
 	e.GET("/get-role-wolf", getRoleWolf)
@@ -92,6 +81,7 @@ func main() {
 	e.GET("/get-wolf-name", getWolfName)
 	e.GET("/point", getPoint)
 	e.GET("/result", getResult)
+
 	e.POST("/create-room", createRoom)
 	e.POST("/add-player", postAddPlayer)
 	e.POST("/create-theme", postCreateTheme)
@@ -109,81 +99,80 @@ func main() {
 }
 func isModeWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK,  useDB.IsModeWolf(roomId))
+	return c.JSON(http.StatusOK, readDB.IsModeWolf(roomId))
 }
 func isRoomExit(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	exit := useDB.IsRoomExit(roomId)
+	exit := readDB.IsRoomExit(roomId)
 
 	return c.JSON(http.StatusOK, exit)
 }
-
-func getParticList(c echo.Context) []useDB.PlayerNNNIcon {
+func getParticList(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	playerList := useDB.PlayerList(roomId)
-	return playerList
+	playerList := readDB.PlayerList(roomId)
+	return c.JSON(http.StatusOK, playerList)
 }
 
-func getParticListWolf(c echo.Context) []useDB.PlayerInfo {
+func getParticListWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	playerListWolf := useDB.PlayerListWolf(roomId)
-	return playerListWolf
+	playerListWolf := readDB.PlayerListWolf(roomId)
+	return c.JSON(http.StatusOK, playerListWolf)
 }
 
 func getTheme(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	theme := useDB.GetTheme(roomId)
+	theme := readDB.GetTheme(roomId)
 	return c.JSON(http.StatusOK, theme)
 }
 
-func getHintList(c echo.Context) []useDB.HintKey {
+func getHintList(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return useDB.HintList(roomId)
+	return c.JSON(http.StatusOK, readDB.HintList(roomId))
 }
 func getStep(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	fmt.Println(roomId)
-	return c.JSON(http.StatusOK, useDB.GetStep(roomId))
+	return c.JSON(http.StatusOK, readDB.GetStep(roomId))
 }
 func getRole(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
-	return c.JSON(http.StatusOK, useDB.GetRole(playerId))
+	return c.JSON(http.StatusOK, readDB.GetRole(playerId))
 }
 func getRoleWolf(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
-	return c.JSON(http.StatusOK, useDB.GetRoleWolf(playerId))
+	return c.JSON(http.StatusOK, readDB.GetRoleWolf(playerId))
 }
 func getAnswer(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	answer := useDB.GetAnswer(roomId)
+	answer := readDB.GetAnswer(roomId)
 	return c.JSON(http.StatusOK, answer)
 }
 func getJudgement(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	answer := useDB.JudgementAnswer(roomId)
+	answer := readDB.JudgementAnswer(roomId)
 	return c.JSON(http.StatusOK, answer)
 }
 func getChoiceWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.ChoiceWolf(roomId))
+	return c.JSON(http.StatusOK, readDB.ChoiceWolf(roomId))
 }
 func getPoint(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	fmt.Println(roomId)
-	return c.JSON(http.StatusOK, useDB.PointCal(roomId))
+	return c.JSON(http.StatusOK, readDB.PointCal(roomId))
 }
-func getVotePlayerList(c echo.Context) []useDB.VotePlayerInfo{
+func getVotePlayerList(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return useDB.VotePlayerList(roomId)
+	return c.JSON(http.StatusOK, readDB.VotePlayerList(roomId))
 }
 
 func getWolfName(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.WolfName(roomId))
+	return c.JSON(http.StatusOK, readDB.WolfName(roomId))
 }
 func getResult(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
-	return c.JSON(http.StatusOK, useDB.GetResult(roomId))
+	return c.JSON(http.StatusOK, readDB.GetResult(roomId))
 }
 func createRoom(c echo.Context) error {
 	reqBody := new(Room)
@@ -191,7 +180,7 @@ func createRoom(c echo.Context) error {
 		return err
 	}
 	wolfMode := reqBody.WolfMode
-	return c.String(http.StatusOK, useDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0,true))
+	return c.String(http.StatusOK, createDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0, true))
 }
 
 func postAddPlayer(c echo.Context) error {
@@ -202,7 +191,7 @@ func postAddPlayer(c echo.Context) error {
 	roomId := reqBody.RoomId
 	playerName := reqBody.PlayerName
 	playerIcon := reqBody.PlayerIcon
-	playerId := useDB.AddPlayer(roomId, playerName, playerIcon)
+	playerId := createDB.AddPlayer(roomId, playerName, playerIcon)
 	return c.JSON(http.StatusOK, playerId)
 }
 
@@ -214,7 +203,7 @@ func postCreateTheme(c echo.Context) error {
 	playerId := reqBody.PlayerId
 	theme := reqBody.Text
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.CreateTheme(theme, playerId, roomId))
+	return c.JSON(http.StatusOK, createDB.CreateTheme(theme, playerId, roomId))
 }
 func postCreateHint(c echo.Context) error {
 	reqBody := new(Hint)
@@ -224,7 +213,7 @@ func postCreateHint(c echo.Context) error {
 	playerId := reqBody.PlayerId
 	hint := reqBody.Hint
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.CreateHint(hint, playerId, roomId))
+	return c.JSON(http.StatusOK, createDB.CreateHint(hint, playerId, roomId))
 }
 func postDeleteHint(c echo.Context) error {
 	reqBody := new(DeleteHint)
@@ -233,7 +222,7 @@ func postDeleteHint(c echo.Context) error {
 	}
 	hintList := reqBody.Hint
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.DeleteHint(hintList, roomId))
+	return c.JSON(http.StatusOK, createDB.DeleteHint(hintList, roomId))
 }
 func postStartGame(c echo.Context) error {
 	reqBody := new(Game)
@@ -242,7 +231,7 @@ func postStartGame(c echo.Context) error {
 	}
 	roomId := reqBody.RoomId
 
-	return c.JSON(http.StatusOK, useDB.StartGame(roomId))
+	return c.JSON(http.StatusOK, createDB.StartGame(roomId))
 }
 func postDecideTheme(c echo.Context) error {
 	reqBody := new(DecideTheme)
@@ -251,7 +240,7 @@ func postDecideTheme(c echo.Context) error {
 	}
 	roomId := reqBody.RoomId
 	howToDecideTheme := reqBody.HowToDecideTheme
-	return c.JSON(http.StatusOK, useDB.DecideTheme(roomId, howToDecideTheme))
+	return c.JSON(http.StatusOK, createDB.DecideTheme(roomId, howToDecideTheme))
 }
 func postUpdateAnswer(c echo.Context) error {
 	reqBody := new(Answer)
@@ -262,7 +251,7 @@ func postUpdateAnswer(c echo.Context) error {
 	roomId := reqBody.RoomId
 	answer := reqBody.Answer
 
-	return c.JSON(http.StatusOK, useDB.UpdateAnswer(answer, roomId,playerId))
+	return c.JSON(http.StatusOK, createDB.UpdateAnswer(answer, roomId, playerId))
 }
 func postIsCorrect(c echo.Context) error {
 	reqBody := new(IsCorrect)
@@ -272,7 +261,7 @@ func postIsCorrect(c echo.Context) error {
 	roomId := reqBody.RoomId
 	isCorrect := reqBody.IsCorrect
 
-	return c.JSON(http.StatusOK, useDB.IsCorrect(roomId, isCorrect))
+	return c.JSON(http.StatusOK, createDB.IsCorrect(roomId, isCorrect))
 }
 func postEndGame(c echo.Context) error {
 	reqBody := new(Game)
@@ -281,7 +270,7 @@ func postEndGame(c echo.Context) error {
 	}
 	roomId := reqBody.RoomId
 
-	return c.JSON(http.StatusOK, useDB.EndGame(roomId))
+	return c.JSON(http.StatusOK, createDB.EndGame(roomId))
 }
 
 func postVote(c echo.Context) error {
@@ -291,8 +280,8 @@ func postVote(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
-	inputPlayerId :=reqBody.InputPlayerId
-	return c.JSON(http.StatusOK, useDB.Vote(playerId,inputPlayerId, roomId))
+	inputPlayerId := reqBody.InputPlayerId
+	return c.JSON(http.StatusOK, createDB.Vote(playerId, inputPlayerId, roomId))
 }
 func postJudgementWolf(c echo.Context) error {
 	reqBody := new(Vote)
@@ -301,7 +290,7 @@ func postJudgementWolf(c echo.Context) error {
 	}
 	playerId := reqBody.PlayerId
 	roomId := reqBody.RoomId
-	return c.JSON(http.StatusOK, useDB.JudgementWolf(roomId, playerId))
+	return c.JSON(http.StatusOK, readDB.JudgementWolf(roomId, playerId))
 }
 func postAddStep(c echo.Context) error {
 	reqBody := new(Game)
@@ -310,10 +299,6 @@ func postAddStep(c echo.Context) error {
 	}
 	roomId := reqBody.RoomId
 
-	return c.JSON(http.StatusOK, useDB.AddStep(roomId))
+	return c.JSON(http.StatusOK, createDB.AddStep(roomId))
 }
-// $body = @{
-//     password = "yourpass"
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/create-room -Body $body -ContentType "application/json"
-//curl -d "roomId = cbBipgOwuA8wxu5XAXFW" -d "playerName = testman" -d "playerIcon = 3" http://localhost:1323/addPlayer
+
