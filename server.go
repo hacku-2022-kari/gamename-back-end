@@ -4,59 +4,12 @@ import (
 	"fmt"
 	createDB "gamename-back-end/pkg/cruds/create"
 	readDB "gamename-back-end/pkg/cruds/read"
+	structManege "gamename-back-end/pkg/struct"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
-
-type Room struct { //TODO　create_dbと被るからそこを考えよう
-	WolfMode bool `json:"wolfMode"`
-}
-
-type Player struct {
-	RoomId     string `json:"roomId"`
-	PlayerName string `json:"playerName"`
-	PlayerIcon int    `json:"playerIcon"`
-}
-
-type Theme struct {
-	PlayerId string `json:"playerId"`
-	RoomId   string `json:"roomId"`
-	Text     string `json:"theme"`
-}
-
-type Hint struct {
-	PlayerId string `json:"playerId"`
-	RoomId   string `json:"roomId"`
-	Hint     string `json:"hint"`
-}
-
-type DeleteHint struct { //TODO structの名前と型の修正
-	RoomId string   `json:"roomId"`
-	Hint   []string `json:"hint"`
-}
-type DecideTheme struct {
-	RoomId           string `json:"roomId"`
-	HowToDecideTheme int    `json:"howToDecideTheme"`
-}
-type Game struct {
-	RoomId string `json:"roomId"`
-}
-type Answer struct {
-	RoomId   string `json:"roomId"`
-	PlayerId string `json:"playerId"`
-	Answer   string `json:"answer"`
-}
-type IsCorrect struct {
-	RoomId    string `json:"roomId"`
-	IsCorrect bool   `json:"isCorrect"`
-}
-type Vote struct {
-	InputPlayerId string `json:"inputPlayerId"`
-	PlayerId      string `json:"playerId"`
-	RoomId        string `json:"roomId"`
-}
 
 func main() {
 	e := echo.New()
@@ -175,7 +128,7 @@ func getResult(c echo.Context) error {
 	return c.JSON(http.StatusOK, readDB.GetResult(roomId))
 }
 func createRoom(c echo.Context) error {
-	reqBody := new(Room)
+	reqBody := new(structManege.Room)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -184,7 +137,7 @@ func createRoom(c echo.Context) error {
 }
 
 func postAddPlayer(c echo.Context) error {
-	reqBody := new(Player)
+	reqBody := new(structManege.Player)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -196,7 +149,7 @@ func postAddPlayer(c echo.Context) error {
 }
 
 func postCreateTheme(c echo.Context) error {
-	reqBody := new(Theme)
+	reqBody := new(structManege.Theme)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -206,7 +159,7 @@ func postCreateTheme(c echo.Context) error {
 	return c.JSON(http.StatusOK, createDB.CreateTheme(theme, playerId, roomId))
 }
 func postCreateHint(c echo.Context) error {
-	reqBody := new(Hint)
+	reqBody := new(structManege.Hint)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -216,7 +169,7 @@ func postCreateHint(c echo.Context) error {
 	return c.JSON(http.StatusOK, createDB.CreateHint(hint, playerId, roomId))
 }
 func postDeleteHint(c echo.Context) error {
-	reqBody := new(DeleteHint)
+	reqBody := new(structManege.DeleteHint)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -225,7 +178,7 @@ func postDeleteHint(c echo.Context) error {
 	return c.JSON(http.StatusOK, createDB.DeleteHint(hintList, roomId))
 }
 func postStartGame(c echo.Context) error {
-	reqBody := new(Game)
+	reqBody := new(structManege.Game)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -234,7 +187,7 @@ func postStartGame(c echo.Context) error {
 	return c.JSON(http.StatusOK, createDB.StartGame(roomId))
 }
 func postDecideTheme(c echo.Context) error {
-	reqBody := new(DecideTheme)
+	reqBody := new(structManege.DecideTheme)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -243,7 +196,7 @@ func postDecideTheme(c echo.Context) error {
 	return c.JSON(http.StatusOK, createDB.DecideTheme(roomId, howToDecideTheme))
 }
 func postUpdateAnswer(c echo.Context) error {
-	reqBody := new(Answer)
+	reqBody := new(structManege.Answer)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -254,7 +207,7 @@ func postUpdateAnswer(c echo.Context) error {
 	return c.JSON(http.StatusOK, createDB.UpdateAnswer(answer, roomId, playerId))
 }
 func postIsCorrect(c echo.Context) error {
-	reqBody := new(IsCorrect)
+	reqBody := new(structManege.IsCorrect)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -264,7 +217,7 @@ func postIsCorrect(c echo.Context) error {
 	return c.JSON(http.StatusOK, createDB.IsCorrect(roomId, isCorrect))
 }
 func postEndGame(c echo.Context) error {
-	reqBody := new(Game)
+	reqBody := new(structManege.Game)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -274,7 +227,7 @@ func postEndGame(c echo.Context) error {
 }
 
 func postVote(c echo.Context) error {
-	reqBody := new(Vote)
+	reqBody := new(structManege.Vote)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -284,7 +237,7 @@ func postVote(c echo.Context) error {
 	return c.JSON(http.StatusOK, createDB.Vote(playerId, inputPlayerId, roomId))
 }
 func postJudgementWolf(c echo.Context) error {
-	reqBody := new(Vote)
+	reqBody := new(structManege.Vote)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -293,7 +246,7 @@ func postJudgementWolf(c echo.Context) error {
 	return c.JSON(http.StatusOK, readDB.JudgementWolf(roomId, playerId))
 }
 func postAddStep(c echo.Context) error {
-	reqBody := new(Game)
+	reqBody := new(structManege.Game)
 	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
@@ -301,4 +254,3 @@ func postAddStep(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, createDB.AddStep(roomId))
 }
-
