@@ -2,7 +2,7 @@ package createDB
 
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
-	types "gamename-back-end/pkg/struct"
+	types "gamename-back-end/pkg/types"
 	"log"
 
 	"cloud.google.com/go/firestore"

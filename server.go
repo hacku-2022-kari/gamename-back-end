@@ -4,7 +4,7 @@ import (
 	"fmt"
 	createDB "gamename-back-end/pkg/cruds/create"
 	readDB "gamename-back-end/pkg/cruds/read"
-	types "gamename-back-end/pkg/struct"
+	types "gamename-back-end/pkg/types"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
