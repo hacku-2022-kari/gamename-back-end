@@ -2,14 +2,14 @@ package createDB
 
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
-	structManege "gamename-back-end/pkg/struct"
+	types "gamename-back-end/pkg/struct"
 	"log"
 
 	"cloud.google.com/go/firestore"
 )
 
 func AddPlayer(roomId string, playerName string, playerIcon int) string {
-	player := structManege.CreatePlayer{
+	player := types.CreatePlayer{
 		PlayerName: playerName,
 		Icon:       playerIcon,
 		Role:       0,
@@ -37,7 +37,7 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
-	roomPlayer := structManege.RoomPlayer{
+	roomPlayer := types.RoomPlayer{
 		RoomId:   roomId,
 		PlayerId: docRef.ID,
 	}

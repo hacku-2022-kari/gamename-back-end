@@ -2,13 +2,13 @@ package createDB
 
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
-	structManege "gamename-back-end/pkg/struct"
+	types "gamename-back-end/pkg/struct"
 	"log"
 )
 
 func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int, isCorrectWolf bool) string {
 
-	room := structManege.CreateRoom{
+	room := types.CreateRoom{
 		PaticNum:      particNum,
 		Theme:         theme,
 		Phase:         phase,

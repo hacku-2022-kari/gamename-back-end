@@ -1,4 +1,4 @@
-package structManege
+package types
 
 type Room struct {
 	WolfMode bool `json:"wolfMode"`
