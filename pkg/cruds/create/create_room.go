@@ -2,24 +2,13 @@ package createDB
 
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
+	types "gamename-back-end/pkg/types"
 	"log"
 )
 
-type Room struct {
-	PaticNum      int
-	Theme         string
-	Phase         int
-	Step          int
-	IsModeWolf    bool
-	IsExitWolf    bool
-	PeaceVote     int
-	IsCorrectWolf bool
-	Result        int
-}
-
 func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int, isCorrectWolf bool) string {
 
-	room := Room{
+	room := types.CreateRoom{
 		PaticNum:      particNum,
 		Theme:         theme,
 		Phase:         phase,
