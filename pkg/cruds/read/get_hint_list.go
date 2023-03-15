@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+// TODO: 構造体をまとめたところに移す
 type HintKey struct {
 	PlayerId    string `json:"playerId"`
 	AvatarIndex int    `json:"avatarIndex"`

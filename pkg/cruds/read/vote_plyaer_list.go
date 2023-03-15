@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-// TODO: 構造体の命名の検討
+// TODO: 構造体をまとめたところに移す
 type VotePlayerInfo struct {
 	PlayerId   string `json:"playerid"`
 	NickName   string `json:"nickname"`

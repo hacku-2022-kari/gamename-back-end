@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+// TODO: 構造体をまとめたところに移す
 type RoleWolf struct {
 	Role int  `json:"role"`
 	Wolf bool `json:"wolf"`
