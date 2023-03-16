@@ -67,7 +67,7 @@ type CreatePlayer struct {
 }
 
 type CreateRoom struct {
-	PaticNum      int
+	ParticNum     int
 	Theme         string
 	Phase         int
 	Step          int

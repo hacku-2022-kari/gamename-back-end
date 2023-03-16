@@ -9,7 +9,7 @@ import (
 func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int, isCorrectWolf bool) string {
 
 	room := types.CreateRoom{
-		PaticNum:      particNum,
+		ParticNum:      particNum,
 		Theme:         theme,
 		Phase:         phase,
 		Step:          step,

@@ -44,7 +44,7 @@ func Vote(playerId string, inputPlayerId string, roomId string) bool {
 		return false
 	}
 
-	bytes, _ := json.Marshal(roomDoc.Data()["PaticNum"])
+	bytes, _ := json.Marshal(roomDoc.Data()["ParticNum"])
 	var particNumInt int64
 	err = json.Unmarshal(bytes, &particNumInt)
 	if err != nil {
