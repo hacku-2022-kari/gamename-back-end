@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	connectDB "gamename-back-end/pkg/connect_db"
 	createDB "gamename-back-end/pkg/cruds/create"
 	readDB "gamename-back-end/pkg/cruds/read"
 	types "gamename-back-end/pkg/types"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -133,7 +135,15 @@ func createRoom(c echo.Context) error {
 		return err
 	}
 	wolfMode := reqBody.WolfMode
-	return c.String(http.StatusOK, createDB.CreateRoom(0, "theme", 0, 0, wolfMode, false, 0, true))
+
+	ctx, client, err := connectDB.ConnectDB()
+	if err != nil {
+		log.Printf("An error has occurred: %s", err)
+	}
+
+	var id = createDB.CreateRoom(ctx, client, 0, "theme", 0, 0, wolfMode, false, 0, true)
+	defer client.Close()
+	return c.String(http.StatusOK, id)
 }
 
 func postAddPlayer(c echo.Context) error {

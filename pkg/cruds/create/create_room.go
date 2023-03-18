@@ -1,15 +1,17 @@
 package createDB
 
 import (
-	connectDB "gamename-back-end/pkg/connect_db"
+	"context"
 	types "gamename-back-end/pkg/types"
 	"log"
+
+	"cloud.google.com/go/firestore"
 )
 
-func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int, isCorrectWolf bool) string {
+func CreateRoom(ctx context.Context, client *firestore.Client, particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int, isCorrectWolf bool) string {
 
 	room := types.CreateRoom{
-		PaticNum:      particNum,
+		ParticNum:     particNum,
 		Theme:         theme,
 		Phase:         phase,
 		Step:          step,
@@ -20,15 +22,13 @@ func CreateRoom(particNum int, theme string, phase int, step int, wolfMode bool,
 		Result:        1,
 	}
 
-	ctx, client, err := connectDB.ConnectDB()
-	if err != nil {
-		log.Printf("An error has occurred: %s", err)
-	}
 	ref := client.Collection("Room").NewDoc()
-	_, err = ref.Set(ctx, room)
+	_, err := ref.Set(ctx, room)
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
+		// NOTE: ID の作成に失敗した場合には空文字を返す
+		return ""
 	}
-	defer client.Close()
+
 	return ref.ID
 }

@@ -9,6 +9,7 @@ package test_temp
 
 import "testing"
 
+// 関数名は Test_### にする必要がある
 func Test_add(t *testing.T) {
 	type args struct {
 		a int

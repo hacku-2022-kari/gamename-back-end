@@ -32,7 +32,7 @@ func AddPlayer(roomId string, playerName string, playerIcon int) string {
 	}
 	roomRef := client.Collection("Room").Doc(roomId)
 	_, err = roomRef.Update(ctx, []firestore.Update{
-		{Path: "PaticNum", Value: firestore.Increment(1)},
+		{Path: "ParticNum", Value: firestore.Increment(1)},
 	})
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)

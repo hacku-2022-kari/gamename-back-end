@@ -7,7 +7,7 @@ import (
 	"math/rand"
 )
 
-// TODO: 構造体の命名の検討
+// TODO: 構造体をまとめたところに移す
 type ChoseWolf struct {
 	Id   string `json:"id"`
 	Name string `json:"nickname"`

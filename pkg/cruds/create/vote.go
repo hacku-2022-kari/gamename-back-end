@@ -44,7 +44,7 @@ func Vote(playerId string, inputPlayerId string, roomId string) bool {
 		return false
 	}
 
-	bytes, _ := json.Marshal(roomDoc.Data()["PaticNum"])
+	bytes, _ := json.Marshal(roomDoc.Data()["ParticNum"])
 	var particNumInt int64
 	err = json.Unmarshal(bytes, &particNumInt)
 	if err != nil {
@@ -92,10 +92,3 @@ func Vote(playerId string, inputPlayerId string, roomId string) bool {
 	defer client.Close()
 	return true
 }
-
-// $body = @{
-// 	roomId = "nEduCUJZ6F5bjRImr1fL"
-//     playerId = "QDYwbFIF34UxLVI7qEbZ"
-//     inputPlayerId = "jLOqW1BmSYVxDkekMvm4"
-// } | ConvertTo-Json
-// Invoke-RestMethod -Method POST -Uri http://localhost:1323/vote -Body $body -ContentType "application/json"
