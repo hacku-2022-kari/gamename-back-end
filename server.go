@@ -96,7 +96,8 @@ func getRole(c echo.Context) error {
 }
 func getRoleWolf(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
-	return c.JSON(http.StatusOK, readDB.GetRoleWolf(playerId))
+	roomId := c.QueryParam("roomId")
+	return c.JSON(http.StatusOK, readDB.GetRoleWolf(playerId, roomId))
 }
 func getAnswer(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
