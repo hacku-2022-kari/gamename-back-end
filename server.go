@@ -91,7 +91,8 @@ func getStep(c echo.Context) error {
 }
 func getRole(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
-	return c.JSON(http.StatusOK, readDB.GetRole(playerId))
+	roomId := c.QueryParam("roomId")
+	return c.JSON(http.StatusOK, readDB.GetRole(playerId, roomId))
 }
 func getRoleWolf(c echo.Context) error {
 	playerId := c.QueryParam("playerId")
