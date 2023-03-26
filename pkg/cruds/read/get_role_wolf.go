@@ -12,7 +12,8 @@ type RoleWolf struct {
 	Wolf bool `json:"wolf"`
 }
 
-func GetRoleWolf(playerId string) RoleWolf {
+// NOTE: roomId は ConnectDB の引数を増やすタイミングで使用するため一旦未使用で良い
+func GetRoleWolf(playerId string, roomId string) RoleWolf {
 	ctx, client, err := connectDB.ConnectDB()
 	if err != nil {
 		log.Println("error getting Player document: \n", err)
