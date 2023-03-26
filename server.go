@@ -8,6 +8,7 @@ import (
 	types "gamename-back-end/pkg/types"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -50,9 +51,19 @@ func main() {
 	e.POST("/vote", postVote)
 	e.POST("/judgement-wolf", postJudgementWolf)
 	e.POST("/add-step", postAddStep)
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(getPort()))
 }
+func getPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":1323"
+	} else {
+		port = ":" + port
+	}
 
+	fmt.Println(port)
+	return port
+}
 func isModeWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	return c.JSON(http.StatusOK, readDB.IsModeWolf(roomId))
