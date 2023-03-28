@@ -7,7 +7,7 @@ import (
 )
 
 func DeleteHint(hintList []string, roomId string) bool {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		return false
 	}

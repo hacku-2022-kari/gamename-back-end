@@ -6,7 +6,7 @@ import (
 )
 
 func GetAnswer(roomId string) string {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		log.Println("error getting Player document: \n", err)
 	}

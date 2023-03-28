@@ -7,7 +7,7 @@ import (
 )
 
 func IsCorrect(roomId string, isCorrect bool) bool {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		return false
 	}
