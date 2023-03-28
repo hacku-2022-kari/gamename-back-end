@@ -5,7 +5,8 @@ import (
 	"log"
 )
 
-func GetRole(playerId string) interface{} {
+// NOTE: roomId は ConnectDB の引数を増やすタイミングで使用するため一旦未使用で良い
+func GetRole(playerId string, roomId string) interface{} {
 	ctx, client, err := connectDB.ConnectDB()
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
