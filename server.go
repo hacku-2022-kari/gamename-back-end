@@ -50,8 +50,12 @@ func main() {
 	e.POST("/vote", postVote)
 	e.POST("/judgement-wolf", postJudgementWolf)
 	e.POST("/add-step", postAddStep)
-	e.Logger.Fatal(e.Start(":1323"))
+	// Start HTTP server.
+	if err := e.Start(":8080"); err != http.ErrServerClosed {
+		log.Fatal(err)
+	}
 }
+
 func isModeWolf(c echo.Context) error {
 	roomId := c.QueryParam("roomId")
 	return c.JSON(http.StatusOK, readDB.IsModeWolf(roomId))
