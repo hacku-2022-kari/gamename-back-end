@@ -2,13 +2,13 @@ package createDB
 
 import (
 	"context"
+	"fmt"
 	types "gamename-back-end/pkg/types"
-	"log"
 
 	"cloud.google.com/go/firestore"
 )
 
-func CreateRoom(ctx context.Context, client *firestore.Client, particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int, isCorrectWolf bool) string {
+func CreateRoom(ctx context.Context, client *firestore.Client, particNum int, theme string, phase int, step int, wolfMode bool, isExitWolf bool, peaceVote int, isCorrectWolf bool, roomId string) string {
 
 	room := types.CreateRoom{
 		ParticNum:     particNum,
@@ -22,13 +22,12 @@ func CreateRoom(ctx context.Context, client *firestore.Client, particNum int, th
 		Result:        1,
 	}
 
-	ref := client.Collection("Room").NewDoc()
-	_, err := ref.Set(ctx, room)
+	_, err := client.Collection("Room").Doc(roomId).Set(ctx, room)
 	if err != nil {
-		log.Printf("An error has occurred: %s", err)
+		fmt.Println("An error has occurred", err)
 		// NOTE: ID の作成に失敗した場合には空文字を返す
 		return ""
 	}
 
-	return ref.ID
+	return roomId
 }

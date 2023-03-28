@@ -7,7 +7,9 @@ import (
 	readDB "gamename-back-end/pkg/cruds/read"
 	types "gamename-back-end/pkg/types"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -16,10 +18,10 @@ import (
 func main() {
 	e := echo.New()
 	e.Use(middleware.CORS())
-
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	// ローカル環境の場合、http://localhost:1323/
+
+	// ローカル環境の場合、http://localhost:8080/
 	e.GET("/is-mode-wolf", isModeWolf)
 	e.GET("/is-room-exit", isRoomExit)
 	e.GET("/partic-list", getParticList)
@@ -142,14 +144,32 @@ func createRoom(c echo.Context) error {
 	}
 	wolfMode := reqBody.WolfMode
 
-	ctx, client, err := connectDB.ConnectDB()
+	// ランダムな ID の作成
+	const letterBytes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	rand.Seed(time.Now().UnixNano())
+
+	b := make([]byte, 20)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	roomId := string(b)
+
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
 
-	var id = createDB.CreateRoom(ctx, client, 0, "theme", 0, 0, wolfMode, false, 0, true)
+	id := createDB.CreateRoom(ctx, client, 0, "theme", 0, 0, wolfMode, false, 0, true, roomId)
 	defer client.Close()
-	return c.String(http.StatusOK, id)
+
+	fmt.Println("returnId", id)
+	if id == roomId {
+		return c.String(http.StatusOK, id)
+	} else {
+		// DB にエラーが発生した場合 500 を返す
+		return c.String(500, "")
+	}
+
 }
 
 func postAddPlayer(c echo.Context) error {
