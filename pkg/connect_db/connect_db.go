@@ -2,17 +2,26 @@ package connectDB
 
 import (
 	"context"
+	"gamename-back-end/pkg/utils"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/option"
 )
 
-func ConnectDB() (context.Context, *firestore.Client, error) { //TODO この関数とcreateDBにある関数で出力が違うため要検討
+func ConnectDB(param string) (context.Context, *firestore.Client, error) {
+	credentials_file_path := ""
+	if param == "GET_RANDOM_THEME" {
+		credentials_file_path = "path/to/serviceAccount.json"
+	} else {
+		id := utils.DistributeDB(param)
+		credentials_file_path = "path/to/db_" + id + ".json"
+	}
+
 	ctx := context.Background()
-	sa := option.WithCredentialsFile("path/to/serviceAccount.json")
-	config := &firebase.Config{ProjectID: "gotest-bc4c6"}
-	app, err := firebase.NewApp(ctx, config, sa)
+	sa := option.WithCredentialsFile(credentials_file_path)
+	app, err := firebase.NewApp(ctx, nil, sa)
+
 	if err != nil {
 		return nil, nil, err
 	}

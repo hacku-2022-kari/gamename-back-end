@@ -8,7 +8,7 @@ import (
 
 func UpdateAnswer(answer string, roomId string, playerId string) bool {
 
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		return false
 	}
@@ -35,5 +35,3 @@ func UpdateAnswer(answer string, roomId string, playerId string) bool {
 	defer client.Close()
 	return true
 }
-
-

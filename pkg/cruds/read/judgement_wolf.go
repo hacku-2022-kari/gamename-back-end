@@ -9,7 +9,7 @@ import (
 
 // 0(平和村,true),1(平和村,false),2(人狼村,true),3(人狼村,false)
 func JudgementWolf(roomId string, playerId string) int {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}

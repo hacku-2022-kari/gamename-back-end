@@ -38,7 +38,7 @@ func Test_CreateRoom(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name+"Roomが作成できる", func(t *testing.T) {
-			var id = createDB.CreateRoom(ctx, client, 0, "theme", 0, 0, tt.isWolfMode, false, 0, true)
+			var id = createDB.CreateRoom(ctx, client, 0, "theme", 0, 0, tt.isWolfMode, false, 0, true, "roomId")
 			if got := id; got == "" {
 				t.Errorf("get id is %v", id)
 			}

@@ -8,7 +8,7 @@ import (
 )
 
 func GetRandomTheme() string {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB("GET_RANDOM_THEME")
 
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)

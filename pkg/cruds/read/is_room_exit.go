@@ -6,7 +6,7 @@ import (
 )
 
 func IsRoomExit(id string) bool {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(id)
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}

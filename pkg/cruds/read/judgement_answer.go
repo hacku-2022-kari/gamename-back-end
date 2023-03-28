@@ -6,7 +6,7 @@ import (
 )
 
 func JudgementAnswer(roomId string) bool {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}

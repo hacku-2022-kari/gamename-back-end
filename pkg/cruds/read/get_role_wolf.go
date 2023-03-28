@@ -14,7 +14,7 @@ type RoleWolf struct {
 
 // NOTE: roomId は ConnectDB の引数を増やすタイミングで使用するため一旦未使用で良い
 func GetRoleWolf(playerId string, roomId string) RoleWolf {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		log.Println("error getting Player document: \n", err)
 

@@ -15,7 +15,7 @@ type ChoseWolf struct {
 }
 
 func ChoiceWolf(roomId string) ChoseWolf {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		log.Println("failed to connect to database: ", err)
 	}

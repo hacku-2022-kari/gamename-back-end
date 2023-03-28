@@ -10,7 +10,7 @@ import (
 
 func EndGame(roomId string) bool {
 
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 
 	if err != nil {
 		return false

@@ -9,7 +9,7 @@ import (
 
 func DecideTheme(roomId string, howToDecideTheme int) bool {
 
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		return false
 	}

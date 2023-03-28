@@ -1,11 +1,12 @@
 package readDB
+
 import (
 	connectDB "gamename-back-end/pkg/connect_db"
 	"log"
 )
 
 func WolfName(roomId string) string {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}

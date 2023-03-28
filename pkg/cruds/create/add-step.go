@@ -8,7 +8,7 @@ import (
 )
 
 func AddStep(roomId string) bool {
-	ctx, client, err := connectDB.ConnectDB()
+	ctx, client, err := connectDB.ConnectDB(roomId)
 	if err != nil {
 		log.Printf("failed to connect to database: %v", err)
 	}
