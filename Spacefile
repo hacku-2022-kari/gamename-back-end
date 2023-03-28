@@ -4,13 +4,11 @@ micros:
   - name: game-back-end
     src: .
     engine: custom
-    presets:
-      api_keys: true
     public_routes:
       - "/*"
+    presets:
+      api_keys: true
     commands:
       - go get
       - go build server.go
     run: ./server
-    include:
-      - .
