@@ -2,7 +2,9 @@ package createDBTest
 
 import (
 	"log"
+	"math/rand"
 	"testing"
+	"time"
 
 	"gamename-back-end/test/db"
 
@@ -14,6 +16,8 @@ func Test_CreateRoom(t *testing.T) {
 	if err != nil {
 		log.Printf("An error has occurred: %s", err)
 	}
+
+	// NOTE: コレクションがない場合には、その場で作成されるため、このテストの範囲内では InitializeDatabase は不要
 	db.InitializeDatabase(ctx, client)
 	defer client.Close()
 
@@ -29,18 +33,34 @@ func Test_CreateRoom(t *testing.T) {
 		}
 	})
 
+	// ランダムな ID の作成
+	const letterBytes = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	rand.Seed(time.Now().UnixNano())
+
+	roomIdByte1 := make([]byte, 20)
+	for i := range roomIdByte1 {
+		roomIdByte1[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	roomIdByte2 := make([]byte, 20)
+	for i := range roomIdByte2 {
+		roomIdByte2[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	roomId1 := string(roomIdByte1)
+	roomId2 := string(roomIdByte2)
+
 	tests := []struct {
 		name       string
 		isWolfMode bool
+		roomId     string
 	}{
-		{name: "wolfModeがfalseの場合", isWolfMode: false},
-		{name: "wolfModeがtrueの場合", isWolfMode: true},
+		{name: "wolfModeがfalseの場合", isWolfMode: false, roomId: roomId1},
+		{name: "wolfModeがtrueの場合", isWolfMode: true, roomId: roomId2},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name+"Roomが作成できる", func(t *testing.T) {
-			var id = createDB.CreateRoom(ctx, client, 0, "theme", 0, 0, tt.isWolfMode, false, 0, true, "roomId")
-			if got := id; got == "" {
-				t.Errorf("get id is %v", id)
+			var id = createDB.CreateRoom(ctx, client, 0, "theme", 0, 0, tt.isWolfMode, false, 0, true, tt.roomId)
+			if got := id; got != tt.roomId {
+				t.Errorf("get id is empty, want %v", got)
 			}
 		})
 	}
